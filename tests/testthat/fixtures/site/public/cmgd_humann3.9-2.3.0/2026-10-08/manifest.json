@@ -1,0 +1,204 @@
+{
+  "spec_version": "2.0",
+  "dataset": "cmgd_humann3.9-2.3.0",
+  "release": "2026-10-08",
+  "release_date": "2026-10-08",
+  "status": "published",
+  "published_at": "2026-10-08T11:46:03.011367+00:00",
+  "run_id": "5f1e686b-ae9a-4ed2-a119-b82c28a07cc1",
+  "source_asset_versions": [
+    {
+      "ref": "lake.cmgd.taxonomic_profile_metaphlan",
+      "version": "snapshot:177"
+    },
+    {
+      "ref": "lake.cmgd.taxonomic_profile_bracken",
+      "version": "snapshot:177"
+    },
+    {
+      "ref": "lake.cmgd.resistome",
+      "version": "snapshot:177"
+    },
+    {
+      "ref": "lake.cmgd.qc_metrics",
+      "version": "snapshot:177"
+    },
+    {
+      "ref": "lake.cmgd.marker_abundance",
+      "version": "snapshot:177"
+    },
+    {
+      "ref": "lake.cmgd.marker_presence",
+      "version": "snapshot:177"
+    },
+    {
+      "ref": "lake.cmgd.humann_pathabundance",
+      "version": "snapshot:177"
+    },
+    {
+      "ref": "lake.cmgd.humann_pathcoverage",
+      "version": "snapshot:177"
+    },
+    {
+      "ref": "lake.cmgd.humann_genefamilies_files",
+      "version": "snapshot:177"
+    }
+  ],
+  "artifacts": {
+    "parquet": {
+      "status": "verified",
+      "required": true,
+      "location": "tables/"
+    },
+    "ducklake": {
+      "status": "verified",
+      "required": true,
+      "location": "catalog.ducklake",
+      "size": 1339392,
+      "sha256": "bffef7d66f44cb4b35b645ccdfc6105689d45831864124afbaf810a53fd12ac3",
+      "content_type": "application/octet-stream"
+    }
+  },
+  "tables": [
+    {
+      "name": "humann_pathabundance",
+      "description": "HUMAnN pathway abundances, unnormalized, in the bundle's units.",
+      "grain": "one row per sample, pathway and stratum (NULL = community total)",
+      "primary_key": [
+        "sample_key",
+        "humann_bundle",
+        "pathway",
+        "stratum"
+      ],
+      "temporal_model": "upsert_latest_snapshot",
+      "owner": "curatedMetagenomicData",
+      "license": "CC0-1.0",
+      "schema": "tables/humann_pathabundance/schema.json",
+      "files": "tables/humann_pathabundance/files.json",
+      "schema_digest": "sha256:d06ab65a01cfb51b79c5c0c6d1a1120aecb20057d2366637d1e74e4edc34fa53",
+      "row_count": 15
+    },
+    {
+      "name": "humann_pathcoverage",
+      "description": "HUMAnN pathway coverage.",
+      "grain": "one row per sample, pathway and stratum (NULL = community total)",
+      "primary_key": [
+        "sample_key",
+        "humann_bundle",
+        "pathway",
+        "stratum"
+      ],
+      "temporal_model": "upsert_latest_snapshot",
+      "owner": "curatedMetagenomicData",
+      "license": "CC0-1.0",
+      "schema": "tables/humann_pathcoverage/schema.json",
+      "files": "tables/humann_pathcoverage/files.json",
+      "schema_digest": "sha256:811ab131198ff28d7d78bcd8be10c2a5194e064076b9f1e273b86aa6a48c4f34",
+      "row_count": 15
+    },
+    {
+      "name": "marker_abundance",
+      "description": "MetaPhlAn marker abundances.",
+      "grain": "one row per sample, branch and marker",
+      "primary_key": [
+        "sample_key",
+        "data_type",
+        "marker_name"
+      ],
+      "temporal_model": "upsert_latest_snapshot",
+      "owner": "curatedMetagenomicData",
+      "license": "CC0-1.0",
+      "schema": "tables/marker_abundance/schema.json",
+      "files": "tables/marker_abundance/files.json",
+      "schema_digest": "sha256:e5db73e4988bdf614f1417903031f9a7d3d8b48a9f279d518f09bbfb4f2200db",
+      "row_count": 10
+    },
+    {
+      "name": "marker_presence",
+      "description": "MetaPhlAn markers present in a sample (a row exists iff the marker is present).",
+      "grain": "one row per sample, branch and present marker",
+      "primary_key": [
+        "sample_key",
+        "data_type",
+        "marker_name"
+      ],
+      "temporal_model": "upsert_latest_snapshot",
+      "owner": "curatedMetagenomicData",
+      "license": "CC0-1.0",
+      "schema": "tables/marker_presence/schema.json",
+      "files": "tables/marker_presence/files.json",
+      "schema_digest": "sha256:0187b0a2a5372d8daf8afdaeb79929e87b8e05268833a70d26969b1c8bccdd66",
+      "row_count": 0
+    },
+    {
+      "name": "qc_metrics",
+      "description": "Per-sample read accounting and provenance.",
+      "grain": "one row per sample",
+      "primary_key": [
+        "sample_key"
+      ],
+      "temporal_model": "upsert_latest_snapshot",
+      "owner": "curatedMetagenomicData",
+      "license": "CC0-1.0",
+      "schema": "tables/qc_metrics/schema.json",
+      "files": "tables/qc_metrics/files.json",
+      "schema_digest": "sha256:f2cc7c5fec40b0c9a1d0522c723a9c1e2afd64664b28d7d3077e3f330122a788",
+      "row_count": 5
+    },
+    {
+      "name": "resistome",
+      "description": "Antimicrobial-resistance genes (KMA against CARD).",
+      "grain": "one row per sample, branch and CARD template",
+      "primary_key": [
+        "sample_key",
+        "data_type",
+        "gene"
+      ],
+      "temporal_model": "upsert_latest_snapshot",
+      "owner": "curatedMetagenomicData",
+      "license": "CC0-1.0",
+      "schema": "tables/resistome/schema.json",
+      "files": "tables/resistome/files.json",
+      "schema_digest": "sha256:777e5794adfde590a40b472872b6a0cf2c5d59f12d9e317dfde95a5fea65237d",
+      "row_count": 10
+    },
+    {
+      "name": "taxonomic_profile_bracken",
+      "description": "Kraken2/Bracken species and genus profiles.",
+      "grain": "one row per sample, branch and taxon",
+      "primary_key": [
+        "sample_key",
+        "data_type",
+        "clade_name"
+      ],
+      "temporal_model": "upsert_latest_snapshot",
+      "owner": "curatedMetagenomicData",
+      "license": "CC0-1.0",
+      "schema": "tables/taxonomic_profile_bracken/schema.json",
+      "files": "tables/taxonomic_profile_bracken/files.json",
+      "schema_digest": "sha256:a79dbac3273d637ccb7e72a738ed60ca2ad5dc353ae1219f5ff11a85d6f7e6b9",
+      "row_count": 10
+    },
+    {
+      "name": "taxonomic_profile_metaphlan",
+      "description": "MetaPhlAn taxonomic profiles: the main pass, plus a HUMAnN bundle's own pass (humann_bundle set).",
+      "grain": "one row per sample, branch, MetaPhlAn pass and clade",
+      "primary_key": [
+        "sample_key",
+        "data_type",
+        "metaphlan_profile",
+        "humann_bundle",
+        "clade_name"
+      ],
+      "temporal_model": "upsert_latest_snapshot",
+      "owner": "curatedMetagenomicData",
+      "license": "CC0-1.0",
+      "schema": "tables/taxonomic_profile_metaphlan/schema.json",
+      "files": "tables/taxonomic_profile_metaphlan/files.json",
+      "schema_digest": "sha256:be8c3bc719a12e0e63406230543967f0840f534688a09eb8c666b45a4453b11a",
+      "row_count": 33
+    }
+  ],
+  "provenance": "provenance.json",
+  "lineage": "lineage.json"
+}

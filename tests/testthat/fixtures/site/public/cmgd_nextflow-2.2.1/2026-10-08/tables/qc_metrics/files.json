@@ -1,0 +1,14 @@
+{
+  "spec_version": "2.0",
+  "table": "qc_metrics",
+  "release": "2026-10-08",
+  "files": [
+    {
+      "uri": "data/part-00000.parquet",
+      "size": 3344,
+      "sha256": "6e35f9e55efc28f46678b794b3dab1c7f6afd2378f4bc168b7036e7ac408c13a",
+      "rows": 5,
+      "content_type": "application/vnd.apache.parquet"
+    }
+  ]
+}

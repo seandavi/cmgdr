@@ -1,0 +1,4 @@
+sample_key	sample_id	readset_id	study_name	run_ids	workflow_id	version	reads_raw	reads_decontaminated	bases_raw	bases_decontaminated	reads_surviving_fraction	bases_surviving_fraction	metaphlan_index	metaphlan_profile	humann_bundle	pipeline_version	git_commit
+14f45a605385b4f8f2891d3a2a49776a	14f45a605385b4f8f2891d3a2a49776a		ArtachoA_2021	ERR866581	cmgd_nextflow	2.2.1	2000000	1500000						mpa4.2.2_vJan25		2.2.1	
+6de22663c48ba72d0c298085f01a9928	6de22663c48ba72d0c298085f01a9928		ArtachoA_2021	ERR866583	cmgd_nextflow	2.2.1	2000002	1500000						mpa4.2.2_vJan25		2.2.1	
+d1377d2ea8bfeb613b620f0f26317ceb	d1377d2ea8bfeb613b620f0f26317ceb		ArtachoA_2021	ERR866582	cmgd_nextflow	2.2.1	2000001	1500000						mpa4.2.2_vJan25		2.2.1	

@@ -1,0 +1,62 @@
+{
+  "dataset": "cmgd_humann3.9-2.3.0",
+  "raw_base_url": "https://cmgd-raw.cancerdatasci.org",
+  "description": "HUMAnN gene families: one unnormalized table per sample, downloaded from cmgd-raw (not in the lake or the release tables).",
+  "files": [
+    {
+      "study_name": "ArtachoA_2021",
+      "sample_key": "RS.14f45a605385b4f8f2891d3a2a49776a",
+      "readset_id": "RS.14f45a605385b4f8f2891d3a2a49776a",
+      "humann_bundle": "humann3.9",
+      "branch": "full_data",
+      "key": "cmgd_humann3.9/2.3.0/RS.14f45a605385b4f8f2891d3a2a49776a/humann/humann3.9/out_genefamilies.tsv.gz",
+      "url": "https://cmgd-raw.cancerdatasci.org/cmgd_humann3.9/2.3.0/RS.14f45a605385b4f8f2891d3a2a49776a/humann/humann3.9/out_genefamilies.tsv.gz",
+      "bytes": 171,
+      "rows": 3
+    },
+    {
+      "study_name": "ArtachoA_2021",
+      "sample_key": "RS.6de22663c48ba72d0c298085f01a9928",
+      "readset_id": "RS.6de22663c48ba72d0c298085f01a9928",
+      "humann_bundle": "humann3.9",
+      "branch": "full_data",
+      "key": "cmgd_humann3.9/2.3.0/RS.6de22663c48ba72d0c298085f01a9928/humann/humann3.9/out_genefamilies.tsv.gz",
+      "url": "https://cmgd-raw.cancerdatasci.org/cmgd_humann3.9/2.3.0/RS.6de22663c48ba72d0c298085f01a9928/humann/humann3.9/out_genefamilies.tsv.gz",
+      "bytes": 171,
+      "rows": 3
+    },
+    {
+      "study_name": "ArtachoA_2021",
+      "sample_key": "RS.d1377d2ea8bfeb613b620f0f26317ceb",
+      "readset_id": "RS.d1377d2ea8bfeb613b620f0f26317ceb",
+      "humann_bundle": "humann3.9",
+      "branch": "full_data",
+      "key": "cmgd_humann3.9/2.3.0/RS.d1377d2ea8bfeb613b620f0f26317ceb/humann/humann3.9/out_genefamilies.tsv.gz",
+      "url": "https://cmgd-raw.cancerdatasci.org/cmgd_humann3.9/2.3.0/RS.d1377d2ea8bfeb613b620f0f26317ceb/humann/humann3.9/out_genefamilies.tsv.gz",
+      "bytes": 171,
+      "rows": 3
+    },
+    {
+      "study_name": "ZellerG_2014",
+      "sample_key": "RS.0799290744af74dc9bf365bd094319f1",
+      "readset_id": "RS.0799290744af74dc9bf365bd094319f1",
+      "humann_bundle": "humann3.9",
+      "branch": "full_data",
+      "key": "cmgd_humann3.9/2.3.0/RS.0799290744af74dc9bf365bd094319f1/humann/humann3.9/out_genefamilies.tsv.gz",
+      "url": "https://cmgd-raw.cancerdatasci.org/cmgd_humann3.9/2.3.0/RS.0799290744af74dc9bf365bd094319f1/humann/humann3.9/out_genefamilies.tsv.gz",
+      "bytes": 171,
+      "rows": 3
+    },
+    {
+      "study_name": "ZellerG_2014",
+      "sample_key": "RS.d945401ca00236fcbbb1a112b11ecb34",
+      "readset_id": "RS.d945401ca00236fcbbb1a112b11ecb34",
+      "humann_bundle": "humann3.9",
+      "branch": "full_data",
+      "key": "cmgd_humann3.9/2.3.0/RS.d945401ca00236fcbbb1a112b11ecb34/humann/humann3.9/out_genefamilies.tsv.gz",
+      "url": "https://cmgd-raw.cancerdatasci.org/cmgd_humann3.9/2.3.0/RS.d945401ca00236fcbbb1a112b11ecb34/humann/humann3.9/out_genefamilies.tsv.gz",
+      "bytes": 171,
+      "rows": 3
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "spec_version": "2.0",
+  "table": "taxonomic_profile_bracken",
+  "release": "2026-10-08",
+  "files": [
+    {
+      "uri": "data/part-00000.parquet",
+      "size": 3227,
+      "sha256": "f9b725f406d4a28f0fb0eb854627b9f225c0bf0d456deccee980037850459a5f",
+      "rows": 10,
+      "content_type": "application/vnd.apache.parquet"
+    }
+  ]
+}

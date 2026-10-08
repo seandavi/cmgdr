@@ -1,0 +1,12 @@
+{
+  "spec_version": "2.0",
+  "dataset": "cmgd_humann3.9-2.3.0",
+  "releases": [
+    {
+      "release": "2026-10-08",
+      "release_date": "2026-10-08",
+      "published_at": "2026-10-08T11:46:03.011367+00:00",
+      "pinned": false
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "spec_version": "2.0",
+  "table": "taxonomic_profile_metaphlan",
+  "release": "2026-10-08",
+  "files": [
+    {
+      "uri": "data/part-00000.parquet",
+      "size": 4173,
+      "sha256": "537dd82a775fc92f69c912a42a56dd1826a680222814738a0a7819db7841ab76",
+      "rows": 28,
+      "content_type": "application/vnd.apache.parquet"
+    }
+  ]
+}

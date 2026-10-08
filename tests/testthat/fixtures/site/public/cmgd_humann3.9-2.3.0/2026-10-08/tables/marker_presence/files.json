@@ -1,0 +1,14 @@
+{
+  "spec_version": "2.0",
+  "table": "marker_presence",
+  "release": "2026-10-08",
+  "files": [
+    {
+      "uri": "data/part-00000.parquet",
+      "size": 277,
+      "sha256": "faa8252ae53d2ae607b938ce389faef28e5c8804bbeae204a240e807897ad23a",
+      "rows": 0,
+      "content_type": "application/vnd.apache.parquet"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "spec_version": "2.0",
+  "table": "resistome",
+  "release": "2026-10-08",
+  "files": [
+    {
+      "uri": "data/part-00000.parquet",
+      "size": 2936,
+      "sha256": "1989b510de70556796572b13916b7fa0a9a1128f426d7eada5e112b0a28c89da",
+      "rows": 10,
+      "content_type": "application/vnd.apache.parquet"
+    }
+  ]
+}

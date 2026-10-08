@@ -1,0 +1,155 @@
+{
+  "name": "humann_pathcoverage",
+  "description": "HUMAnN pathway coverage.",
+  "grain": "one row per sample, pathway and stratum (NULL = community total)",
+  "primary_key": [
+    "sample_key",
+    "humann_bundle",
+    "pathway",
+    "stratum"
+  ],
+  "sort_by": [
+    "study_name",
+    "sample_key",
+    "pathway"
+  ],
+  "partition_by": [],
+  "temporal_model": "upsert_latest_snapshot",
+  "owner": "curatedMetagenomicData",
+  "license": "CC0-1.0",
+  "examples": [],
+  "columns": [
+    {
+      "name": "sample_key",
+      "arrow_type": "string",
+      "description": "The id the registration published the sample under: a readset id (RS.\u2026) for new registrations, the md5 sample_id for cmgd_nextflow 2.2.1.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "sample_id",
+      "arrow_type": "string",
+      "description": "md5 of the sorted run accessions (NULL for readset-keyed registrations).",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "readset_id",
+      "arrow_type": "string",
+      "description": "Readset id (RS.\u2026, ADR-0007) once known.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "study_name",
+      "arrow_type": "string",
+      "description": "curatedMetagenomicData study name.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "run_ids",
+      "arrow_type": "string",
+      "description": "Semicolon-separated SRA run accessions.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "workflow_id",
+      "arrow_type": "string",
+      "description": "Registration workflow id.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "version",
+      "arrow_type": "string",
+      "description": "Registration version.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "data_type",
+      "arrow_type": "string",
+      "description": "full_data (all reads) or rarefied_data (1M-read subsample).",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "humann_bundle",
+      "arrow_type": "string",
+      "description": "HUMAnN bundle; NULL for rows outside a HUMAnN bundle.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "pathway",
+      "arrow_type": "string",
+      "description": "HUMAnN pathway (or UNMAPPED / UNINTEGRATED).",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "stratum",
+      "arrow_type": "string",
+      "description": "Contributing taxon; NULL for the community total.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "coverage",
+      "arrow_type": "double",
+      "description": "Coverage as reported by the tool.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    }
+  ]
+}

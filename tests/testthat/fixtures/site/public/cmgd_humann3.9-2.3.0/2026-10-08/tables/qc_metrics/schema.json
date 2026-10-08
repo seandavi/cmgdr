@@ -1,0 +1,217 @@
+{
+  "name": "qc_metrics",
+  "description": "Per-sample read accounting and provenance.",
+  "grain": "one row per sample",
+  "primary_key": [
+    "sample_key"
+  ],
+  "sort_by": [
+    "study_name",
+    "sample_key"
+  ],
+  "partition_by": [],
+  "temporal_model": "upsert_latest_snapshot",
+  "owner": "curatedMetagenomicData",
+  "license": "CC0-1.0",
+  "examples": [],
+  "columns": [
+    {
+      "name": "sample_key",
+      "arrow_type": "string",
+      "description": "The id the registration published the sample under: a readset id (RS.\u2026) for new registrations, the md5 sample_id for cmgd_nextflow 2.2.1.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "sample_id",
+      "arrow_type": "string",
+      "description": "md5 of the sorted run accessions (NULL for readset-keyed registrations).",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "readset_id",
+      "arrow_type": "string",
+      "description": "Readset id (RS.\u2026, ADR-0007) once known.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "study_name",
+      "arrow_type": "string",
+      "description": "curatedMetagenomicData study name.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "run_ids",
+      "arrow_type": "string",
+      "description": "Semicolon-separated SRA run accessions.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "workflow_id",
+      "arrow_type": "string",
+      "description": "Registration workflow id.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "version",
+      "arrow_type": "string",
+      "description": "Registration version.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "reads_raw",
+      "arrow_type": "int64",
+      "description": "Reads before host decontamination.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": "reads",
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "reads_decontaminated",
+      "arrow_type": "int64",
+      "description": "Reads after host decontamination.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": "reads",
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "bases_raw",
+      "arrow_type": "int64",
+      "description": "Bases before host decontamination.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": "bases",
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "bases_decontaminated",
+      "arrow_type": "int64",
+      "description": "Bases after host decontamination.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": "bases",
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "reads_surviving_fraction",
+      "arrow_type": "double",
+      "description": "reads_decontaminated / reads_raw.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": "fraction (0-1)",
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "bases_surviving_fraction",
+      "arrow_type": "double",
+      "description": "bases_decontaminated / bases_raw.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": "fraction (0-1)",
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "metaphlan_index",
+      "arrow_type": "string",
+      "description": "MetaPhlAn index (2.2.x manifests).",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "metaphlan_profile",
+      "arrow_type": "string",
+      "description": "MetaPhlAn pass (release + index) the row comes from.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "humann_bundle",
+      "arrow_type": "string",
+      "description": "HUMAnN bundle; NULL for rows outside a HUMAnN bundle.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "pipeline_version",
+      "arrow_type": "string",
+      "description": "curatedMetagenomicsNextflow version that produced the sample.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "git_commit",
+      "arrow_type": "string",
+      "description": "Pipeline git commit.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    }
+  ]
+}

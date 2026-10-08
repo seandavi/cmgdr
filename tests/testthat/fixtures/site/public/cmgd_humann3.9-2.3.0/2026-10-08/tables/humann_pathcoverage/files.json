@@ -1,0 +1,14 @@
+{
+  "spec_version": "2.0",
+  "table": "humann_pathcoverage",
+  "release": "2026-10-08",
+  "files": [
+    {
+      "uri": "data/part-00000.parquet",
+      "size": 3024,
+      "sha256": "16120d785fc92b223664d192fe71d21cbc448f5e970c56c0dabbd8a117116086",
+      "rows": 15,
+      "content_type": "application/vnd.apache.parquet"
+    }
+  ]
+}

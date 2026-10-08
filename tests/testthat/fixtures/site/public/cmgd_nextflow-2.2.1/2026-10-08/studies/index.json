@@ -1,0 +1,85 @@
+{
+  "dataset": "cmgd_nextflow-2.2.1",
+  "file_descriptions": {
+    "metaphlan_species.tsv.gz": "Species x samples matrix: one row per MetaPhlAn species clade (clade_name), one column per sample_key; relative abundance in percent from the main MetaPhlAn pass on full_data; 0 = not detected. Samples with no species rows are absent (see qc.tsv for every sample).",
+    "metaphlan.parquet": "taxonomic_profile_metaphlan rows for the study (long; all passes and branches).",
+    "bracken.parquet": "taxonomic_profile_bracken rows for the study (long).",
+    "resistome.parquet": "resistome rows for the study (long).",
+    "pathways.parquet": "humann_pathabundance rows for the study (long; HUMAnN registrations only).",
+    "qc.tsv": "qc_metrics rows for the study: one row per sample, with run_ids."
+  },
+  "studies": [
+    {
+      "study_name": "ArtachoA_2021",
+      "n_samples": 3,
+      "files": [
+        {
+          "name": "bracken.parquet",
+          "path": "studies/ArtachoA_2021/bracken.parquet",
+          "bytes": 3042,
+          "sha256": "921f7c0957c5362e33cd9809ef5c165f349b09ec156b65189d978865d822fcca"
+        },
+        {
+          "name": "metaphlan.parquet",
+          "path": "studies/ArtachoA_2021/metaphlan.parquet",
+          "bytes": 3983,
+          "sha256": "d8236127cdc3736202b3c5c432d9e7164a85f2fbc7c1b7c19777074fafb88c86"
+        },
+        {
+          "name": "metaphlan_species.tsv.gz",
+          "path": "studies/ArtachoA_2021/metaphlan_species.tsv.gz",
+          "bytes": 289,
+          "sha256": "e4d5948bcf3028bd5dfbb691fd190118d6ed0eda9b3b78bd096ce731d9a4a93b"
+        },
+        {
+          "name": "qc.tsv",
+          "path": "studies/ArtachoA_2021/qc.tsv",
+          "bytes": 727,
+          "sha256": "fc8e24c8077e1dc329ec0f24792cf8f4670caa5f880a0783f181c2dc6f0ec0a6"
+        },
+        {
+          "name": "resistome.parquet",
+          "path": "studies/ArtachoA_2021/resistome.parquet",
+          "bytes": 2708,
+          "sha256": "1a26bcf561b427da5e87ba645f86d4c7651e6ad1e5ae6af453bb2ddcb6e1b173"
+        }
+      ]
+    },
+    {
+      "study_name": "ZellerG_2014",
+      "n_samples": 2,
+      "files": [
+        {
+          "name": "bracken.parquet",
+          "path": "studies/ZellerG_2014/bracken.parquet",
+          "bytes": 2383,
+          "sha256": "4099f44e86311578b8600ad3db53af281cb175e5d0bb8ff4c6ca383ed3243842"
+        },
+        {
+          "name": "metaphlan.parquet",
+          "path": "studies/ZellerG_2014/metaphlan.parquet",
+          "bytes": 3816,
+          "sha256": "72508de1f271a1bc05958e4d366832de2e14895a039b42a6b37ddd680ce0921e"
+        },
+        {
+          "name": "metaphlan_species.tsv.gz",
+          "path": "studies/ZellerG_2014/metaphlan_species.tsv.gz",
+          "bytes": 206,
+          "sha256": "886b18533155bebaadf5efbe63483ee0685f5c8773b18d64ffd5fdc38e4881a3"
+        },
+        {
+          "name": "qc.tsv",
+          "path": "studies/ZellerG_2014/qc.tsv",
+          "bytes": 569,
+          "sha256": "36878045ae8036ff5efb962f4fc93b6e64ca87e51f598e1cc89864eeb00c8ddc"
+        },
+        {
+          "name": "resistome.parquet",
+          "path": "studies/ZellerG_2014/resistome.parquet",
+          "bytes": 2282,
+          "sha256": "b6d22bc53fd89bb328022b52c2551689e49af962776272e16f50d97be67b1a7d"
+        }
+      ]
+    }
+  ]
+}
