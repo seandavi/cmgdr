@@ -1,0 +1,162 @@
+---
+title: "Accessing cMD data releases"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Accessing cMD data releases}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+# The code needs the live site, so it is shown, not run, when the package builds.
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+This is a walk through the public curatedMetagenomicData (cMD) releases for
+the cMD team: find a release, list its studies, get a species
+`TreeSummarizedExperiment` for a study, query whole tables with SQL or dplyr,
+and download HUMAnN gene families.
+
+```{r}
+library(cmgdr)
+```
+
+## Datasets and releases
+
+Each pipeline registration (a pipeline version plus its configuration) is its
+own **dataset**, named `<workflow_id>-<version>`:
+
+| dataset | what it holds |
+|---|---|
+| `cmgd_nextflow-2.2.1` | pipeline 2.2.1: MetaPhlAn 4.2.2, Bracken, resistome, markers, QC; samples keyed by the md5 `sample_id` |
+| `cmgd_mpa4.2-2.3.0` | pipeline 2.3.0 without HUMAnN; samples keyed by readset id (`RS.…`) |
+| `cmgd_humann3.9-2.3.0` | as above, plus HUMAnN 3.9 pathways and gene families |
+| `cmgd_humann4a1-2.3.0` | as above with HUMAnN 4.0.0a1 |
+
+A dataset is published as **releases**: immutable full snapshots named by
+their build date. Cite the dataset and the release id.
+
+```{r}
+cmgd_datasets()
+cmgd_releases("cmgd_nextflow-2.2.1")
+```
+
+Open a release. `"latest"` (the default) resolves to the newest one; pin a
+release id for reproducible analyses.
+
+```{r}
+rel <- cmgd_release("cmgd_nextflow-2.2.1")
+rel <- cmgd_release("cmgd_nextflow-2.2.1", release = "2026-10-08")
+cmgd_tables(rel)
+```
+
+## Studies
+
+Each release has ready-made files per study: a species × samples matrix, the
+study's rows of the main tables (Parquet) and a QC table.
+
+```{r}
+studies <- cmgd_studies(rel)
+head(studies[order(-studies$n_samples), ])
+cmgd_study_files(rel, "ZellerG_2014")
+```
+
+`cmgd_read_study()` downloads one (into a verified cache, see below) and reads
+it. Parquet files need the duckdb package.
+
+```{r}
+qc <- cmgd_read_study(rel, "ZellerG_2014", "qc")
+species <- cmgd_read_study(rel, "ZellerG_2014", "metaphlan_species")
+bracken <- cmgd_read_study(rel, "ZellerG_2014", "bracken")
+```
+
+## A species TreeSummarizedExperiment
+
+`cmgd_species_tse()` turns a study's species matrix into a sparse
+`TreeSummarizedExperiment`: relative abundance in percent from the main
+MetaPhlAn pass on all reads, one column per sample in `qc.tsv`, with the QC
+table as `colData`.
+
+```{r}
+tse <- cmgd_species_tse(rel, "ZellerG_2014")
+tse
+SummarizedExperiment::colData(tse)$reads_decontaminated
+```
+
+## Whole tables with SQL and dplyr
+
+`cmgd_connect()` attaches the release's read-only DuckLake catalog in DuckDB.
+Nothing is downloaded up front: DuckDB fetches only the parts of the Parquet
+files a query touches.
+
+```{r}
+con <- cmgd_connect(rel)
+DBI::dbGetQuery(con, "
+  SELECT study_name, count(*) AS n_samples, avg(reads_decontaminated) AS mean_reads
+  FROM qc_metrics
+  GROUP BY study_name
+  ORDER BY n_samples DESC")
+```
+
+The same with dplyr. A species missing from a sample has no row, so divide by
+the study's sample count rather than taking a mean.
+
+```{r}
+library(dplyr)
+n <- tbl(con, "qc_metrics") |> filter(study_name == "ZellerG_2014") |> count() |> pull(n)
+tbl(con, "taxonomic_profile_metaphlan") |>
+  filter(study_name == "ZellerG_2014", rank == "species",
+         data_type == "full_data", is.na(humann_bundle)) |>
+  group_by(clade_name) |>
+  summarise(mean_percent = sum(relative_abundance) / n) |>
+  arrange(desc(mean_percent)) |>
+  head(10) |>
+  collect()
+DBI::dbDisconnect(con, shutdown = TRUE)
+```
+
+Before computing across tables:
+
+1. **Abundances are not comparable across methods.** MetaPhlAn
+   `relative_abundance` is a percent; Bracken `fraction_total_reads` is a 0–1
+   fraction.
+2. **Pick one `data_type`**: `full_data` (all reads) or `rarefied_data` (a
+   1M-read subsample). Most analyses want `full_data`.
+3. **Pick one MetaPhlAn pass.** In HUMAnN datasets the bundle's own MetaPhlAn
+   pass (`humann_bundle` set) sits next to the main pass
+   (`humann_bundle IS NULL`).
+
+Each release's `README.md` and `tables/<table>/schema.json` document every
+column.
+
+## Files and the cache
+
+`cmgd_files()` lists the Parquet files behind each table, and
+`cmgd_download()` fetches any listed file (or the DuckLake catalog) by its
+release-relative path or URL. Downloads land in `cmgd_cache_dir()`, are
+checked against the release's SHA-256 checksums (a mismatch is an error and the
+file is discarded), and are not fetched again while the cached copy verifies.
+
+```{r}
+files <- cmgd_files(rel, "qc_metrics")
+files
+local <- cmgd_download(rel, files$path[1])
+```
+
+## HUMAnN gene families
+
+Gene families are too large for the tables, so each sample's HUMAnN
+gene-family table is its own download from `https://cmgd-raw.cancerdatasci.org`,
+listed in the HUMAnN datasets' gene-family index. Values are HUMAnN's
+unnormalized output in the bundle's units.
+
+```{r}
+gf_rel <- cmgd_release("cmgd_humann3.9-2.3.0")
+gf <- cmgd_genefamilies(gf_rel, study = "ZellerG_2014")
+gf[order(-gf$bytes), c("sample_key", "bytes", "rows")]
+paths <- vapply(gf$url[1:2], function(u) cmgd_download(gf_rel, u), character(1))
+genefamilies <- read.delim(paths[1], check.names = FALSE)
+```
+
+The gene-family index has byte sizes but no checksums, so these downloads are
+checked by size only.

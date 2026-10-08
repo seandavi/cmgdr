@@ -1,0 +1,26 @@
+url: ~
+template:
+  bootstrap: 5
+
+reference:
+  - title: Find a release
+    contents:
+      - cmgd_datasets
+      - cmgd_releases
+      - cmgd_release
+  - title: Tables and files
+    contents:
+      - cmgd_tables
+      - cmgd_files
+      - cmgd_download
+      - cmgd_cache_dir
+      - cmgd_connect
+  - title: Studies
+    contents:
+      - cmgd_studies
+      - cmgd_study_files
+      - cmgd_read_study
+      - cmgd_species_tse
+  - title: Gene families
+    contents:
+      - cmgd_genefamilies
