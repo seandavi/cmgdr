@@ -46,7 +46,7 @@ test_that("cmgd_species_tse builds a sparse species x samples TSE", {
   expect_s4_class(ab, "dgCMatrix")
   expect_equal(colnames(tse), SummarizedExperiment::colData(tse)$sample_key)
   expect_equal(sum(ab == 0), 3)
-  expect_equal(sort(unname(colSums(ab > 0))), c(1, 2, 3))
+  expect_equal(sort(unname(Matrix::colSums(ab > 0))), c(1, 2, 3))
 })
 
 test_that("cmgd_genefamilies indexes and downloads gene-family files", {
