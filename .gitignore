@@ -1,0 +1,6 @@
+.Rproj.user
+.Rhistory
+docs/
+inst/doc
+*.Rcheck/
+cmgdr_*.tar.gz
