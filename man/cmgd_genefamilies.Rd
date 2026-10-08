@@ -9,23 +9,29 @@ cmgd_genefamilies(rel, study = NULL, sample = NULL)
 \arguments{
 \item{rel}{A release from \code{\link[=cmgd_release]{cmgd_release()}}.}
 
-\item{study, sample}{Optional \code{study_name} and \code{sample_key} values to keep.}
+\item{study}{\code{study_name} values. \code{NULL} returns the list of studies.}
+
+\item{sample}{Optional \code{sample_key} values to keep (needs \code{study}).}
 }
 \value{
-A data.frame with columns \code{study_name}, \code{sample_key}, \code{readset_id},
-\code{humann_bundle}, \code{branch}, \code{key} (the object key in cmgd-raw), \code{url},
-\code{bytes} and \code{rows}.
+Without \code{study}: a data.frame of studies with \code{study_name},
+\code{n_samples}, \code{n_files}, \code{path}, \code{size} and \code{sha256} (of the study's
+index). With \code{study}: one row per file with \code{study_name}, \code{sample_key},
+\code{readset_id}, \code{humann_bundle}, \code{branch}, \code{key} (the object key in
+cmgd-raw), \code{url}, \code{size} (bytes), \code{sha256} and \code{rows}.
 }
 \description{
 Gene families are too large for the release tables, so each sample's HUMAnN
-gene-family table is a separate download from cmgd-raw, listed in the
-release's \code{genefamilies/index.json} (HUMAnN datasets only). Values are
-HUMAnN's unnormalized output in the bundle's units. Pass a \code{url} to
-\code{\link[=cmgd_download]{cmgd_download()}} to fetch a file.
+gene-family table is a separate download from cmgd-raw (HUMAnN datasets
+only). The release's \code{genefamilies/index.json} lists the studies; each
+study's files are in their own index, fetched only when asked for. Values
+are HUMAnN's unnormalized output in the bundle's units. Pass a \code{url} to
+\code{\link[=cmgd_download]{cmgd_download()}} to fetch a file, verified by size and SHA-256.
 }
 \examples{
 \dontrun{
 rel <- cmgd_release("cmgd_humann3.9-2.3.0")
+cmgd_genefamilies(rel)
 gf <- cmgd_genefamilies(rel, study = "ZellerG_2014")
 cmgd_download(rel, gf$url[1])
 }

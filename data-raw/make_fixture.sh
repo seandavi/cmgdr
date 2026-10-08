@@ -6,7 +6,7 @@
 # It is built by the publisher's own test fixture (tests/cmgd_release_fixture.py
 # in seandavi/nextflow_telemetry) and `nf-etl publish`, so it has exactly the
 # layout the publisher writes. Generated from nextflow_telemetry commit
-# 23b76ee3d5d316119ec9706053e77d5ab4f2fe91 (branch feat/230-publication, PR #235).
+# 23ddd65559797f874824eaa1c117e0bac44a81a8 (branch feat/230-publication, PR #235).
 #
 # Usage: data-raw/make_fixture.sh <nextflow_telemetry checkout>
 set -euo pipefail

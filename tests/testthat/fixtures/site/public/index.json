@@ -1,0 +1,22 @@
+{
+  "spec_version": "1.0",
+  "updated_at": "2026-10-08T12:02:24+00:00",
+  "datasets": [
+    {
+      "id": "cmgd_humann3.9-2.3.0",
+      "workflow_id": "cmgd_humann3.9",
+      "version": "2.3.0",
+      "latest_release": "2026-10-08",
+      "latest": "cmgd_humann3.9-2.3.0/latest.json",
+      "updated_at": "2026-10-08T12:02:24+00:00"
+    },
+    {
+      "id": "cmgd_nextflow-2.2.1",
+      "workflow_id": "cmgd_nextflow",
+      "version": "2.2.1",
+      "latest_release": "2026-10-08",
+      "latest": "cmgd_nextflow-2.2.1/latest.json",
+      "updated_at": "2026-10-08T12:02:23+00:00"
+    }
+  ]
+}

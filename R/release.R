@@ -1,24 +1,24 @@
 cmgd_public_base <- "https://cmgd-public.cancerdatasci.org"
 
-# Major version of the cdsci-lake publication spec this client reads.
+# Major versions of the specs this client reads: cdsci-lake's publication
+# spec (manifest.json, files.json, releases.json) and cmgd's own index spec
+# (index.json, studies/index.json, genefamilies/*.json).
 supported_spec_major <- 2L
+supported_index_major <- 1L
 
-# Dataset ids published so far: `<workflow_id>-<version>`, one per pipeline
-# registration. The site cannot be listed and has no top-level catalog.
+# Fallback for a site without a root index.json: dataset ids published so far.
 known_datasets <- c("cmgd_nextflow-2.2.1", "cmgd_mpa4.2-2.3.0",
                     "cmgd_humann3.9-2.3.0", "cmgd_humann4a1-2.3.0")
 
-#' Known cMD datasets
+#' Published cMD datasets
 #'
 #' Each pipeline registration (a pipeline version plus its configuration) is
 #' published as its own dataset, named `<workflow_id>-<version>`, for example
-#' `cmgd_nextflow-2.2.1`. The public site cannot be listed and has no
-#' top-level catalog, so this function checks a built-in list of dataset ids
-#' and reports each one's latest release.
+#' `cmgd_nextflow-2.2.1`. The site's root `index.json` lists every dataset with
+#' its latest release. If the site has no root index, a built-in list of
+#' dataset ids is checked instead, with a message.
 #'
 #' @param base Base URL of the public release site.
-#' @param datasets Dataset ids to check. Pass your own to look up a dataset
-#'   published after this version of cmgdr.
 #' @return A data.frame with columns `dataset`, `workflow_id`, `version` and
 #'   `latest` (the latest release id, `NA` when the dataset has no release yet).
 #' @export
@@ -26,14 +26,23 @@ known_datasets <- c("cmgd_nextflow-2.2.1", "cmgd_mpa4.2-2.3.0",
 #' \dontrun{
 #' cmgd_datasets()
 #' }
-cmgd_datasets <- function(base = cmgd_public_base, datasets = known_datasets) {
-  latest <- vapply(datasets, function(d) {
+cmgd_datasets <- function(base = cmgd_public_base) {
+  url <- paste0(sub("/+$", "", base), "/index.json")
+  index <- tryCatch(fetch_json(url), cmgd_not_found = function(e) NULL)
+  if (!is.null(index)) {
+    check_spec(index$spec_version, supported_index_major, "cmgd index spec", url)
+    ds <- index$datasets
+    return(data.frame(dataset = ds$id, workflow_id = ds$workflow_id,
+                      version = ds$version, latest = ds$latest_release))
+  }
+  message("no index.json at ", base, "; checking cmgdr's built-in dataset list")
+  latest <- vapply(known_datasets, function(d) {
     tryCatch(fetch_json(dataset_url(base, d, "latest.json"))$release,
              cmgd_not_found = function(e) NA_character_)
   }, character(1), USE.NAMES = FALSE)
-  data.frame(dataset = datasets,
-             workflow_id = sub("-[^-]*$", "", datasets),
-             version = sub("^.*-", "", datasets),
+  data.frame(dataset = known_datasets,
+             workflow_id = sub("-[^-]*$", "", known_datasets),
+             version = sub("^.*-", "", known_datasets),
              latest = latest)
 }
 
@@ -81,13 +90,8 @@ cmgd_release <- function(dataset, release = "latest", base = cmgd_public_base,
   }
   url <- dataset_url(base, dataset, release)
   manifest <- fetch_json(paste0(url, "/manifest.json"))
-  major <- as.integer(sub("\\..*$", "", manifest$spec_version))
-  if (is.na(major) || major != supported_spec_major) {
-    stop(sprintf(paste0(
-      "%s/%s uses publication spec_version %s; this cmgdr reads major version %d.\n",
-      "Update cmgdr: remotes::install_github(\"seandavi/cmgdr\")"),
-      dataset, release, manifest$spec_version, supported_spec_major), call. = FALSE)
-  }
+  check_spec(manifest$spec_version, supported_spec_major, "publication spec",
+             paste0(dataset, "/", release))
   structure(list(dataset = dataset, release = release, url = url, base = base,
                  raw_base = raw_base, manifest = manifest, memo = new.env()),
             class = "cmgd_release")
@@ -122,7 +126,7 @@ cmgd_tables <- function(rel) {
 #' @inheritParams cmgd_tables
 #' @param table Table names; `NULL` for every table.
 #' @return A data.frame with columns `table`, `path` (relative to the release
-#'   URL), `url`, `bytes`, `sha256` and `rows`.
+#'   URL), `url`, `size` (bytes), `sha256` and `rows`.
 #' @export
 #' @examples
 #' \dontrun{
@@ -144,7 +148,7 @@ cmgd_files <- function(rel, table = NULL) {
     # file uris are relative to the table directory
     path <- paste0(dirname(files_json), "/", f$uri)
     data.frame(table = t, path = path, url = paste0(rel$url, "/", path),
-               bytes = f$size, sha256 = f$sha256, rows = f$rows)
+               size = f$size, sha256 = f$sha256, rows = f$rows)
   })
   do.call(rbind, out)
 }
@@ -160,6 +164,33 @@ memo_json <- function(rel, path) {
   }
   rel$memo[[path]]
 }
+
+# A cmgd index at `path` in the release, fetched once per release handle,
+# verified against `expected` (`size`, `sha256`) when given, spec-checked.
+cmgd_index <- function(rel, path, expected = NULL) {
+  if (is.null(rel$memo[[path]])) {
+    url <- paste0(rel$url, "/", path)
+    bytes <- http_get(url)
+    problem <- verify_bytes(bytes, expected)
+    if (!is.null(problem)) stop(problem, " for ", url, call. = FALSE)
+    index <- jsonlite::fromJSON(rawToChar(bytes))
+    check_spec(index$spec_version, supported_index_major, "cmgd index spec", url)
+    rel$memo[[path]] <- index
+  }
+  rel$memo[[path]]
+}
+
+check_spec <- function(spec_version, supported, spec, where) {
+  major <- suppressWarnings(as.integer(sub("\\..*$", "", spec_version %||% NA)))
+  if (is.na(major) || major != supported) {
+    stop(sprintf(paste0(
+      "%s uses %s version %s; this cmgdr reads major version %d.\n",
+      "Update cmgdr: remotes::install_github(\"seandavi/cmgdr\")"),
+      where, spec, spec_version %||% "(none)", supported), call. = FALSE)
+  }
+}
+
+`%||%` <- function(x, y) if (is.null(x)) y else x
 
 fetch_json <- function(url) {
   jsonlite::fromJSON(rawToChar(http_get(url)))

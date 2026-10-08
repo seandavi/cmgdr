@@ -1,0 +1,56 @@
+{
+  "spec_version": "1.0",
+  "dataset": "cmgd_humann3.9-2.3.0",
+  "study_name": "ArtachoA_2021",
+  "raw_base_url": "https://cmgd-raw.cancerdatasci.org",
+  "files": [
+    {
+      "study_name": "ArtachoA_2021",
+      "sample_key": "RS.14f45a605385b4f8f2891d3a2a49776a",
+      "readset_id": "RS.14f45a605385b4f8f2891d3a2a49776a",
+      "humann_bundle": "humann3.9",
+      "branch": "full_data",
+      "key": "cmgd_humann3.9/2.3.0/RS.14f45a605385b4f8f2891d3a2a49776a/humann/humann3.9/out_genefamilies.tsv.gz",
+      "url": "https://cmgd-raw.cancerdatasci.org/cmgd_humann3.9/2.3.0/RS.14f45a605385b4f8f2891d3a2a49776a/humann/humann3.9/out_genefamilies.tsv.gz",
+      "size": 171,
+      "sha256": "9923ac65d73c110d18f9ba2f8014655129206937720c5cfe1088d2a0faf0f8fa",
+      "rows": 5
+    },
+    {
+      "study_name": "ArtachoA_2021",
+      "sample_key": "RS.6c71ede7280e3b4150f989050795c077",
+      "readset_id": "RS.6c71ede7280e3b4150f989050795c077",
+      "humann_bundle": "humann3.9",
+      "branch": "full_data",
+      "key": "cmgd_humann3.9/2.3.0/RS.6c71ede7280e3b4150f989050795c077/humann/humann3.9/out_genefamilies.tsv.gz",
+      "url": "https://cmgd-raw.cancerdatasci.org/cmgd_humann3.9/2.3.0/RS.6c71ede7280e3b4150f989050795c077/humann/humann3.9/out_genefamilies.tsv.gz",
+      "size": 171,
+      "sha256": "9923ac65d73c110d18f9ba2f8014655129206937720c5cfe1088d2a0faf0f8fa",
+      "rows": 5
+    },
+    {
+      "study_name": "ArtachoA_2021",
+      "sample_key": "RS.6de22663c48ba72d0c298085f01a9928",
+      "readset_id": "RS.6de22663c48ba72d0c298085f01a9928",
+      "humann_bundle": "humann3.9",
+      "branch": "full_data",
+      "key": "cmgd_humann3.9/2.3.0/RS.6de22663c48ba72d0c298085f01a9928/humann/humann3.9/out_genefamilies.tsv.gz",
+      "url": "https://cmgd-raw.cancerdatasci.org/cmgd_humann3.9/2.3.0/RS.6de22663c48ba72d0c298085f01a9928/humann/humann3.9/out_genefamilies.tsv.gz",
+      "size": 171,
+      "sha256": "9923ac65d73c110d18f9ba2f8014655129206937720c5cfe1088d2a0faf0f8fa",
+      "rows": 5
+    },
+    {
+      "study_name": "ArtachoA_2021",
+      "sample_key": "RS.d1377d2ea8bfeb613b620f0f26317ceb",
+      "readset_id": "RS.d1377d2ea8bfeb613b620f0f26317ceb",
+      "humann_bundle": "humann3.9",
+      "branch": "full_data",
+      "key": "cmgd_humann3.9/2.3.0/RS.d1377d2ea8bfeb613b620f0f26317ceb/humann/humann3.9/out_genefamilies.tsv.gz",
+      "url": "https://cmgd-raw.cancerdatasci.org/cmgd_humann3.9/2.3.0/RS.d1377d2ea8bfeb613b620f0f26317ceb/humann/humann3.9/out_genefamilies.tsv.gz",
+      "size": 171,
+      "sha256": "9923ac65d73c110d18f9ba2f8014655129206937720c5cfe1088d2a0faf0f8fa",
+      "rows": 5
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "spec_version": "1.0",
+  "dataset": "cmgd_humann3.9-2.3.0",
+  "study_name": "ZellerG_2014",
+  "raw_base_url": "https://cmgd-raw.cancerdatasci.org",
+  "files": [
+    {
+      "study_name": "ZellerG_2014",
+      "sample_key": "RS.0799290744af74dc9bf365bd094319f1",
+      "readset_id": "RS.0799290744af74dc9bf365bd094319f1",
+      "humann_bundle": "humann3.9",
+      "branch": "full_data",
+      "key": "cmgd_humann3.9/2.3.0/RS.0799290744af74dc9bf365bd094319f1/humann/humann3.9/out_genefamilies.tsv.gz",
+      "url": "https://cmgd-raw.cancerdatasci.org/cmgd_humann3.9/2.3.0/RS.0799290744af74dc9bf365bd094319f1/humann/humann3.9/out_genefamilies.tsv.gz",
+      "size": 171,
+      "sha256": "9923ac65d73c110d18f9ba2f8014655129206937720c5cfe1088d2a0faf0f8fa",
+      "rows": 5
+    },
+    {
+      "study_name": "ZellerG_2014",
+      "sample_key": "RS.d945401ca00236fcbbb1a112b11ecb34",
+      "readset_id": "RS.d945401ca00236fcbbb1a112b11ecb34",
+      "humann_bundle": "humann3.9",
+      "branch": "full_data",
+      "key": "cmgd_humann3.9/2.3.0/RS.d945401ca00236fcbbb1a112b11ecb34/humann/humann3.9/out_genefamilies.tsv.gz",
+      "url": "https://cmgd-raw.cancerdatasci.org/cmgd_humann3.9/2.3.0/RS.d945401ca00236fcbbb1a112b11ecb34/humann/humann3.9/out_genefamilies.tsv.gz",
+      "size": 171,
+      "sha256": "9923ac65d73c110d18f9ba2f8014655129206937720c5cfe1088d2a0faf0f8fa",
+      "rows": 5
+    }
+  ]
+}

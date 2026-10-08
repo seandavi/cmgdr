@@ -15,10 +15,12 @@ cmgd_cache_dir <- function() {
 #' Download a release file, verified and cached
 #'
 #' Downloads a file into the cache (keyed by its URL) and returns the local
-#' path. Files listed in the release's indexes are verified: SHA-256 for table
-#' files, per-study files and the DuckLake catalog; byte size for gene-family
-#' files (their index has no checksum). A mismatching download is deleted and
-#' an error raised. A cached file that still verifies is not downloaded again.
+#' path. Files listed in the release's indexes are verified by size and
+#' SHA-256: table files, per-study files, the DuckLake catalog, the gene-family
+#' indexes, and gene-family files from a study already listed with
+#' [cmgd_genefamilies()] on the same release handle. A mismatching download is
+#' deleted and an error raised. A cached file that still verifies is not
+#' downloaded again.
 #'
 #' @inheritParams cmgd_tables
 #' @param path_or_url A path relative to the release URL (as in the `path`
@@ -50,37 +52,54 @@ cmgd_download <- function(rel, path_or_url, cache = cmgd_cache_dir()) {
   dest
 }
 
-# Expected bytes and sha256 of `url` from the release indexes; NULL if unlisted.
+# Expected size and sha256 of `url` from the release indexes; NULL if unlisted.
 expected_file <- function(rel, url) {
   prefix <- paste0(rel$url, "/")
   if (!startsWith(url, prefix)) {
-    gf <- genefamily_files(rel)
+    # A URL doesn't name its study: look in the study indexes this handle has
+    # fetched (cmgd_genefamilies()); a URL from elsewhere downloads unverified.
+    gf <- do.call(rbind, lapply(names(rel$memo), function(path) {
+      if (startsWith(path, "genefamilies/") && path != "genefamilies/index.json") {
+        genefamily_study_files(rel, path)
+      }
+    }))
     hit <- gf[!is.na(gf$url) & gf$url == url, ]
-    return(if (!is.null(hit) && nrow(hit)) list(bytes = hit$bytes[1], sha256 = NULL))
+    return(if (!is.null(hit) && nrow(hit)) list(size = hit$size[1], sha256 = hit$sha256[1]))
   }
   path <- substring(url, nchar(prefix) + 1L)
   ducklake <- rel$manifest$artifacts$ducklake
   if (identical(path, ducklake$location)) {
-    return(list(bytes = ducklake$size, sha256 = ducklake$sha256))
+    return(list(size = ducklake$size, sha256 = ducklake$sha256))
   }
   files <- if (startsWith(path, "tables/")) {
     cmgd_files(rel, strsplit(path, "/", fixed = TRUE)[[1]][2])
   } else if (startsWith(path, "studies/")) {
     study_index_files(rel)
+  } else if (startsWith(path, "genefamilies/")) {
+    index <- genefamily_index(rel)
+    rbind(index$studies[c("path", "size", "sha256")], index$artifacts[c("path", "size", "sha256")])
   }
   hit <- files[files$path == path, ]
-  if (!is.null(hit) && nrow(hit)) list(bytes = hit$bytes[1], sha256 = hit$sha256[1])
+  if (!is.null(hit) && nrow(hit)) list(size = hit$size[1], sha256 = hit$sha256[1])
 }
 
 # NULL if `file` matches `expected`, else a description of the mismatch.
 verify_file <- function(file, expected) {
+  verify(file.size(file), function() digest::digest(file = file, algo = "sha256"), expected)
+}
+
+verify_bytes <- function(bytes, expected) {
+  verify(length(bytes), function() digest::digest(bytes, algo = "sha256", serialize = FALSE),
+         expected)
+}
+
+verify <- function(size, sha256, expected) {
   if (is.null(expected)) return(NULL)
-  size <- file.size(file)
-  if (!is.null(expected$bytes) && size != expected$bytes) {
-    return(sprintf("size mismatch (expected %.0f bytes, got %.0f)", expected$bytes, size))
+  if (!is.null(expected$size) && size != expected$size) {
+    return(sprintf("size mismatch (expected %.0f bytes, got %.0f)", expected$size, size))
   }
   if (!is.null(expected$sha256)) {
-    got <- digest::digest(file = file, algo = "sha256")
+    got <- sha256()
     if (got != expected$sha256) {
       return(sprintf("sha256 mismatch (expected %s, got %s)", expected$sha256, got))
     }

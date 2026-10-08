@@ -5,9 +5,9 @@
   "files": [
     {
       "uri": "data/part-00000.parquet",
-      "size": 4173,
-      "sha256": "537dd82a775fc92f69c912a42a56dd1826a680222814738a0a7819db7841ab76",
-      "rows": 28,
+      "size": 3966,
+      "sha256": "72442716a4f41e318725f80ccf8178c294c4f5924c18256b601cf554b7d1061a",
+      "rows": 26,
       "content_type": "application/vnd.apache.parquet"
     }
   ]

@@ -1,3 +1,3 @@
 sample_key	sample_id	readset_id	study_name	run_ids	workflow_id	version	reads_raw	reads_decontaminated	bases_raw	bases_decontaminated	reads_surviving_fraction	bases_surviving_fraction	metaphlan_index	metaphlan_profile	humann_bundle	pipeline_version	git_commit
-RS.0799290744af74dc9bf365bd094319f1		RS.0799290744af74dc9bf365bd094319f1	ZellerG_2014	ERR866585	cmgd_humann3.9	2.3.0	2000001	1500000						mpa4.2.2_vJan25		2.3.0	
-RS.d945401ca00236fcbbb1a112b11ecb34		RS.d945401ca00236fcbbb1a112b11ecb34	ZellerG_2014	ERR866584	cmgd_humann3.9	2.3.0	2000000	1500000						mpa4.2.2_vJan25		2.3.0	
+RS.0799290744af74dc9bf365bd094319f1		RS.0799290744af74dc9bf365bd094319f1	ZellerG_2014	ERR866586	cmgd_humann3.9	2.3.0	2000001	1500000						mpa4.2.2_vJan25		2.3.0	
+RS.d945401ca00236fcbbb1a112b11ecb34		RS.d945401ca00236fcbbb1a112b11ecb34	ZellerG_2014	ERR866585	cmgd_humann3.9	2.3.0	2000000	1500000						mpa4.2.2_vJan25		2.3.0	

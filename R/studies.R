@@ -10,7 +10,7 @@
 #' cmgd_studies(cmgd_release("cmgd_nextflow-2.2.1"))
 #' }
 cmgd_studies <- function(rel) {
-  memo_json(rel, "studies/index.json")$studies[c("study_name", "n_samples")]
+  cmgd_index(rel, "studies/index.json")$studies[c("study_name", "n_samples")]
 }
 
 #' Per-study download files
@@ -18,7 +18,7 @@ cmgd_studies <- function(rel) {
 #' @inheritParams cmgd_tables
 #' @param study Study name, for example `"ZellerG_2014"`.
 #' @return A data.frame with columns `name`, `path` (relative to the release
-#'   URL), `url`, `bytes`, `sha256` and `description`.
+#'   URL), `url`, `size` (bytes), `sha256` and `description`.
 #' @export
 #' @examples
 #' \dontrun{
@@ -37,14 +37,14 @@ cmgd_study_files <- function(rel, study) {
 
 # Every per-study file of the release, one row each, with `study_name`.
 study_index_files <- function(rel) {
-  index <- memo_json(rel, "studies/index.json")
+  index <- cmgd_index(rel, "studies/index.json")
   files <- do.call(rbind, Map(function(study, f) cbind(study_name = study, f),
                               index$studies$study_name, index$studies$files))
   files$url <- paste0(rel$url, "/", files$path)
   descriptions <- unlist(index$file_descriptions)
   files$description <- unname(descriptions[files$name])
   rownames(files) <- NULL
-  files[c("study_name", "name", "path", "url", "bytes", "sha256", "description")]
+  files[c("study_name", "name", "path", "url", "size", "sha256", "description")]
 }
 
 study_file_names <- c(
@@ -59,7 +59,8 @@ study_file_names <- c(
 #'
 #' * `metaphlan_species`: species x samples relative abundance (percent) from
 #'   the main MetaPhlAn pass on all reads; column `clade_name` then one column
-#'   per `sample_key`; `0` means not detected.
+#'   per `sample_key`; `0` means not detected. Every sample in `qc` has a
+#'   column: a sample with no species-level rows is an all-zero column.
 #' * `metaphlan`, `bracken`, `resistome`, `pathways` (HUMAnN datasets only): the
 #'   study's rows of the corresponding release table, in long form. These are
 #'   Parquet and need the duckdb package.

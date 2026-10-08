@@ -1,7 +1,8 @@
 {
+  "spec_version": "1.0",
   "dataset": "cmgd_humann3.9-2.3.0",
   "file_descriptions": {
-    "metaphlan_species.tsv.gz": "Species x samples matrix: one row per MetaPhlAn species clade (clade_name), one column per sample_key; relative abundance in percent from the main MetaPhlAn pass on full_data; 0 = not detected. Samples with no species rows are absent (see qc.tsv for every sample).",
+    "metaphlan_species.tsv.gz": "Species x samples matrix: one row per MetaPhlAn species clade (clade_name), one column per sample_key; relative abundance in percent from the main MetaPhlAn pass on full_data; 0 = not detected. Every sample in qc.tsv has a column: a sample with no species-level rows is an all-zero column.",
     "metaphlan.parquet": "taxonomic_profile_metaphlan rows for the study (long; all passes and branches).",
     "bracken.parquet": "taxonomic_profile_bracken rows for the study (long).",
     "resistome.parquet": "resistome rows for the study (long).",
@@ -11,43 +12,43 @@
   "studies": [
     {
       "study_name": "ArtachoA_2021",
-      "n_samples": 3,
+      "n_samples": 4,
       "files": [
         {
           "name": "bracken.parquet",
           "path": "studies/ArtachoA_2021/bracken.parquet",
-          "bytes": 3081,
-          "sha256": "c0aa83d2edbfbbbcabdc11be66316f3a934cdd052a73798064e68af3f0860497"
+          "size": 3122,
+          "sha256": "db9ce294c6259b8d82904395f0c7bc0d8e8db8c9369aec129d431a94bfbe0971"
         },
         {
           "name": "metaphlan.parquet",
           "path": "studies/ArtachoA_2021/metaphlan.parquet",
-          "bytes": 4302,
-          "sha256": "900ef5f11afe3e5bda00f7051da2627fd1b0a4e94a781083239aa610f99e406f"
+          "size": 4373,
+          "sha256": "c523d3a67dea8d177c11b8fe65d47aaf7bb847141b3d738ba72a5bcd44244097"
         },
         {
           "name": "metaphlan_species.tsv.gz",
           "path": "studies/ArtachoA_2021/metaphlan_species.tsv.gz",
-          "bytes": 294,
-          "sha256": "f8bf991a2638d58c14361ac3abf32d75cf63b2b740b539ca1ba9cd11b31cdbff"
+          "size": 318,
+          "sha256": "01ee5625d001e738cbfa1ee2ea2bb27fe4fbbb326ce221197f4a9e62116c71e9"
         },
         {
           "name": "pathways.parquet",
           "path": "studies/ArtachoA_2021/pathways.parquet",
-          "bytes": 2837,
-          "sha256": "7e1ce01203d9b4bed9fdc0c7030af897f7109e5bfe09a570fd9b4f824b178a1d"
+          "size": 2961,
+          "sha256": "813542835e6fe071391acbae7dc7fc239d1db169541423dd815a6aa065fa21f2"
         },
         {
           "name": "qc.tsv",
           "path": "studies/ArtachoA_2021/qc.tsv",
-          "bytes": 748,
-          "sha256": "a8c35ae0e3e3d1043b0895f78a6848359b2e738df0a3b0662292d26c49f12836"
+          "size": 911,
+          "sha256": "6ca6736bb10868b95ff2cdb08f14d421271abb4710f51cd43733f07b0f0fae1c"
         },
         {
           "name": "resistome.parquet",
           "path": "studies/ArtachoA_2021/resistome.parquet",
-          "bytes": 2747,
-          "sha256": "a7510cf907e9019c35e91aebc1201992939b53f9e5f7d08da82d1cc71646d0ed"
+          "size": 2788,
+          "sha256": "97f7ec39d472d38509353a70abb9e95fdb1ce8d782eb38783ccee16149f91a62"
         }
       ]
     },
@@ -58,40 +59,48 @@
         {
           "name": "bracken.parquet",
           "path": "studies/ZellerG_2014/bracken.parquet",
-          "bytes": 2420,
-          "sha256": "9dbbdc03940afe85bc5f442ff660ba2d693ffa4928da0fa79d6b335909903f89"
+          "size": 2420,
+          "sha256": "1012b70adccb4c01742cd211719a680e091fb9e39715b38997d12eb53c9d4e0d"
         },
         {
           "name": "metaphlan.parquet",
           "path": "studies/ZellerG_2014/metaphlan.parquet",
-          "bytes": 4051,
-          "sha256": "579b5b631b01ff07ebe182e4d76f5d1f594d52c73328b67e8693cdf5f4d915a5"
+          "size": 3486,
+          "sha256": "1ba41fe8be1db1b268b5ec3fe897bf93da69892ce18d788246ca2b557bcf0b81"
         },
         {
           "name": "metaphlan_species.tsv.gz",
           "path": "studies/ZellerG_2014/metaphlan_species.tsv.gz",
-          "bytes": 212,
-          "sha256": "4f96ed978034376204f3b5e0de6bae8b5dcc4190c484ab3554f8df1103256297"
+          "size": 171,
+          "sha256": "a331a455ef7369e893a3dc8dc5263325a08b34417f39cfca381dbce978a8a8c2"
         },
         {
           "name": "pathways.parquet",
           "path": "studies/ZellerG_2014/pathways.parquet",
-          "bytes": 2783,
-          "sha256": "5f3d6456b0d231788ba5819fd856d32e97471cba3c7cb6ec8f9573b516373742"
+          "size": 2783,
+          "sha256": "ac82777e7c4ba4a125679b0addc07ae0c4674bf8dcdb6bb21ef966b823cc0d64"
         },
         {
           "name": "qc.tsv",
           "path": "studies/ZellerG_2014/qc.tsv",
-          "bytes": 583,
-          "sha256": "73f28c8830f163122206a4fbd85745901af97818ab3ff9805d01a60c1119115d"
+          "size": 583,
+          "sha256": "43e665f1a0629191319b7779e30575d547ab74cfb0c5a12cde3f9a195d757424"
         },
         {
           "name": "resistome.parquet",
           "path": "studies/ZellerG_2014/resistome.parquet",
-          "bytes": 2319,
-          "sha256": "4ae4378a4c2ed1f22b3012eb5e76520f2305b171ed8a14c429ab745ac9c26a7f"
+          "size": 2319,
+          "sha256": "4ef9ddac5160bf3096ffec44fdb46992ead86e14b3ccb99c3a2eb9ee6ea84af7"
         }
       ]
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "index.json",
+      "path": "genefamilies/index.json",
+      "size": 1033,
+      "sha256": "e737fa951f43d68cebadb0e4637c45f681e1de16d1b6fbba558380263e79e755"
     }
   ]
 }

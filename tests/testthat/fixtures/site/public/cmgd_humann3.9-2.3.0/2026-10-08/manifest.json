@@ -4,44 +4,44 @@
   "release": "2026-10-08",
   "release_date": "2026-10-08",
   "status": "published",
-  "published_at": "2026-10-08T11:46:03.011367+00:00",
-  "run_id": "5f1e686b-ae9a-4ed2-a119-b82c28a07cc1",
+  "published_at": "2026-10-08T12:02:24.584814+00:00",
+  "run_id": "28ceda25-86a6-437d-8ff3-f0c6c38aa9dd",
   "source_asset_versions": [
     {
       "ref": "lake.cmgd.taxonomic_profile_metaphlan",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.taxonomic_profile_bracken",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.resistome",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.qc_metrics",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.marker_abundance",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.marker_presence",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.humann_pathabundance",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.humann_pathcoverage",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.humann_genefamilies_files",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     }
   ],
   "artifacts": {
@@ -55,7 +55,7 @@
       "required": true,
       "location": "catalog.ducklake",
       "size": 1339392,
-      "sha256": "bffef7d66f44cb4b35b645ccdfc6105689d45831864124afbaf810a53fd12ac3",
+      "sha256": "d89df1cfd9d48755b65e65d347cc122bf5bfe9e9c56cecedc2125f7db4c699d9",
       "content_type": "application/octet-stream"
     }
   },
@@ -76,7 +76,7 @@
       "schema": "tables/humann_pathabundance/schema.json",
       "files": "tables/humann_pathabundance/files.json",
       "schema_digest": "sha256:d06ab65a01cfb51b79c5c0c6d1a1120aecb20057d2366637d1e74e4edc34fa53",
-      "row_count": 15
+      "row_count": 18
     },
     {
       "name": "humann_pathcoverage",
@@ -94,7 +94,7 @@
       "schema": "tables/humann_pathcoverage/schema.json",
       "files": "tables/humann_pathcoverage/files.json",
       "schema_digest": "sha256:811ab131198ff28d7d78bcd8be10c2a5194e064076b9f1e273b86aa6a48c4f34",
-      "row_count": 15
+      "row_count": 18
     },
     {
       "name": "marker_abundance",
@@ -111,7 +111,7 @@
       "schema": "tables/marker_abundance/schema.json",
       "files": "tables/marker_abundance/files.json",
       "schema_digest": "sha256:e5db73e4988bdf614f1417903031f9a7d3d8b48a9f279d518f09bbfb4f2200db",
-      "row_count": 10
+      "row_count": 12
     },
     {
       "name": "marker_presence",
@@ -143,7 +143,7 @@
       "schema": "tables/qc_metrics/schema.json",
       "files": "tables/qc_metrics/files.json",
       "schema_digest": "sha256:f2cc7c5fec40b0c9a1d0522c723a9c1e2afd64664b28d7d3077e3f330122a788",
-      "row_count": 5
+      "row_count": 6
     },
     {
       "name": "resistome",
@@ -160,7 +160,7 @@
       "schema": "tables/resistome/schema.json",
       "files": "tables/resistome/files.json",
       "schema_digest": "sha256:777e5794adfde590a40b472872b6a0cf2c5d59f12d9e317dfde95a5fea65237d",
-      "row_count": 10
+      "row_count": 12
     },
     {
       "name": "taxonomic_profile_bracken",
@@ -177,7 +177,7 @@
       "schema": "tables/taxonomic_profile_bracken/schema.json",
       "files": "tables/taxonomic_profile_bracken/files.json",
       "schema_digest": "sha256:a79dbac3273d637ccb7e72a738ed60ca2ad5dc353ae1219f5ff11a85d6f7e6b9",
-      "row_count": 10
+      "row_count": 12
     },
     {
       "name": "taxonomic_profile_metaphlan",
@@ -196,7 +196,7 @@
       "schema": "tables/taxonomic_profile_metaphlan/schema.json",
       "files": "tables/taxonomic_profile_metaphlan/files.json",
       "schema_digest": "sha256:be8c3bc719a12e0e63406230543967f0840f534688a09eb8c666b45a4453b11a",
-      "row_count": 33
+      "row_count": 32
     }
   ],
   "provenance": "provenance.json",

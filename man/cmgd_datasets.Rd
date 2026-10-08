@@ -2,15 +2,12 @@
 % Please edit documentation in R/release.R
 \name{cmgd_datasets}
 \alias{cmgd_datasets}
-\title{Known cMD datasets}
+\title{Published cMD datasets}
 \usage{
-cmgd_datasets(base = cmgd_public_base, datasets = known_datasets)
+cmgd_datasets(base = cmgd_public_base)
 }
 \arguments{
 \item{base}{Base URL of the public release site.}
-
-\item{datasets}{Dataset ids to check. Pass your own to look up a dataset
-published after this version of cmgdr.}
 }
 \value{
 A data.frame with columns \code{dataset}, \code{workflow_id}, \code{version} and
@@ -19,9 +16,9 @@ A data.frame with columns \code{dataset}, \code{workflow_id}, \code{version} and
 \description{
 Each pipeline registration (a pipeline version plus its configuration) is
 published as its own dataset, named \verb{<workflow_id>-<version>}, for example
-\verb{cmgd_nextflow-2.2.1}. The public site cannot be listed and has no
-top-level catalog, so this function checks a built-in list of dataset ids
-and reports each one's latest release.
+\verb{cmgd_nextflow-2.2.1}. The site's root \code{index.json} lists every dataset with
+its latest release. If the site has no root index, a built-in list of
+dataset ids is checked instead, with a message.
 }
 \examples{
 \dontrun{

@@ -2,27 +2,27 @@
   "source_asset_versions": [
     {
       "ref": "lake.cmgd.taxonomic_profile_metaphlan",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.taxonomic_profile_bracken",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.resistome",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.qc_metrics",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.marker_abundance",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     },
     {
       "ref": "lake.cmgd.marker_presence",
-      "version": "snapshot:177"
+      "version": "snapshot:194"
     }
   ]
 }

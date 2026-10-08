@@ -31,7 +31,8 @@ study's ready-made files:
 \itemize{
 \item \code{metaphlan_species}: species x samples relative abundance (percent) from
 the main MetaPhlAn pass on all reads; column \code{clade_name} then one column
-per \code{sample_key}; \code{0} means not detected.
+per \code{sample_key}; \code{0} means not detected. Every sample in \code{qc} has a
+column: a sample with no species-level rows is an all-zero column.
 \item \code{metaphlan}, \code{bracken}, \code{resistome}, \code{pathways} (HUMAnN datasets only): the
 study's rows of the corresponding release table, in long form. These are
 Parquet and need the duckdb package.

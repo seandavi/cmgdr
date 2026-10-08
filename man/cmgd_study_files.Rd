@@ -13,7 +13,7 @@ cmgd_study_files(rel, study)
 }
 \value{
 A data.frame with columns \code{name}, \code{path} (relative to the release
-URL), \code{url}, \code{bytes}, \code{sha256} and \code{description}.
+URL), \code{url}, \code{size} (bytes), \code{sha256} and \code{description}.
 }
 \description{
 Per-study download files

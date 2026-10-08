@@ -8,7 +8,7 @@ test_that("cmgd_connect attaches the release catalog over HTTP", {
   expect_setequal(tables$table_name, cmgd_tables(rel)$name)
   n <- DBI::dbGetQuery(con, "
     SELECT study_name, count(*) AS n FROM qc_metrics GROUP BY study_name ORDER BY study_name")
-  expect_equal(n$n, c(3, 2))
+  expect_equal(n$n, c(4, 2))
   expect_error(DBI::dbExecute(con, "DELETE FROM qc_metrics"))
 })
 

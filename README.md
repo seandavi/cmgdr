@@ -30,7 +30,7 @@ Imports are only `curl`, `digest` and `jsonlite`. Optional:
 ```r
 library(cmgdr)
 
-cmgd_datasets()                      # known datasets and their latest release
+cmgd_datasets()                      # published datasets and their latest release
 rel <- cmgd_release("cmgd_nextflow-2.2.1")   # latest release
 rel
 
@@ -49,7 +49,8 @@ DBI::dbDisconnect(con, shutdown = TRUE)
 
 # HUMAnN gene families (HUMAnN datasets only), one file per sample
 gf_rel <- cmgd_release("cmgd_humann3.9-2.3.0")
-gf <- cmgd_genefamilies(gf_rel, study = "ZellerG_2014")
+cmgd_genefamilies(gf_rel)            # studies with gene families
+gf <- cmgd_genefamilies(gf_rel, study = "ZellerG_2014")   # fetches only that study's index
 cmgd_download(gf_rel, gf$url[1])
 ```
 
@@ -60,24 +61,27 @@ column holds.
 ## What it reads
 
 ```text
+https://cmgd-public.cancerdatasci.org/index.json   every dataset, latest release
 https://cmgd-public.cancerdatasci.org/<dataset>/
   latest.json, releases.json
   <release>/manifest.json, catalog.ducklake
   <release>/tables/<table>/files.json, schema.json, data/*.parquet
   <release>/studies/index.json, studies/<study>/...
-  <release>/genefamilies/index.json      -> files on https://cmgd-raw.cancerdatasci.org
+  <release>/genefamilies/index.json, <study>.json   -> files on https://cmgd-raw.cancerdatasci.org
 ```
 
 A dataset is one pipeline registration, named `<workflow_id>-<version>`
 (`cmgd_nextflow-2.2.1`, `cmgd_humann3.9-2.3.0`, ...). A release is an immutable
 snapshot named by its build date (`2026-10-08`). Neither site can be listed;
-everything is found through the JSON indexes. `cmgd_release()` refuses a
-release whose manifest uses a publication spec major version it does not know.
+everything is found through the JSON indexes. cmgdr refuses a manifest whose
+publication spec major version (cdsci-lake, 2) or a cmgd index whose
+`spec_version` major (cmgd index spec, 1) it does not know.
 
 Downloads go to `tools::R_user_dir("cmgdr", "cache")` (see `cmgd_cache_dir()`),
-are checked against the indexes' SHA-256 (byte size for gene-family files,
-whose index has no checksum) and are not fetched again while the cached copy
-verifies.
+are checked against the indexes' size and SHA-256 and are not fetched again
+while the cached copy verifies. The per-study gene-family indexes are verified
+against `genefamilies/index.json`, which is verified against
+`studies/index.json`.
 
 ## Conformance
 

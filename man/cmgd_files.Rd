@@ -13,7 +13,7 @@ cmgd_files(rel, table = NULL)
 }
 \value{
 A data.frame with columns \code{table}, \code{path} (relative to the release
-URL), \code{url}, \code{bytes}, \code{sha256} and \code{rows}.
+URL), \code{url}, \code{size} (bytes), \code{sha256} and \code{rows}.
 }
 \description{
 Each table's Parquet data files, from \verb{tables/<table>/files.json}.

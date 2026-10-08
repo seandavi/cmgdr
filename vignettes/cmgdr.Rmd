@@ -152,11 +152,13 @@ unnormalized output in the bundle's units.
 
 ```{r}
 gf_rel <- cmgd_release("cmgd_humann3.9-2.3.0")
+cmgd_genefamilies(gf_rel)  # studies, sample counts
 gf <- cmgd_genefamilies(gf_rel, study = "ZellerG_2014")
-gf[order(-gf$bytes), c("sample_key", "bytes", "rows")]
+gf[order(-gf$size), c("sample_key", "size", "rows")]
 paths <- vapply(gf$url[1:2], function(u) cmgd_download(gf_rel, u), character(1))
 genefamilies <- read.delim(paths[1], check.names = FALSE)
 ```
 
-The gene-family index has byte sizes but no checksums, so these downloads are
-checked by size only.
+The release lists gene families per study, so asking for one study fetches
+only that study's index. Downloads are checked against the index's size and
+SHA-256 (computed when the file was ingested).

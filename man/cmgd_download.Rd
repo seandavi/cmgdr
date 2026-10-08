@@ -20,10 +20,12 @@ The local file path.
 }
 \description{
 Downloads a file into the cache (keyed by its URL) and returns the local
-path. Files listed in the release's indexes are verified: SHA-256 for table
-files, per-study files and the DuckLake catalog; byte size for gene-family
-files (their index has no checksum). A mismatching download is deleted and
-an error raised. A cached file that still verifies is not downloaded again.
+path. Files listed in the release's indexes are verified by size and
+SHA-256: table files, per-study files, the DuckLake catalog, the gene-family
+indexes, and gene-family files from a study already listed with
+\code{\link[=cmgd_genefamilies]{cmgd_genefamilies()}} on the same release handle. A mismatching download is
+deleted and an error raised. A cached file that still verifies is not
+downloaded again.
 }
 \examples{
 \dontrun{
