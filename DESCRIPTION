@@ -2,7 +2,8 @@ Package: cmgdr
 Title: Low-Level Access to curatedMetagenomicData Public Releases
 Version: 0.99.0
 Authors@R:
-    person("Sean", "Davis", , "seandavi@gmail.com", role = c("aut", "cre"))
+    person("Sean", "Davis", , "seandavi@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-8991-6458"))
 Description: A small, low-level client for the public curatedMetagenomicData
     (cMD) data releases at <https://cmgd-public.cancerdatasci.org>. It finds
     datasets and immutable releases from their JSON indexes and lists their
@@ -27,7 +28,7 @@ Suggests:
     DBI,
     dbplyr,
     dplyr,
-    duckdb,
+    duckdb (>= 1.5.4.1),
     knitr,
     Matrix,
     quarto,

@@ -52,10 +52,12 @@ silence it with \code{\link[=suppressMessages]{suppressMessages()}}. Joining met
 \code{TreeSummarizedExperiment} is left to higher-level packages.
 }
 \examples{
-\dontrun{
-rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
-meta <- cmgd_sample_metadata(rel)
-wide <- cmgd_sample_metadata(rel, "cmd", study = "BaiX_2021", wide = TRUE)
-attr(meta, "sources")
+if (requireNamespace("duckdb", quietly = TRUE)) {
+    rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+    meta <- cmgd_sample_metadata(rel, "cmd",
+        study = "ZellerG_2014", wide = TRUE, cache = tempdir()
+    )
+    meta[1:3, 1:6]
+    attr(meta, "sources")
 }
 }

@@ -27,9 +27,7 @@ known_datasets <- c(
 #'   `latest` (the latest release id, `NA` when the dataset has no release yet).
 #' @export
 #' @examples
-#' \dontrun{
 #' cmgd_datasets()
-#' }
 cmgd_datasets <- function(base = cmgd_public_base) {
     url <- paste0(sub("/+$", "", base), "/index.json")
     index <- tryCatch(fetch_json(url), cmgd_not_found = function(e) NULL)
@@ -84,9 +82,7 @@ cmgd_datasets <- function(base = cmgd_public_base) {
 #'   columns `release`, `release_date`, `published_at` and `pinned`.
 #' @export
 #' @examples
-#' \dontrun{
-#' cmgd_releases("cmgd_nextflow-2.2.1")
-#' }
+#' cmgd_releases("cmgd_mpa4.2-2.3.0")
 cmgd_releases <- function(dataset, base = cmgd_public_base) {
     fetch_json(dataset_url(base, dataset, "releases.json"))$releases
 }
@@ -105,10 +101,8 @@ cmgd_releases <- function(dataset, base = cmgd_public_base) {
 #'   (the release's base URL), `base`, `raw_base` and `manifest`.
 #' @export
 #' @examples
-#' \dontrun{
-#' rel <- cmgd_release("cmgd_nextflow-2.2.1")
+#' rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
 #' rel
-#' }
 cmgd_release <- function(
   dataset,
   release = "latest",
@@ -160,9 +154,8 @@ print.cmgd_release <- function(x, ...) {
 #'   `grain`, `row_count` and `license`.
 #' @export
 #' @examples
-#' \dontrun{
-#' cmgd_tables(cmgd_release("cmgd_nextflow-2.2.1"))
-#' }
+#' rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+#' cmgd_tables(rel)
 cmgd_tables <- function(rel) {
     rel$manifest$tables[c(
         "name",
@@ -183,10 +176,8 @@ cmgd_tables <- function(rel) {
 #'   URL), `url`, `size` (bytes), `sha256` and `rows`.
 #' @export
 #' @examples
-#' \dontrun{
-#' rel <- cmgd_release("cmgd_nextflow-2.2.1")
+#' rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
 #' cmgd_files(rel, "qc_metrics")
-#' }
 cmgd_files <- function(rel, table = NULL) {
     tables <- rel$manifest$tables
     if (is.null(table)) {
@@ -324,10 +315,9 @@ check_status <- function(status, url) {
 #' @return A list, as parsed by [jsonlite::fromJSON()].
 #' @export
 #' @examples
-#' \dontrun{
-#' prov <- cmgd_provenance(cmgd_release("cmgd_mpa4.2-2.3.0"))
+#' rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+#' prov <- cmgd_provenance(rel)
 #' prov$cmgd$databases
-#' }
 cmgd_provenance <- function(rel) {
     memo_json(rel, rel$manifest$provenance %||% "provenance.json")
 }

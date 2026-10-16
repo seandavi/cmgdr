@@ -30,10 +30,11 @@ cmgd_cache_dir <- function() {
 #' @return The local file path.
 #' @export
 #' @examples
-#' \dontrun{
-#' rel <- cmgd_release("cmgd_nextflow-2.2.1")
-#' cmgd_download(rel, "studies/ZellerG_2014/qc.tsv")
-#' }
+#' rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+#' path <- cmgd_download(rel, "studies/ZellerG_2014/qc.tsv",
+#'     cache = tempdir()
+#' )
+#' path
 cmgd_download <- function(rel, path_or_url, cache = cmgd_cache_dir()) {
     stopifnot(length(path_or_url) == 1L)
     url <- if (grepl("^[a-z]+://", path_or_url)) {

@@ -93,13 +93,6 @@ jobs:
 
       - name: BiocCheck
         run: |
-          Rscript -e '
-            res <- BiocCheck::BiocCheck(Sys.glob("check/*.tar.gz"), `new-package` = TRUE,
-                                        `no-check-bioc-help` = TRUE,
-                                        `quit-with-status` = FALSE)
-            errs <- vapply(res$error, function(e) paste(unlist(e), collapse = " "), "")
-            # ponytail: known ERROR tracked in #5 (\\dontrun examples need the
-            # live site); delete this allowance once the examples are decided.
-            known <- grepl("runnable examples", errs)
-            if (any(known)) message("Known BiocCheck ERROR (see #5): ", errs[known])
-            if (any(!known)) stop("BiocCheck ERRORs:\n", paste(errs[!known], collapse = "\n"))'
+          Rscript -e 'BiocCheck::BiocCheck(Sys.glob("check/*.tar.gz"), `new-package` = TRUE,
+                                           `no-check-bioc-help` = TRUE,
+                                           `quit-with-status` = TRUE)'

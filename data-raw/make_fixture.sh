@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Regenerate tests/testthat/fixtures/site, the fixture releases cmgdr's tests
+# Regenerate tests/testthat/fixtures/site.tar.gz, the fixture releases cmgdr's tests
 # run against. The fixture is the contract between cmgdr and the publisher:
 # regenerate it whenever the release layout changes.
 #
@@ -20,7 +20,7 @@ set -euo pipefail
 NFT=$(cd "${1:?usage: $0 <nextflow_telemetry checkout>}" && pwd)
 MPA=$(cd "${2:?usage: $0 <nextflow_telemetry checkout> <published cmgd_mpa4.2-2.3.0 dir>}" && pwd)
 PKG=$(cd "$(dirname "$0")/.." && pwd)
-OUT="$PKG/tests/testthat/fixtures/site"
+OUT="$PKG/tests/testthat/fixtures/site.tar.gz"
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
 
@@ -31,7 +31,10 @@ echo "nextflow_telemetry commit: $(git -C "$NFT" rev-parse HEAD)"
 # The DuckLake catalogs are ~1.3 MB of mostly empty pages; the tests gunzip them.
 find "$WORK/site" -name catalog.ducklake -exec gzip -9n {} \;
 
-rm -rf "$OUT"
+# One archive: some fixture paths are over 100 bytes, which R CMD build can't
+# store portably. Reproducible: sorted, fixed mtime/owner/mode, gzip -n.
+# fixture_site() in tests/testthat/helper-site.R unpacks it with utils::untar().
 mkdir -p "$(dirname "$OUT")"
-cp -r "$WORK/site" "$OUT"
-du -sh "$OUT"
+tar -C "$WORK" --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner \
+    --mode='a+rX,u+w,go-w' --format=gnu -cf - site | gzip -9n > "$OUT"
+du -h "$OUT"

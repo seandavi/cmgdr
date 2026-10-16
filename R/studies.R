@@ -6,9 +6,8 @@
 #' @return A data.frame with columns `study_name` and `n_samples`.
 #' @export
 #' @examples
-#' \dontrun{
-#' cmgd_studies(cmgd_release("cmgd_nextflow-2.2.1"))
-#' }
+#' rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+#' head(cmgd_studies(rel))
 cmgd_studies <- function(rel) {
     cmgd_index(rel, "studies/index.json")$studies[c("study_name", "n_samples")]
 }
@@ -21,9 +20,8 @@ cmgd_studies <- function(rel) {
 #'   URL), `url`, `size` (bytes), `sha256` and `description`.
 #' @export
 #' @examples
-#' \dontrun{
-#' cmgd_study_files(cmgd_release("cmgd_nextflow-2.2.1"), "ZellerG_2014")
-#' }
+#' rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+#' cmgd_study_files(rel, "ZellerG_2014")
 cmgd_study_files <- function(rel, study) {
     files <- study_index_files(rel)
     files <- files[files$study_name == study, names(files) != "study_name"]
@@ -98,10 +96,10 @@ study_file_names <- c(
 #' @return A data.frame.
 #' @export
 #' @examples
-#' \dontrun{
-#' rel <- cmgd_release("cmgd_nextflow-2.2.1")
-#' qc <- cmgd_read_study(rel, "ZellerG_2014", "qc")
-#' }
+#' rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+#' # Downloads go to the cache; tempdir() keeps them out of yours.
+#' qc <- cmgd_read_study(rel, "ZellerG_2014", "qc", cache = tempdir())
+#' head(qc)
 cmgd_read_study <- function(
   rel,
   study,
@@ -133,15 +131,8 @@ cmgd_read_study <- function(
 
 read_parquet <- function(file) {
     need(c("DBI", "duckdb"), "read Parquet files")
-    # Reading local Parquet needs no extensions: silence newer duckdb's note on
-    # where it would store them.
-    drv <- withCallingHandlers(
-        duckdb::duckdb(),
-        duckdb_storage_location = function(m) {
-            invokeRestart("muffleMessage")
-        }
-    )
-    con <- DBI::dbConnect(drv)
+    # Reading local Parquet needs no extensions: keep duckdb off ~/.duckdb.
+    con <- DBI::dbConnect(duckdb::duckdb(shared_home = FALSE))
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
     DBI::dbGetQuery(con, "SELECT * FROM read_parquet(?)", params = list(file))
 }
@@ -160,9 +151,10 @@ read_parquet <- function(file) {
 #' @return A `TreeSummarizedExperiment`.
 #' @export
 #' @examples
-#' \dontrun{
-#' rel <- cmgd_release("cmgd_nextflow-2.2.1")
-#' tse <- cmgd_species_tse(rel, "ZellerG_2014")
+#' if (requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
+#'     rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+#'     tse <- cmgd_species_tse(rel, "ZellerG_2014", cache = tempdir())
+#'     tse
 #' }
 cmgd_species_tse <- function(rel, study, cache = cmgd_cache_dir()) {
     need(
