@@ -25,8 +25,8 @@ release's \code{samples} table, where a sample's runs are \verb{;}-joined in
 \code{run_accessions}.
 }
 \examples{
-\dontrun{
-rel <- cmgd_release("cmgd_mpa4.2-2.3.0")
-cmgd_find_runs(rel, c("ERR478962", "ERR1474586"))
+if (requireNamespace("duckdb", quietly = TRUE)) {
+    rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+    cmgd_find_runs(rel, c("ERR478962", "ERR1474586"), cache = tempdir())
 }
 }

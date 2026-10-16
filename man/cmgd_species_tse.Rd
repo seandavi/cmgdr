@@ -27,8 +27,9 @@ no species rows is all zero.
 Needs the Bioconductor package TreeSummarizedExperiment and Matrix.
 }
 \examples{
-\dontrun{
-rel <- cmgd_release("cmgd_nextflow-2.2.1")
-tse <- cmgd_species_tse(rel, "ZellerG_2014")
+if (requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
+    rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+    tse <- cmgd_species_tse(rel, "ZellerG_2014", cache = tempdir())
+    tse
 }
 }

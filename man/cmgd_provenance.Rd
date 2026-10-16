@@ -20,8 +20,7 @@ section with the pipeline registration and runs (\code{registration},
 per-table \code{licenses} and \code{citation} text.
 }
 \examples{
-\dontrun{
-prov <- cmgd_provenance(cmgd_release("cmgd_mpa4.2-2.3.0"))
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+prov <- cmgd_provenance(rel)
 prov$cmgd$databases
-}
 }

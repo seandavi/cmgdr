@@ -29,10 +29,15 @@ are HUMAnN's unnormalized output in the bundle's units. Pass a \code{url} to
 \code{\link[=cmgd_download]{cmgd_download()}} to fetch a file, verified by size and SHA-256.
 }
 \examples{
-\dontrun{
-rel <- cmgd_release("cmgd_humann3.9-2.3.0")
-cmgd_genefamilies(rel)
-gf <- cmgd_genefamilies(rel, study = "ZellerG_2014")
-cmgd_download(rel, gf$url[1])
+# Runs once a HUMAnN dataset is published; none is on the site yet.
+ds <- cmgd_datasets()
+humann <- ds$dataset[startsWith(ds$dataset, "cmgd_humann") &
+    !is.na(ds$latest)]
+if (length(humann)) {
+    rel <- cmgd_release(humann[1])
+    studies <- cmgd_genefamilies(rel)
+    gf <- cmgd_genefamilies(rel, study = studies$study_name[1])
+    head(gf)
+    # cmgd_download(rel, gf$url[1], cache = tempdir())
 }
 }

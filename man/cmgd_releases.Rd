@@ -21,7 +21,5 @@ A release is an immutable full snapshot of a dataset, named by its UTC build
 date (\code{2026-10-08}; a second release that day is \code{2026-10-08.2}).
 }
 \examples{
-\dontrun{
-cmgd_releases("cmgd_nextflow-2.2.1")
-}
+cmgd_releases("cmgd_mpa4.2-2.3.0")
 }

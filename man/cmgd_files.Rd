@@ -19,8 +19,6 @@ URL), \code{url}, \code{size} (bytes), \code{sha256} and \code{rows}.
 Each table's Parquet data files, from \verb{tables/<table>/files.json}.
 }
 \examples{
-\dontrun{
-rel <- cmgd_release("cmgd_nextflow-2.2.1")
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
 cmgd_files(rel, "qc_metrics")
-}
 }

@@ -5,34 +5,31 @@
 #' default, so `dplyr::tbl(con, "qc_metrics")` works). Attaching is quick:
 #' DuckDB fetches only the parts of the Parquet files a query touches.
 #'
-#' Needs the DBI and duckdb packages (DuckDB 1.5.2 or newer). The first call
-#' downloads DuckDB's `ducklake` and `httpfs` extensions. Close the connection
-#' with `DBI::dbDisconnect(con, shutdown = TRUE)`.
+#' Needs the DBI and duckdb (1.5.4.1 or newer) packages. The first call
+#' downloads DuckDB's `ducklake` and `httpfs` extensions into `duckdb/` in the
+#' cache directory (not `~/.duckdb`), where later sessions reuse them. Close
+#' the connection with `DBI::dbDisconnect(con, shutdown = TRUE)`.
 #'
 #' @inheritParams cmgd_tables
+#' @inheritParams cmgd_download
 #' @return A DBI connection.
 #' @export
 #' @examples
-#' \dontrun{
-#' rel <- cmgd_release("cmgd_nextflow-2.2.1")
-#' con <- cmgd_connect(rel)
-#' DBI::dbGetQuery(con, "
-#'   SELECT study_name, count(*) AS n_samples
-#'   FROM qc_metrics GROUP BY study_name ORDER BY n_samples DESC")
-#'
-#' library(dplyr)
-#' tbl(con, "taxonomic_profile_metaphlan") |>
-#'     filter(
-#'         study_name == "ZellerG_2014", rank == "species",
-#'         data_type == "full_data", is.na(humann_bundle)
-#'     ) |>
-#'     count(clade_name, sort = TRUE) |>
-#'     collect()
-#' DBI::dbDisconnect(con, shutdown = TRUE)
+#' if (requireNamespace("duckdb", quietly = TRUE)) {
+#'     rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+#'     # DuckDB's extensions are kept under `cache` too.
+#'     con <- cmgd_connect(rel, cache = tempdir())
+#'     DBI::dbGetQuery(con, "
+#'         SELECT study_name, count(*) AS n_samples
+#'         FROM qc_metrics GROUP BY study_name
+#'         ORDER BY n_samples DESC LIMIT 5")
+#'     DBI::dbDisconnect(con, shutdown = TRUE)
 #' }
-cmgd_connect <- function(rel) {
+cmgd_connect <- function(rel, cache = cmgd_cache_dir()) {
     need(c("DBI", "duckdb"), "attach a release in DuckDB")
-    con <- DBI::dbConnect(duckdb::duckdb())
+    home <- file.path(cache, "duckdb")
+    dir.create(home, recursive = TRUE, showWarnings = FALSE)
+    con <- DBI::dbConnect(duckdb::duckdb(home = home))
     for (sql in c(
         "INSTALL ducklake",
         "LOAD ducklake",
@@ -77,11 +74,16 @@ cmgd_connect <- function(rel) {
 #'   cmgd-raw), `url`, `size` (bytes), `sha256` and `rows`.
 #' @export
 #' @examples
-#' \dontrun{
-#' rel <- cmgd_release("cmgd_humann3.9-2.3.0")
-#' cmgd_genefamilies(rel)
-#' gf <- cmgd_genefamilies(rel, study = "ZellerG_2014")
-#' cmgd_download(rel, gf$url[1])
+#' # Runs once a HUMAnN dataset is published; none is on the site yet.
+#' ds <- cmgd_datasets()
+#' humann <- ds$dataset[startsWith(ds$dataset, "cmgd_humann") &
+#'     !is.na(ds$latest)]
+#' if (length(humann)) {
+#'     rel <- cmgd_release(humann[1])
+#'     studies <- cmgd_genefamilies(rel)
+#'     gf <- cmgd_genefamilies(rel, study = studies$study_name[1])
+#'     head(gf)
+#'     # cmgd_download(rel, gf$url[1], cache = tempdir())
 #' }
 cmgd_genefamilies <- function(rel, study = NULL, sample = NULL) {
     index <- genefamily_index(rel)

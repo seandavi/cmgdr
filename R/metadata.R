@@ -40,11 +40,13 @@ metadata_table_sources <- list(
 #'   `cmgdr_no_metadata` if the release has no sample-metadata tables.
 #' @export
 #' @examples
-#' \dontrun{
-#' rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
-#' meta <- cmgd_sample_metadata(rel)
-#' wide <- cmgd_sample_metadata(rel, "cmd", study = "BaiX_2021", wide = TRUE)
-#' attr(meta, "sources")
+#' if (requireNamespace("duckdb", quietly = TRUE)) {
+#'     rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+#'     meta <- cmgd_sample_metadata(rel, "cmd",
+#'         study = "ZellerG_2014", wide = TRUE, cache = tempdir()
+#'     )
+#'     meta[1:3, 1:6]
+#'     attr(meta, "sources")
 #' }
 cmgd_sample_metadata <- function(
   rel,
@@ -157,9 +159,9 @@ read_table <- function(rel, table, cache) {
 #'   release has no `samples` table.
 #' @export
 #' @examples
-#' \dontrun{
-#' rel <- cmgd_release("cmgd_mpa4.2-2.3.0")
-#' cmgd_find_runs(rel, c("ERR478962", "ERR1474586"))
+#' if (requireNamespace("duckdb", quietly = TRUE)) {
+#'     rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+#'     cmgd_find_runs(rel, c("ERR478962", "ERR1474586"), cache = tempdir())
 #' }
 cmgd_find_runs <- function(rel, run, cache = cmgd_cache_dir()) {
     if (!"samples" %in% rel$manifest$tables$name) {
