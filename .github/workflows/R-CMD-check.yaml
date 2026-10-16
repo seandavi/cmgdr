@@ -31,6 +31,8 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
+      - uses: quarto-dev/quarto-actions/setup@v2
+
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
@@ -45,3 +47,57 @@ jobs:
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+
+  # R CMD check against Bioconductor devel, then BiocCheck. BiocCheck ERRORs
+  # fail the job; WARNINGs and NOTEs are only reported.
+  bioconductor:
+    runs-on: ubuntu-latest
+    name: Bioconductor devel + BiocCheck
+    container: bioconductor/bioconductor_docker:devel
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_LIBS_USER: /__w/_temp/R-lib
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Quarto if the image lacks it
+        run: |
+          if ! command -v quarto; then
+            curl -fsSL -o /tmp/quarto.deb \
+              https://github.com/quarto-dev/quarto-cli/releases/download/v1.7.32/quarto-1.7.32-linux-amd64.deb
+            dpkg -i /tmp/quarto.deb
+          fi
+          quarto --version
+
+      - name: Cache R library
+        uses: actions/cache@v4
+        with:
+          path: /__w/_temp/R-lib
+          key: bioc-devel-${{ hashFiles('DESCRIPTION') }}
+          restore-keys: bioc-devel-
+
+      - name: Install dependencies
+        run: |
+          mkdir -p "$R_LIBS_USER"
+          Rscript -e 'BiocManager::install(c("BiocCheck", "rcmdcheck", "remotes"), ask = FALSE, update = FALSE)' \
+                  -e 'deps <- remotes::local_package_deps(dependencies = TRUE)' \
+                  -e 'BiocManager::install(deps, ask = FALSE, update = FALSE)'
+
+      - name: R CMD check
+        run: |
+          Rscript -e 'rcmdcheck::rcmdcheck(args = "--no-manual", build_args = "--no-manual", error_on = "warning", check_dir = "check")'
+
+      - name: BiocCheck
+        run: |
+          Rscript -e '
+            res <- BiocCheck::BiocCheck(".", `new-package` = TRUE,
+                                        `no-check-bioc-help` = TRUE,
+                                        `quit-with-status` = FALSE)
+            errs <- vapply(res$error, function(e) paste(unlist(e), collapse = " "), "")
+            # ponytail: known ERROR tracked in #5 (\\dontrun examples need the
+            # live site); delete this allowance once the examples are decided.
+            known <- grepl("runnable examples", errs)
+            if (any(known)) message("Known BiocCheck ERROR (see #5): ", errs[known])
+            if (any(!known)) stop("BiocCheck ERRORs:\n", paste(errs[!known], collapse = "\n"))'

@@ -12,9 +12,19 @@ DuckLake catalog). Higher-level tooling can build on it.
 
 ## Install
 
+cmgdr is being prepared for Bioconductor. Until it is accepted, install it
+from GitHub:
+
 ```r
-# install.packages("remotes")
-remotes::install_github("seandavi/cmgdr")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("seandavi/cmgdr")
+```
+
+Once it is on Bioconductor:
+
+```r
+BiocManager::install("cmgdr")
 ```
 
 Imports are only `curl`, `digest` and `jsonlite`. Optional:

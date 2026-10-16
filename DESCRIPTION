@@ -1,14 +1,17 @@
 Package: cmgdr
 Title: Low-Level Access to curatedMetagenomicData Public Releases
-Version: 0.0.0.9000
+Version: 0.99.0
 Authors@R:
     person("Sean", "Davis", , "seandavi@gmail.com", role = c("aut", "cre"))
-Description: A small client for the public curatedMetagenomicData (cMD) data
-    releases at <https://cmgd-public.cancerdatasci.org>. Finds datasets and
-    releases from their JSON indexes, lists tables, studies and HUMAnN
-    gene-family files, downloads files into a verified cache, reads per-study
-    files, builds species TreeSummarizedExperiment objects and attaches a
-    release's read-only DuckLake catalog in DuckDB for SQL and dplyr queries.
+Description: A small, low-level client for the public curatedMetagenomicData
+    (cMD) data releases at <https://cmgd-public.cancerdatasci.org>. It finds
+    datasets and immutable releases from their JSON indexes and lists their
+    tables, studies and HUMAnN gene-family files. Files are downloaded into a
+    cache and verified against the published SHA-256 checksums. It reads
+    per-study files and sample metadata, looks up samples by run accession,
+    returns release provenance, builds species TreeSummarizedExperiment
+    objects, and attaches a release's read-only DuckLake catalog in DuckDB for
+    SQL and dplyr queries. Higher-level packages can build on it.
 License: MIT + file LICENSE
 URL: https://github.com/seandavi/cmgdr, https://seandavi.github.io/cmgdr/
 BugReports: https://github.com/seandavi/cmgdr/issues
@@ -27,12 +30,15 @@ Suggests:
     duckdb,
     knitr,
     Matrix,
-    rmarkdown,
+    quarto,
     S4Vectors,
     SummarizedExperiment,
     testthat (>= 3.0.0),
     TreeSummarizedExperiment,
     webfakes
-VignetteBuilder: knitr
+VignetteBuilder: quarto
+SystemRequirements: Quarto command line tool
+    (<https://github.com/quarto-dev/quarto-cli>).
+biocViews: Software, Metagenomics, Microbiome, DataImport, Infrastructure
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.1.0
