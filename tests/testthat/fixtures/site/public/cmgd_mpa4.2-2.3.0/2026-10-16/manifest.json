@@ -1,0 +1,151 @@
+{
+ "spec_version": "2.0",
+ "dataset": "cmgd_mpa4.2-2.3.0",
+ "release": "2026-10-16",
+ "release_date": "2026-10-16",
+ "status": "published",
+ "published_at": "2026-10-16T03:40:40.277445+00:00",
+ "run_id": "40e1d7e0-f279-4239-8802-3adc6310b44a",
+ "source_asset_versions": [
+  {
+   "ref": "lake.cmgd.taxonomic_profile_metaphlan",
+   "version": "snapshot:3959"
+  },
+  {
+   "ref": "lake.cmgd.taxonomic_profile_bracken",
+   "version": "snapshot:3959"
+  },
+  {
+   "ref": "lake.cmgd.resistome",
+   "version": "snapshot:3959"
+  },
+  {
+   "ref": "lake.cmgd.qc_metrics",
+   "version": "snapshot:3959"
+  },
+  {
+   "ref": "lake.cmgd.marker_abundance",
+   "version": "snapshot:3959"
+  },
+  {
+   "ref": "lake.cmgd.marker_presence",
+   "version": "snapshot:3959"
+  },
+  {
+   "ref": "nf_telemetry.v2.jobs",
+   "version": "registration:7"
+  },
+  {
+   "ref": "lake.cmgd_meta.sample_values",
+   "version": "snapshot:3959"
+  },
+  {
+   "ref": "lake.cmgd_meta.sample_values",
+   "version": "snapshot:3959"
+  },
+  {
+   "ref": "lake.cmgd_meta.sample_harmonized",
+   "version": "snapshot:3959"
+  },
+  {
+   "ref": "lake.cmgd_meta.compare_cmd_olm",
+   "version": "snapshot:3959"
+  },
+  {
+   "ref": "lake.cmgd_meta.source_releases",
+   "version": "snapshot:3959"
+  }
+ ],
+ "artifacts": {
+  "parquet": {
+   "status": "verified",
+   "required": true,
+   "location": "tables/"
+  }
+ },
+ "tables": [
+  {
+   "name": "metadata_sources",
+   "description": "The metadata source releases in the store; `pinned` marks the one the metadata tables read.",
+   "grain": "one row per source release",
+   "primary_key": [
+    "source",
+    "release"
+   ],
+   "temporal_model": "upsert_latest_snapshot",
+   "owner": "curatedMetagenomicData",
+   "license": "CC0-1.0",
+   "schema": "tables/metadata_sources/schema.json",
+   "files": "tables/metadata_sources/files.json",
+   "schema_digest": "sha256:a1e45ca92612ae054f3e503efe716a824aeae2ba96d58a9796942e8cd31054fa",
+   "row_count": 2
+  },
+  {
+   "name": "sample_metadata_cmd",
+   "description": "Sample metadata curated by curatedMetagenomicData (curation repo, pinned commit), one row per field. `field`/`value` are harmonized where the field map covers the field.",
+   "grain": "one row per sample, field and cMD sample record",
+   "primary_key": [
+    "sample_key",
+    "field",
+    "source_sample"
+   ],
+   "temporal_model": "upsert_latest_snapshot",
+   "owner": "curatedMetagenomicData",
+   "license": "CC0-1.0",
+   "schema": "tables/sample_metadata_cmd/schema.json",
+   "files": "tables/sample_metadata_cmd/files.json",
+   "schema_digest": "sha256:61af88ad7bedaab5c9d31e2eafc60a0aa2a0ca80d9ad8bb3e6156c9ba8c5a3c0",
+   "row_count": 509
+  },
+  {
+   "name": "sample_metadata_harmonized",
+   "description": "One value per sample and harmonized field, with the source and source release it came from (precedence: cMD curation, then Olm R1/R2 not imported from cMD, then Olm R3/R4 with confidence >= 0.5). Mixes Olm-derived values; attribution required: Microbiome Repo, OlmLab, release R2026.25 (data package 1.20.0), doi:10.5281/zenodo.23087712; values derived. Required attribution for the CC-BY-4.0 tables.",
+   "grain": "one row per sample and field",
+   "primary_key": [
+    "sample_key",
+    "field"
+   ],
+   "temporal_model": "upsert_latest_snapshot",
+   "owner": "curatedMetagenomicData",
+   "license": "CC-BY-4.0",
+   "schema": "tables/sample_metadata_harmonized/schema.json",
+   "files": "tables/sample_metadata_harmonized/files.json",
+   "schema_digest": "sha256:95a6e67a7052583e005663500b48179bdd69807eee90b238f69c5084ca86c72c",
+   "row_count": 107
+  },
+  {
+   "name": "sample_metadata_olm",
+   "description": "Sample metadata from the Olm lab Microbiome Repo (pinned release), one row per field, with Olm's route and confidence; no evidence quotes. Attribution required: Microbiome Repo, OlmLab, release R2026.25 (data package 1.20.0), doi:10.5281/zenodo.23087712; values derived. Required attribution for the CC-BY-4.0 tables.",
+   "grain": "one row per sample, field and Olm sample",
+   "primary_key": [
+    "sample_key",
+    "field",
+    "source_sample"
+   ],
+   "temporal_model": "upsert_latest_snapshot",
+   "owner": "curatedMetagenomicData",
+   "license": "CC-BY-4.0",
+   "schema": "tables/sample_metadata_olm/schema.json",
+   "files": "tables/sample_metadata_olm/files.json",
+   "schema_digest": "sha256:b54c22b82191bb5f73d3b458bdfd3fe2e8a626f656ccfa9ebc06c9e272778b4c",
+   "row_count": 24
+  },
+  {
+   "name": "samples",
+   "description": "One row per sample in the release: the join hub from readset id to run accessions, BioSample and BioProject, with the pipeline version that produced it.",
+   "grain": "one row per sample",
+   "primary_key": [
+    "sample_key"
+   ],
+   "temporal_model": "upsert_latest_snapshot",
+   "owner": "curatedMetagenomicData",
+   "license": "CC0-1.0",
+   "schema": "tables/samples/schema.json",
+   "files": "tables/samples/files.json",
+   "schema_digest": "sha256:361b22e4ad2ac6f8dc12f2793f1c1e551d30055ed4b6c307cf1666229e6c4e08",
+   "row_count": 26
+  }
+ ],
+ "provenance": "provenance.json",
+ "lineage": "lineage.json"
+}

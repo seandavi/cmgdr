@@ -57,6 +57,7 @@ site <- local({
 
 legacy <- "cmgd_nextflow-2.2.1"
 humann <- "cmgd_humann3.9-2.3.0"
+mpa <- "cmgd_mpa4.2-2.3.0"
 
 open_release <- function(dataset = legacy, ...) {
   cmgd_release(dataset, base = site$base, raw_base = site$raw, ...)

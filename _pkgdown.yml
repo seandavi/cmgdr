@@ -21,6 +21,9 @@ reference:
       - cmgd_study_files
       - cmgd_read_study
       - cmgd_species_tse
+  - title: Sample metadata
+    contents:
+      - cmgd_sample_metadata
   - title: Gene families
     contents:
       - cmgd_genefamilies

@@ -1,0 +1,105 @@
+{
+  "name": "metadata_sources",
+  "description": "The metadata source releases in the store; `pinned` marks the one the metadata tables read.",
+  "grain": "one row per source release",
+  "primary_key": [
+    "source",
+    "release"
+  ],
+  "sort_by": [],
+  "partition_by": [],
+  "temporal_model": "upsert_latest_snapshot",
+  "owner": "curatedMetagenomicData",
+  "license": "CC0-1.0",
+  "examples": [],
+  "columns": [
+    {
+      "name": "source",
+      "arrow_type": "string",
+      "description": "Metadata source: cmd (curatedMetagenomicData curation) or olm (Microbiome Repo).",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "release",
+      "arrow_type": "string",
+      "description": "Source release: cMD curation commit, or Olm release id.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "package_version",
+      "arrow_type": "string",
+      "description": "Source data package version.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "doi",
+      "arrow_type": "string",
+      "description": "Source release DOI.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "license",
+      "arrow_type": "string",
+      "description": "Source licence.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "sha256",
+      "arrow_type": "string",
+      "description": "sha256 of the loaded source file. (Its download URL is in provenance.json: a frozen catalog may not carry URLs.)",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "loaded_at",
+      "arrow_type": "string",
+      "description": "When the release was loaded into the lake (UTC).",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "pinned",
+      "arrow_type": "bool",
+      "description": "Whether this is the release the metadata tables read.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    }
+  ]
+}
