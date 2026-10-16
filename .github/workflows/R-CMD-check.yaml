@@ -94,7 +94,7 @@ jobs:
       - name: BiocCheck
         run: |
           Rscript -e '
-            res <- BiocCheck::BiocCheck(".", `new-package` = TRUE,
+            res <- BiocCheck::BiocCheck(Sys.glob("check/*.tar.gz"), `new-package` = TRUE,
                                         `no-check-bioc-help` = TRUE,
                                         `quit-with-status` = FALSE)
             errs <- vapply(res$error, function(e) paste(unlist(e), collapse = " "), "")
