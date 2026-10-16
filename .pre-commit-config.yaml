@@ -1,0 +1,12 @@
+# Style R code on commit: `pip install pre-commit && pre-commit install`.
+# Same style as the one-off pass: tidyverse style with 4-space indents
+# (Bioconductor). Lines over 80 characters still need wrapping by hand.
+repos:
+  - repo: https://github.com/lorenzwalthert/precommit
+    # v0.4.3 (the last GitHub release) pins packages that no longer build on
+    # R >= 4.5; the dev tag below works on R 4.6.
+    rev: v0.4.3.9032
+    hooks:
+      - id: style-files
+        args: [--style_pkg=styler, --style_fun=tidyverse_style, --indent_by=4]
+        files: '^(R|tests/testthat)/[^/]*\.R$'

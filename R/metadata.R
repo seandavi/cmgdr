@@ -1,7 +1,14 @@
-metadata_tables <- c(harmonized = "sample_metadata_harmonized",
-                     cmd = "sample_metadata_cmd", olm = "sample_metadata_olm")
+metadata_tables <- c(
+    harmonized = "sample_metadata_harmonized",
+    cmd = "sample_metadata_cmd",
+    olm = "sample_metadata_olm"
+)
 # The `metadata_sources` each table draws on (harmonized mixes both).
-metadata_table_sources <- list(harmonized = c("cmd", "olm"), cmd = "cmd", olm = "olm")
+metadata_table_sources <- list(
+    harmonized = c("cmd", "olm"),
+    cmd = "cmd",
+    olm = "olm"
+)
 
 #' Sample metadata tables
 #'
@@ -29,8 +36,8 @@ metadata_table_sources <- list(harmonized = c("cmd", "olm"), cmd = "cmd", olm = 
 #'   distinct value for a field gets them `;`-joined).
 #' @return A data.frame with attributes `license` (the table's licence from the
 #'   manifest) and `sources` (the pinned rows of `metadata_sources` the table
-#'   draws on: source, release, DOI, licence). Errors with class `cmgdr_no_metadata` if the
-#'   release has no sample-metadata tables.
+#'   draws on: source, release, DOI, licence). Errors with class
+#'   `cmgdr_no_metadata` if the release has no sample-metadata tables.
 #' @export
 #' @examples
 #' \dontrun{
@@ -39,58 +46,101 @@ metadata_table_sources <- list(harmonized = c("cmd", "olm"), cmd = "cmd", olm = 
 #' wide <- cmgd_sample_metadata(rel, "cmd", study = "BaiX_2021", wide = TRUE)
 #' attr(meta, "sources")
 #' }
-cmgd_sample_metadata <- function(rel, source = names(metadata_tables), study = NULL,
-                                 wide = FALSE, cache = cmgd_cache_dir()) {
-  source <- match.arg(source)
-  table <- metadata_tables[[source]]
-  tables <- rel$manifest$tables
-  missing <- setdiff(c("samples", table, "metadata_sources"), tables$name)
-  if (length(missing)) {
-    stop(structure(class = c("cmgdr_no_metadata", "error", "condition"), list(
-      message = paste0(rel$dataset, "/", rel$release, " has no sample metadata (missing tables: ",
-                       paste(missing, collapse = ", "), ")"),
-      call = NULL)))
-  }
-  long <- read_table(rel, table, cache)
-  samples <- read_table(rel, "samples", cache)
-  if (!is.null(study)) {
-    unknown <- setdiff(study, samples$study_name)
-    if (length(unknown)) {
-      stop("no study ", paste(unknown, collapse = ", "), " in ", rel$dataset, "/",
-           rel$release, " (see cmgd_studies())", call. = FALSE)
+cmgd_sample_metadata <- function(
+  rel,
+  source = names(metadata_tables),
+  study = NULL,
+  wide = FALSE,
+  cache = cmgd_cache_dir()
+) {
+    source <- match.arg(source)
+    table <- metadata_tables[[source]]
+    tables <- rel$manifest$tables
+    missing <- setdiff(c("samples", table, "metadata_sources"), tables$name)
+    if (length(missing)) {
+        stop(structure(
+            class = c("cmgdr_no_metadata", "error", "condition"),
+            list(
+                message = paste0(
+                    rel$dataset,
+                    "/",
+                    rel$release,
+                    " has no sample metadata (missing tables: ",
+                    paste(missing, collapse = ", "),
+                    ")"
+                ),
+                call = NULL
+            )
+        ))
     }
-    samples <- samples[samples$study_name %in% study, ]
-    long <- long[long$study_name %in% study, ]
-  }
-  license <- tables$license[tables$name == table]
-  sources <- read_table(rel, "metadata_sources", cache)
-  sources <- sources[sources$pinned & sources$source %in% metadata_table_sources[[source]], ]
-  if (startsWith(license, "CC-BY")) {
-    dois <- unique(sources$doi[!is.na(sources$doi)])
-    message(table, " is licensed ", license, "; attribution required: cite ",
-            paste0("doi:", dois, collapse = ", "))
-  }
+    long <- read_table(rel, table, cache)
+    samples <- read_table(rel, "samples", cache)
+    if (!is.null(study)) {
+        unknown <- setdiff(study, samples$study_name)
+        if (length(unknown)) {
+            stop(
+                "no study ",
+                paste(unknown, collapse = ", "),
+                " in ",
+                rel$dataset,
+                "/",
+                rel$release,
+                " (see cmgd_studies())",
+                call. = FALSE
+            )
+        }
+        samples <- samples[samples$study_name %in% study, ]
+        long <- long[long$study_name %in% study, ]
+    }
+    license <- tables$license[tables$name == table]
+    sources <- read_table(rel, "metadata_sources", cache)
+    sources <- sources[
+        sources$pinned & sources$source %in% metadata_table_sources[[source]],
+    ]
+    if (startsWith(license, "CC-BY")) {
+        dois <- unique(sources$doi[!is.na(sources$doi)])
+        message(
+            table,
+            " is licensed ",
+            license,
+            "; attribution required: cite ",
+            paste0("doi:", dois, collapse = ", ")
+        )
+    }
 
-  out <- if (wide) widen(samples, long) else long
-  rownames(out) <- NULL
-  structure(out, license = license, sources = `rownames<-`(sources, NULL))
+    out <- if (wide) widen(samples, long) else long
+    rownames(out) <- NULL
+    structure(out, license = license, sources = `rownames<-`(sources, NULL))
 }
 
 # One row per sample, one character column per field of `long`.
 widen <- function(samples, long) {
-  out <- samples[c("study_name", "sample_key", "biosample", "bioproject", "run_accessions")]
-  for (f in sort(unique(long$field))) {
-    hit <- long[long$field == f & !is.na(long$value), ]
-    values <- tapply(hit$value, hit$sample_key, function(v) paste(unique(v), collapse = ";"))
-    out[[f]] <- as.character(values[out$sample_key])
-  }
-  out
+    out <- samples[c(
+        "study_name",
+        "sample_key",
+        "biosample",
+        "bioproject",
+        "run_accessions"
+    )]
+    for (f in sort(unique(long$field))) {
+        hit <- long[long$field == f & !is.na(long$value), ]
+        values <- tapply(hit$value, hit$sample_key, function(v) {
+            paste(unique(v), collapse = ";")
+        })
+        out[[f]] <- as.character(values[out$sample_key])
+    }
+    out
 }
 
 # A whole release table, from its files.json, downloaded and read with duckdb.
 read_table <- function(rel, table, cache) {
-  files <- cmgd_files(rel, table)
-  do.call(rbind, lapply(files$path, function(p) read_parquet(cmgd_download(rel, p, cache = cache))))
+    files <- cmgd_files(rel, table)
+    do.call(
+        rbind,
+        lapply(files$path, function(p) {
+            read_parquet(cmgd_download(rel, p, cache = cache))
+        })
+    )
 }
 
 #' Find samples by run accession
@@ -112,16 +162,25 @@ read_table <- function(rel, table, cache) {
 #' cmgd_find_runs(rel, c("ERR478962", "ERR1474586"))
 #' }
 cmgd_find_runs <- function(rel, run, cache = cmgd_cache_dir()) {
-  if (!"samples" %in% rel$manifest$tables$name) {
-    stop(structure(class = c("cmgdr_no_metadata", "error", "condition"), list(
-      message = paste0(rel$dataset, "/", rel$release, " has no samples table"),
-      call = NULL)))
-  }
-  samples <- read_table(rel, "samples", cache)
-  runs <- strsplit(samples$run_accessions, ";", fixed = TRUE)
-  row <- rep(seq_len(nrow(samples)), lengths(runs))
-  hit <- row[match(run, trimws(unlist(runs)))]
-  out <- cbind(run = run, samples[hit, , drop = FALSE])
-  rownames(out) <- NULL
-  out
+    if (!"samples" %in% rel$manifest$tables$name) {
+        stop(structure(
+            class = c("cmgdr_no_metadata", "error", "condition"),
+            list(
+                message = paste0(
+                    rel$dataset,
+                    "/",
+                    rel$release,
+                    " has no samples table"
+                ),
+                call = NULL
+            )
+        ))
+    }
+    samples <- read_table(rel, "samples", cache)
+    runs <- strsplit(samples$run_accessions, ";", fixed = TRUE)
+    row <- rep(seq_len(nrow(samples)), lengths(runs))
+    hit <- row[match(run, trimws(unlist(runs)))]
+    out <- cbind(run = run, samples[hit, , drop = FALSE])
+    rownames(out) <- NULL
+    out
 }

@@ -22,24 +22,40 @@
 #'
 #' library(dplyr)
 #' tbl(con, "taxonomic_profile_metaphlan") |>
-#'   filter(study_name == "ZellerG_2014", rank == "species",
-#'          data_type == "full_data", is.na(humann_bundle)) |>
-#'   count(clade_name, sort = TRUE) |>
-#'   collect()
+#'     filter(
+#'         study_name == "ZellerG_2014", rank == "species",
+#'         data_type == "full_data", is.na(humann_bundle)
+#'     ) |>
+#'     count(clade_name, sort = TRUE) |>
+#'     collect()
 #' DBI::dbDisconnect(con, shutdown = TRUE)
 #' }
 cmgd_connect <- function(rel) {
-  need(c("DBI", "duckdb"), "attach a release in DuckDB")
-  con <- DBI::dbConnect(duckdb::duckdb())
-  for (sql in c("INSTALL ducklake", "LOAD ducklake", "INSTALL httpfs", "LOAD httpfs")) {
-    DBI::dbExecute(con, sql)
-  }
-  DBI::dbExecute(con, sprintf(paste0(
-    "ATTACH '%s/%s' AS cmgd ",
-    "(TYPE DUCKLAKE, DATA_PATH '%s/', OVERRIDE_DATA_PATH, READ_ONLY)"),
-    rel$url, rel$manifest$artifacts$ducklake$location, rel$url))
-  DBI::dbExecute(con, "USE cmgd")
-  con
+    need(c("DBI", "duckdb"), "attach a release in DuckDB")
+    con <- DBI::dbConnect(duckdb::duckdb())
+    for (sql in c(
+        "INSTALL ducklake",
+        "LOAD ducklake",
+        "INSTALL httpfs",
+        "LOAD httpfs"
+    )) {
+        DBI::dbExecute(con, sql)
+    }
+    DBI::dbExecute(
+        con,
+        sprintf(
+            paste0(
+                "ATTACH '%s/%s' AS cmgd ",
+                "(TYPE DUCKLAKE, DATA_PATH '%s/', OVERRIDE_DATA_PATH, ",
+                "READ_ONLY)"
+            ),
+            rel$url,
+            rel$manifest$artifacts$ducklake$location,
+            rel$url
+        )
+    )
+    DBI::dbExecute(con, "USE cmgd")
+    con
 }
 
 #' HUMAnN gene-family files
@@ -68,41 +84,64 @@ cmgd_connect <- function(rel) {
 #' cmgd_download(rel, gf$url[1])
 #' }
 cmgd_genefamilies <- function(rel, study = NULL, sample = NULL) {
-  index <- genefamily_index(rel)
-  if (is.null(study)) {
-    if (!is.null(sample)) stop("give the study of the samples", call. = FALSE)
-    return(index$studies)
-  }
-  unknown <- setdiff(study, index$studies$study_name)
-  if (length(unknown)) {
-    stop("no gene families for study ", paste(unknown, collapse = ", "), " in ",
-         rel$dataset, "/", rel$release, call. = FALSE)
-  }
-  paths <- index$studies$path[match(study, index$studies$study_name)]
-  files <- do.call(rbind, lapply(paths, genefamily_study_files, rel = rel))
-  if (!is.null(sample)) files <- files[files$sample_key %in% sample, ]
-  rownames(files) <- NULL
-  files
+    index <- genefamily_index(rel)
+    if (is.null(study)) {
+        if (!is.null(sample)) {
+            stop("give the study of the samples", call. = FALSE)
+        }
+        return(index$studies)
+    }
+    unknown <- setdiff(study, index$studies$study_name)
+    if (length(unknown)) {
+        stop(
+            "no gene families for study ",
+            paste(unknown, collapse = ", "),
+            " in ",
+            rel$dataset,
+            "/",
+            rel$release,
+            call. = FALSE
+        )
+    }
+    paths <- index$studies$path[match(study, index$studies$study_name)]
+    files <- do.call(rbind, lapply(paths, genefamily_study_files, rel = rel))
+    if (!is.null(sample)) {
+        files <- files[files$sample_key %in% sample, ]
+    }
+    rownames(files) <- NULL
+    files
 }
 
 # genefamilies/index.json, verified against studies/index.json's artifacts.
 genefamily_index <- function(rel) {
-  path <- "genefamilies/index.json"
-  artifacts <- cmgd_index(rel, "studies/index.json")$artifacts
-  if (!is.data.frame(artifacts) || !path %in% artifacts$path) {
-    stop(rel$dataset, " has no gene families (only HUMAnN datasets do)", call. = FALSE)
-  }
-  cmgd_index(rel, path, as.list(artifacts[artifacts$path == path, c("size", "sha256")]))
+    path <- "genefamilies/index.json"
+    artifacts <- cmgd_index(rel, "studies/index.json")$artifacts
+    if (!is.data.frame(artifacts) || !path %in% artifacts$path) {
+        stop(
+            rel$dataset,
+            " has no gene families (only HUMAnN datasets do)",
+            call. = FALSE
+        )
+    }
+    cmgd_index(
+        rel,
+        path,
+        as.list(artifacts[artifacts$path == path, c("size", "sha256")])
+    )
 }
 
 # One study's gene-family files (`path` from genefamilies/index.json), with
 # `url` resolved against `raw_base`.
 genefamily_study_files <- function(rel, path) {
-  studies <- genefamily_index(rel)$studies
-  hit <- studies[studies$path == path, ]
-  files <- cmgd_index(rel, path, list(size = hit$size, sha256 = hit$sha256))$files
-  if (!is.null(rel$raw_base)) {
-    files$url <- paste0(sub("/+$", "", rel$raw_base), "/", files$key)
-  }
-  files
+    studies <- genefamily_index(rel)$studies
+    hit <- studies[studies$path == path, ]
+    files <- cmgd_index(
+        rel,
+        path,
+        list(size = hit$size, sha256 = hit$sha256)
+    )$files
+    if (!is.null(rel$raw_base)) {
+        files$url <- paste0(sub("/+$", "", rel$raw_base), "/", files$key)
+    }
+    files
 }
