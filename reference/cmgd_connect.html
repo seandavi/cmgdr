@@ -49,7 +49,7 @@ DuckDB fetches only the parts of the Parquet files a query touches.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cmgd_connect</span><span class="op">(</span><span class="va">rel</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cmgd_connect</span><span class="op">(</span><span class="va">rel</span>, cache <span class="op">=</span> <span class="fu"><a href="cmgd_cache_dir.html">cmgd_cache_dir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -59,6 +59,10 @@ DuckDB fetches only the parts of the Parquet files a query touches.</p>
 <dl><dt id="arg-rel">rel<a class="anchor" aria-label="anchor" href="#arg-rel"></a></dt>
 <dd><p>A release from <code><a href="cmgd_release.html">cmgd_release()</a></code>.</p></dd>
 
+
+<dt id="arg-cache">cache<a class="anchor" aria-label="anchor" href="#arg-cache"></a></dt>
+<dd><p>Cache directory.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -66,30 +70,24 @@ DuckDB fetches only the parts of the Parquet files a query touches.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Needs the DBI and duckdb packages (DuckDB 1.5.2 or newer). The first call
-downloads DuckDB's <code>ducklake</code> and <code>httpfs</code> extensions. Close the connection
-with <code>DBI::dbDisconnect(con, shutdown = TRUE)</code>.</p>
+    <p>Needs the DBI and duckdb (1.5.4.1 or newer) packages. The first call
+downloads DuckDB's <code>ducklake</code> and <code>httpfs</code> extensions into <code>duckdb/</code> in the
+cache directory (not <code>~/.duckdb</code>), where later sessions reuse them. Close
+the connection with <code>DBI::dbDisconnect(con, shutdown = TRUE)</code>.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="cmgd_release.html">cmgd_release</a></span><span class="op">(</span><span class="st">"cmgd_nextflow-2.2.1"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">cmgd_connect</span><span class="op">(</span><span class="va">rel</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbGetQuery.html" class="external-link">dbGetQuery</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"</span></span></span>
-<span class="r-in"><span><span class="st">  SELECT study_name, count(*) AS n_samples</span></span></span>
-<span class="r-in"><span><span class="st">  FROM qc_metrics GROUP BY study_name ORDER BY n_samples DESC"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"taxonomic_profile_metaphlan"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>        <span class="va">study_name</span> <span class="op">==</span> <span class="st">"ZellerG_2014"</span>, <span class="va">rank</span> <span class="op">==</span> <span class="st">"species"</span>,</span></span>
-<span class="r-in"><span>        <span class="va">data_type</span> <span class="op">==</span> <span class="st">"full_data"</span>, <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">humann_bundle</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">clade_name</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbDisconnect.html" class="external-link">dbDisconnect</a></span><span class="op">(</span><span class="va">con</span>, shutdown <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"duckdb"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="cmgd_release.html">cmgd_release</a></span><span class="op">(</span><span class="st">"cmgd_mpa4.2-2.3.0"</span>, release <span class="op">=</span> <span class="st">"2026-10-16"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="co"># DuckDB's extensions are kept under `cache` too.</span></span></span>
+<span class="r-in"><span>    <span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">cmgd_connect</span><span class="op">(</span><span class="va">rel</span>, cache <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbGetQuery.html" class="external-link">dbGetQuery</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"</span></span></span>
+<span class="r-in"><span><span class="st">        SELECT study_name, count(*) AS n_samples</span></span></span>
+<span class="r-in"><span><span class="st">        FROM qc_metrics GROUP BY study_name</span></span></span>
+<span class="r-in"><span><span class="st">        ORDER BY n_samples DESC LIMIT 5"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbDisconnect.html" class="external-link">dbDisconnect</a></span><span class="op">(</span><span class="va">con</span>, shutdown <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

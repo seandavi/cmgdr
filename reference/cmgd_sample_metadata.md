@@ -70,10 +70,18 @@ packages.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
-meta <- cmgd_sample_metadata(rel)
-wide <- cmgd_sample_metadata(rel, "cmd", study = "BaiX_2021", wide = TRUE)
-attr(meta, "sources")
-} # }
+if (requireNamespace("duckdb", quietly = TRUE)) {
+    rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+    meta <- cmgd_sample_metadata(rel, "cmd",
+        study = "ZellerG_2014", wide = TRUE, cache = tempdir()
+    )
+    meta[1:3, 1:6]
+    attr(meta, "sources")
+}
+#>   source                                  release package_version  doi license
+#> 1    cmd 6828fb9abdfc27a91b02e20568d27332eaf19ca4            <NA> <NA> CC0-1.0
+#>                                                             sha256
+#> 1 51b2be460816ceec68238e144f903feb4e74b20ce27ad3be4d06ae242a7c15bd
+#>                      loaded_at pinned
+#> 1 2026-10-15 21:09:41.84543-06   TRUE
 ```

@@ -2,6 +2,14 @@
 
 ## cmgdr 0.99.0
 
+- [`cmgd_connect()`](https://seandavi.github.io/cmgdr/reference/cmgd_connect.md)
+  gains a `cache` argument and keeps DuckDB’s extensions and secrets in
+  `duckdb/` under the cache directory
+  (`tools::R_user_dir("cmgdr", "cache")`) instead of `~/.duckdb`;
+  Parquet reads never use `~/.duckdb`. Needs duckdb 1.5.4.1 or newer.
+- Every example now runs against the live site (small calls on
+  `cmgd_mpa4.2-2.3.0`, downloads under
+  [`tempdir()`](https://rdrr.io/r/base/tempfile.html)).
 - Prepared for Bioconductor submission: `biocViews`, version 0.99.0, a
   Quarto vignette that runs against the live site.
 - Find datasets and releases from the site’s JSON indexes

@@ -35,7 +35,10 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.99.0" id="cmgdr-0990">cmgdr 0.99.0<a class="anchor" aria-label="anchor" href="#cmgdr-0990"></a></h2>
-<ul><li>Prepared for Bioconductor submission: <code>biocViews</code>, version 0.99.0, a Quarto vignette that runs against the live site.</li>
+<ul><li>
+<code><a href="../reference/cmgd_connect.html">cmgd_connect()</a></code> gains a <code>cache</code> argument and keeps DuckDB’s extensions and secrets in <code>duckdb/</code> under the cache directory (<code>tools::R_user_dir("cmgdr", "cache")</code>) instead of <code>~/.duckdb</code>; Parquet reads never use <code>~/.duckdb</code>. Needs duckdb 1.5.4.1 or newer.</li>
+<li>Every example now runs against the live site (small calls on <code>cmgd_mpa4.2-2.3.0</code>, downloads under <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code>).</li>
+<li>Prepared for Bioconductor submission: <code>biocViews</code>, version 0.99.0, a Quarto vignette that runs against the live site.</li>
 <li>Find datasets and releases from the site’s JSON indexes (<code><a href="../reference/cmgd_datasets.html">cmgd_datasets()</a></code>, <code><a href="../reference/cmgd_releases.html">cmgd_releases()</a></code>, <code><a href="../reference/cmgd_release.html">cmgd_release()</a></code>).</li>
 <li>List tables, files and studies; download files into a SHA-256-verified cache (<code><a href="../reference/cmgd_tables.html">cmgd_tables()</a></code>, <code><a href="../reference/cmgd_files.html">cmgd_files()</a></code>, <code><a href="../reference/cmgd_studies.html">cmgd_studies()</a></code>, <code><a href="../reference/cmgd_study_files.html">cmgd_study_files()</a></code>, <code><a href="../reference/cmgd_download.html">cmgd_download()</a></code>).</li>
 <li>Read per-study files and build species <code>TreeSummarizedExperiment</code> objects (<code><a href="../reference/cmgd_read_study.html">cmgd_read_study()</a></code>, <code><a href="../reference/cmgd_species_tse.html">cmgd_species_tse()</a></code>).</li>

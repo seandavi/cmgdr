@@ -27,8 +27,19 @@ A list, as parsed by
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-prov <- cmgd_provenance(cmgd_release("cmgd_mpa4.2-2.3.0"))
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+prov <- cmgd_provenance(rel)
 prov$cmgd$databases
-} # }
+#> $metaphlan
+#> [1] "4.2.6"
+#> 
+#> $metaphlan_index
+#> [1] "mpa_vJan26_CHOCOPhlAnSGB_202605"
+#> 
+#> $kraken2_bracken
+#> [1] "k2_pluspf_16_GB_20260226"
+#> 
+#> $card
+#> [1] "broadstreet-v4.0.1"
+#> 
 ```

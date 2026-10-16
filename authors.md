@@ -3,6 +3,7 @@
 ## Authors
 
 - **Sean Davis**. Author, maintainer.
+  [](https://orcid.org/0000-0002-8991-6458)
 
 ## Citation
 

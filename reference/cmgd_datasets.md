@@ -27,7 +27,8 @@ yet).
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 cmgd_datasets()
-} # }
+#>               dataset   workflow_id version     latest
+#> 1   cmgd_mpa4.2-2.3.0   cmgd_mpa4.2   2.3.0 2026-10-16
+#> 2 cmgd_nextflow-2.2.1 cmgd_nextflow   2.2.1 2026-10-08
 ```

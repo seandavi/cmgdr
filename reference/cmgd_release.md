@@ -43,8 +43,9 @@ release's base URL), `base`, `raw_base` and `manifest`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-rel <- cmgd_release("cmgd_nextflow-2.2.1")
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
 rel
-} # }
+#> <cmgd_release> cmgd_mpa4.2-2.3.0 2026-10-16
+#>   url:    https://cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16
+#>   tables: marker_abundance, marker_presence, metadata_comparison, metadata_sources, qc_metrics, resistome, sample_metadata_cmd, sample_metadata_harmonized, sample_metadata_olm, samples, taxonomic_profile_bracken, taxonomic_profile_metaphlan
 ```

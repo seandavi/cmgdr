@@ -27,8 +27,12 @@ A data.frame with columns `table`, `path` (relative to the release URL),
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-rel <- cmgd_release("cmgd_nextflow-2.2.1")
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
 cmgd_files(rel, "qc_metrics")
-} # }
+#>        table                                      path
+#> 1 qc_metrics tables/qc_metrics/data/part-00000.parquet
+#>                                                                                                            url
+#> 1 https://cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet
+#>    size                                                           sha256 rows
+#> 1 16845 0403bd0b02b62e60d850e007bf81fcab7bf65e193e68faaf8425f3cb17ef216b  125
 ```

@@ -71,7 +71,7 @@ temporary directory so building it leaves nothing behind.
 library(cmgdr)
 Sys.setenv(R_USER_CACHE_DIR = tempfile("cmgdr-cache"))
 cmgd_cache_dir()
-#> [1] "/tmp/RtmpPGFcq6/cmgdr-cache1baa889d297/R/cmgdr"
+#> [1] "/tmp/RtmpHYSqHV/cmgdr-cache1bf81f28004d/R/cmgdr"
 ```
 
 ## Finding datasets and releases
@@ -198,7 +198,7 @@ without downloading, as long as the copy still verifies.
 
 local <- cmgd_download(rel, files$path[1])
 local
-#> [1] "/tmp/RtmpPGFcq6/cmgdr-cache1baa889d297/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"
+#> [1] "/tmp/RtmpHYSqHV/cmgdr-cache1bf81f28004d/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"
 file.size(local) == files$size[1]
 #> [1] TRUE
 ```
@@ -511,14 +511,6 @@ only the parts of the remote Parquet files a query needs.
 ``` r
 
 con <- cmgd_connect(rel)
-#> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpPGFcq6/duckdb
-#> This is removed when the R session ends.
-#> • Extensions are re-downloaded each session.
-#> • Secrets are lost.
-#> ℹ Run duckdb(shared_home = TRUE) (or create ~/.duckdb) to keep them (suitable for most users).
-#> ℹ Run duckdb(shared_home = FALSE) to accept the temporary directory (and silence this message).
-#> ℹ See ?duckdb_storage for details and alternatives.
 DBI::dbGetQuery(con, "
   SELECT study_name, count(*) AS n_samples,
          avg(reads_decontaminated) AS mean_reads

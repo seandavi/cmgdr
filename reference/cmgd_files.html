@@ -63,10 +63,14 @@ URL), <code>url</code>, <code>size</code> (bytes), <code>sha256</code> and <code
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="cmgd_release.html">cmgd_release</a></span><span class="op">(</span><span class="st">"cmgd_nextflow-2.2.1"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="cmgd_release.html">cmgd_release</a></span><span class="op">(</span><span class="st">"cmgd_mpa4.2-2.3.0"</span>, release <span class="op">=</span> <span class="st">"2026-10-16"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cmgd_files</span><span class="op">(</span><span class="va">rel</span>, <span class="st">"qc_metrics"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        table                                      path</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 qc_metrics tables/qc_metrics/data/part-00000.parquet</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                            url</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 https://cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    size                                                           sha256 rows</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 16845 0403bd0b02b62e60d850e007bf81fcab7bf65e193e68faaf8425f3cb17ef216b  125</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

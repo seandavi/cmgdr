@@ -85,12 +85,17 @@ cmgd-raw), <code>url</code>, <code>size</code> (bytes), <code>sha256</code> and 
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="cmgd_release.html">cmgd_release</a></span><span class="op">(</span><span class="st">"cmgd_humann3.9-2.3.0"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">cmgd_genefamilies</span><span class="op">(</span><span class="va">rel</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu">cmgd_genefamilies</span><span class="op">(</span><span class="va">rel</span>, study <span class="op">=</span> <span class="st">"ZellerG_2014"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="cmgd_download.html">cmgd_download</a></span><span class="op">(</span><span class="va">rel</span>, <span class="va">gf</span><span class="op">$</span><span class="va">url</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Runs once a HUMAnN dataset is published; none is on the site yet.</span></span></span>
+<span class="r-in"><span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="cmgd_datasets.html">cmgd_datasets</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">humann</span> <span class="op">&lt;-</span> <span class="va">ds</span><span class="op">$</span><span class="va">dataset</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/startsWith.html" class="external-link">startsWith</a></span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">dataset</span>, <span class="st">"cmgd_humann"</span><span class="op">)</span> <span class="op">&amp;</span></span></span>
+<span class="r-in"><span>    <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">ds</span><span class="op">$</span><span class="va">latest</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">humann</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="cmgd_release.html">cmgd_release</a></span><span class="op">(</span><span class="va">humann</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">studies</span> <span class="op">&lt;-</span> <span class="fu">cmgd_genefamilies</span><span class="op">(</span><span class="va">rel</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu">cmgd_genefamilies</span><span class="op">(</span><span class="va">rel</span>, study <span class="op">=</span> <span class="va">studies</span><span class="op">$</span><span class="va">study_name</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gf</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="co"># cmgd_download(rel, gf$url[1], cache = tempdir())</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

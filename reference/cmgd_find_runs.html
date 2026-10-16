@@ -75,10 +75,22 @@ release has no <code>samples</code> table.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="cmgd_release.html">cmgd_release</a></span><span class="op">(</span><span class="st">"cmgd_mpa4.2-2.3.0"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">cmgd_find_runs</span><span class="op">(</span><span class="va">rel</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ERR478962"</span>, <span class="st">"ERR1474586"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"duckdb"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="cmgd_release.html">cmgd_release</a></span><span class="op">(</span><span class="st">"cmgd_mpa4.2-2.3.0"</span>, release <span class="op">=</span> <span class="st">"2026-10-16"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">cmgd_find_runs</span><span class="op">(</span><span class="va">rel</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ERR478962"</span>, <span class="st">"ERR1474586"</span><span class="op">)</span>, cache <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          run     study_name                          sample_key</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  ERR478962   ZellerG_2014 RS.8G5cd1ZeZW4RVHDQitQ1t5PV7IHCue2p</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 ERR1474586 LassalleF_2017 RS.03kxtlz2sN5chfT1RCwEeJcKuVWWwe-E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                            readset_id                          run_accessions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 RS.8G5cd1ZeZW4RVHDQitQ1t5PV7IHCue2p ERR478962;ERR478963;ERR480458;ERR480459</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 RS.03kxtlz2sN5chfT1RCwEeJcKuVWWwe-E                              ERR1474586</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      biosample bioproject pipeline_version</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 SAMEA2466896  PRJEB6070            2.3.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         &lt;NA&gt;       &lt;NA&gt;            2.3.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                 git_commit             completed_at</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 793996bafae99c65ce4f9ff85a08f08b68fa6227 2026-10-10T03:50:09.001Z</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 793996bafae99c65ce4f9ff85a08f08b68fa6227 2026-10-12T22:27:05.493Z</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
