@@ -1,3 +1,6 @@
+# Every test here runs against the fixture site, served by webfakes.
+skip_if_not_installed("webfakes")
+
 test_that("cmgd_connect attaches the release catalog over HTTP", {
   skip_if_not_installed("duckdb")
   skip_on_cran()  # installs DuckDB extensions from the internet
