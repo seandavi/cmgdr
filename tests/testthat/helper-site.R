@@ -48,8 +48,8 @@ range_app <- function(root) {
   app
 }
 
-# One server for the whole test run.
-site <- local({
+# One server for the whole test run; test files skip without webfakes.
+site <- if (requireNamespace("webfakes", quietly = TRUE)) local({
   root <- fixture_site()
   proc <- webfakes::new_app_process(range_app(root))
   list(root = root, proc = proc, base = proc$url("/public"), raw = proc$url("/raw"))

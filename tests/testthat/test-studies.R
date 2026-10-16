@@ -1,3 +1,6 @@
+# Every test here runs against the fixture site, served by webfakes.
+skip_if_not_installed("webfakes")
+
 test_that("cmgd_studies and cmgd_study_files read studies/index.json", {
   rel <- open_release()
   studies <- cmgd_studies(rel)

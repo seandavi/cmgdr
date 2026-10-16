@@ -83,6 +83,18 @@ while the cached copy verifies. The per-study gene-family indexes are verified
 against `genefamilies/index.json`, which is verified against
 `studies/index.json`.
 
+## Development
+
+Install the package's dependencies, including the Suggests the tests and
+vignette need (`webfakes`, `duckdb`, `TreeSummarizedExperiment`, ...), then
+run the tests. No credentials or network are needed: the tests serve a local
+fixture site.
+
+```r
+pak::local_install_dev_deps()
+testthat::test_local()   # or R CMD check
+```
+
 ## Conformance
 
 The tests run against a small fixture release in `tests/testthat/fixtures/site`

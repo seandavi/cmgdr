@@ -1,3 +1,6 @@
+# Every test here runs against the fixture site, served by webfakes.
+skip_if_not_installed("webfakes")
+
 test_that("cmgd_datasets reads the site's root index.json", {
   ds <- cmgd_datasets(site$base)
   expect_equal(ds$dataset, c(humann, legacy))

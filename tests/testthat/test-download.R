@@ -1,3 +1,6 @@
+# Every test here runs against the fixture site, served by webfakes.
+skip_if_not_installed("webfakes")
+
 test_that("cmgd_download verifies, caches and skips re-downloads", {
   rel <- open_release()
   cache <- tempfile()

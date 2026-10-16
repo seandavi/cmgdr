@@ -1,3 +1,6 @@
+# Every test here runs against the fixture site, served by webfakes.
+skip_if_not_installed("webfakes")
+
 mpa_release <- function() open_release(mpa, release = "2026-10-16")
 
 # The fixture's Parquet file for `table`, read directly.
