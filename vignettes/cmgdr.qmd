@@ -1,0 +1,390 @@
+---
+title: "Accessing curatedMetagenomicData releases with cmgdr"
+author: "Sean Davis"
+vignette: >
+  %\VignetteIndexEntry{Accessing curatedMetagenomicData releases with cmgdr}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
+---
+
+## Background
+
+[curatedMetagenomicData](https://waldronlab.io/curatedMetagenomicData/) (cMD)
+is a collection of human shotgun metagenomes from published studies, every
+sample processed through the same pipeline and paired with curated sample
+metadata, so that profiles from different studies can be compared and pooled.
+Each sample's raw reads are quality-controlled and profiled with MetaPhlAn
+(taxonomic relative abundance), Kraken2/Bracken, a resistome screen against
+CARD and, in some pipeline configurations, HUMAnN (functional profiles).
+
+The profiles are now published as open **data releases** at
+<https://cmgd-public.cancerdatasci.org>. The layout has a few concepts that
+the rest of this vignette relies on:
+
+- A **dataset** is one pipeline registration: a pipeline version together with
+  its configuration, named `<workflow_id>-<version>`, for example
+  `cmgd_mpa4.2-2.3.0` (pipeline 2.3.0, MetaPhlAn 4.2, no HUMAnN). Profiles from
+  different datasets were made with different tools or databases and are kept
+  apart.
+- A **release** is an immutable, full snapshot of a dataset, named by its UTC
+  build date (`2026-10-16`). A release never changes once published; new data
+  arrive as a new release. Cite the dataset and the release id.
+- Each release has a **manifest** (`manifest.json`) listing its **tables**
+  (long, tidy tables such as `taxonomic_profile_metaphlan` or `qc_metrics`,
+  stored as Parquet files), ready-made **per-study files**, and a read-only
+  [DuckLake](https://ducklake.select) catalog that lets DuckDB query the
+  whole release in place.
+- Every file is listed with its size and SHA-256 checksum. cmgdr downloads
+  files into a local **cache** and verifies them against those checksums; a
+  file that does not verify is deleted and an error raised. Because releases
+  are immutable, a cached file never goes stale.
+
+The site cannot be listed like a directory: everything is found through JSON
+indexes, which is what cmgdr reads.
+
+cmgdr is deliberately a low-level client. It knows the published layout
+and returns plain data frames, lists, local file paths, a DuckDB connection,
+and (for convenience) a species `TreeSummarizedExperiment`. It does not
+reshape, join or model the data; higher-level packages are expected to build
+on it.
+
+This vignette uses the small `cmgd_mpa4.2-2.3.0` release (125 samples in 8
+studies) and, within it, the three-sample `ZellerG_2014` study, so it
+downloads only a few hundred kilobytes. All code runs against the live site.
+
+## Setup
+
+cmgdr is not on Bioconductor yet. Install it from GitHub; once it is accepted,
+`BiocManager::install("cmgdr")` will work.
+
+```{r}
+#| label: install
+#| eval: false
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("seandavi/cmgdr")
+```
+
+Downloads go to `cmgd_cache_dir()`, which is
+`tools::R_user_dir("cmgdr", "cache")` and moves with the `R_USER_CACHE_DIR`
+environment variable. This vignette points it at a temporary directory so
+building it leaves nothing behind.
+
+```{r}
+#| label: setup
+library(cmgdr)
+Sys.setenv(R_USER_CACHE_DIR = tempfile("cmgdr-cache"))
+cmgd_cache_dir()
+```
+
+## Finding datasets and releases
+
+`cmgd_datasets()` takes no required arguments (only `base`, the site URL) and
+returns a data frame with one row per published dataset: its id
+(`dataset`), the pipeline registration it comes from (`workflow_id`,
+`version`), and the id of its newest release (`latest`).
+
+```{r}
+#| label: datasets
+datasets <- cmgd_datasets()
+datasets
+```
+
+`cmgd_releases()` takes a dataset id and returns one row per release of
+that dataset, oldest first: the release id, its build date, when it was
+published, and whether it is `pinned` (kept as a long-term reference).
+
+```{r}
+#| label: releases
+cmgd_releases("cmgd_mpa4.2-2.3.0")
+```
+
+`cmgd_release()` opens a release. It takes a dataset id and a release id; the
+default `release = "latest"` resolves to the newest one, but for reproducible
+work pin the id, as here. It reads the release's manifest and returns a
+`cmgd_release` object, the handle every other cmgdr function takes. It is a
+list with the dataset and release ids, the release URL and the parsed
+manifest; printing it shows the tables it holds.
+
+```{r}
+#| label: release
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+rel
+class(rel)
+names(rel$manifest)
+```
+
+## Tables and files
+
+`cmgd_tables()` takes a release and returns one row per table: its `name`,
+a `description`, its `grain` (what one row of the table means), its
+`row_count`, and its `license`. Most tables are CC0-1.0; tables that include
+values derived from the Olm lab Microbiome Repo are CC-BY-4.0 (see
+[Sample metadata](#sample-metadata)).
+
+```{r}
+#| label: tables
+tables <- cmgd_tables(rel)
+tables[, c("name", "grain", "row_count", "license")]
+```
+
+A table is stored as one or more Parquet files. `cmgd_files()` takes a release
+and, optionally, table names, and returns one row per file: the `table`, the
+file's `path` relative to the release, its full `url`, its `size` in bytes,
+its `sha256`, and the number of `rows` it holds.
+
+```{r}
+#| label: files
+files <- cmgd_files(rel, "qc_metrics")
+str(files)
+```
+
+`cmgd_download()` takes a release and one path (as in the `path` column) or
+full URL, downloads the file into the cache, verifies its size and SHA-256,
+and returns the local file path. Calling it again returns the cached copy
+without downloading, as long as the copy still verifies.
+
+```{r}
+#| label: download
+local <- cmgd_download(rel, files$path[1])
+local
+file.size(local) == files$size[1]
+```
+
+## Studies
+
+Besides whole tables, each release has ready-made files for each study.
+`cmgd_studies()` takes a release and returns one row per study: its
+`study_name` and `n_samples`.
+
+```{r}
+#| label: studies
+studies <- cmgd_studies(rel)
+studies
+```
+
+`cmgd_study_files()` takes a release and a study name and returns one row
+per file published for that study: its `name`, `path`, `url`, `size`,
+`sha256` and a `description` of what it holds. There is a species × samples
+matrix (`metaphlan_species.tsv.gz`), the study's rows of the main tables as
+Parquet, and a QC table (`qc.tsv`).
+
+```{r}
+#| label: study-files
+study_files <- cmgd_study_files(rel, "ZellerG_2014")
+study_files[, c("name", "size")]
+```
+
+`cmgd_read_study()` takes a release, a study and the file's `name` without
+extension (`"qc"`, `"metaphlan"`, `"bracken"`, `"metaphlan_species"`, ...),
+downloads it through the verified cache and reads it into a data frame.
+Parquet files are read with the duckdb package. The QC table has one row per
+sample: its keys (`sample_key`, `readset_id`, `run_ids`), read and base counts
+before and after decontamination, and the pipeline version and commit that
+produced it.
+
+```{r}
+#| label: read-study
+qc <- cmgd_read_study(rel, "ZellerG_2014", "qc")
+str(qc)
+```
+
+## A species TreeSummarizedExperiment
+
+`cmgd_species_tse()` takes a release and a study and builds a
+`TreeSummarizedExperiment` (needs the TreeSummarizedExperiment and Matrix
+packages) from the study's species matrix. Rows are MetaPhlAn species clades
+(full `k__...|s__...` names), columns are samples (`sample_key`), and the one
+assay, `relative_abundance`, is a sparse matrix of percentages from the main
+MetaPhlAn pass on all reads. The QC table above is its `colData`.
+
+```{r}
+#| label: species-tse
+tse <- cmgd_species_tse(rel, "ZellerG_2014")
+tse
+abundance <- SummarizedExperiment::assay(tse, "relative_abundance")
+class(abundance)
+# Shorten the clade names to the species for display
+rownames(abundance) <- sub(".*\\|s__", "", rownames(abundance))
+top <- order(-Matrix::rowSums(abundance))[1:5]
+as.matrix(abundance[top, ])
+```
+
+## Sample metadata {#sample-metadata}
+
+Releases since `cmgd_mpa4.2-2.3.0` / `2026-10-16` publish sample metadata as
+tables. `cmgd_sample_metadata()` takes a release, a `source`, optional
+`study` names and `wide`, and returns a data frame. The sources are:
+
+- `harmonized` (the default): one value per sample and harmonized field,
+  taken from the cMD curation where it has one and from the Olm lab
+  Microbiome Repo otherwise. CC-BY-4.0.
+- `cmd`: the curatedMetagenomicData curation as published. CC0-1.0.
+- `olm`: the Olm lab Microbiome Repo, with its route and confidence.
+  CC-BY-4.0.
+
+With `wide = FALSE` (the default) the table comes back long, as published:
+one row per sample and field, with the `value`, the `source` it came
+from, the source's `release`, and for Olm values the `route` and
+`confidence`.
+
+```{r}
+#| label: metadata-long
+meta <- cmgd_sample_metadata(rel, study = "ZellerG_2014")
+head(meta)
+```
+
+Reading a CC-BY-4.0 table prints a message naming the licence and the DOI to
+cite. The licence and the pinned source releases the table was built from
+(with their DOIs and checksums) are also attached as attributes, so they
+travel with the data:
+
+```{r}
+#| label: metadata-attribution
+attr(meta, "license")
+attr(meta, "sources")[, c("source", "release", "doi", "license")]
+```
+
+If you use the `harmonized` or `olm` tables, cite the Microbiome Repo DOI
+above as well as curatedMetagenomicData; the
+[provenance](#provenance) lists the full citation text.
+
+With `wide = TRUE` the result has one row per sample: the sample's
+`study_name`, `sample_key`, `biosample`, `bioproject` and `run_accessions`,
+then one character column per field, `NA` where a sample has no value.
+
+```{r}
+#| label: metadata-wide
+wide <- cmgd_sample_metadata(rel, source = "cmd", study = "ZellerG_2014",
+                             wide = TRUE)
+dim(wide)
+wide[, c("sample_key", "biosample", "age_years", "sex", "health_condition")]
+```
+
+A release without metadata tables raises an error of class
+`cmgdr_no_metadata`, which callers can catch with `tryCatch()`.
+
+## Finding samples by run accession
+
+`cmgd_find_runs()` takes a release and a vector of SRA/ENA run accessions
+(`SRR...`, `ERR...`, `DRR...`) and looks them up in the release's `samples`
+table, where a sample's runs are `;`-joined. It returns a data frame with one
+row per accession, in the order given: the `run`, then the matching
+`samples` row (study, `sample_key`, BioSample, BioProject, pipeline version,
+...). A run the release does not have gets a row of `NA`s, so the result
+always lines up with the input.
+
+```{r}
+#| label: find-runs
+runs <- cmgd_find_runs(rel, c("ERR478962", "SRR0000000"))
+runs[, c("run", "study_name", "sample_key", "biosample", "bioproject")]
+```
+
+## Provenance {#provenance}
+
+`cmgd_provenance()` takes a release and returns its `provenance.json` as a
+list: the lake snapshots the release was built from
+(`source_asset_versions`) and, for releases since `2026-10-16`, a `cmgd`
+section with the pipeline registration (repository, revision, parameters),
+the pipeline runs, the reference database versions, the pinned metadata
+sources, the licence of every table, and citation text.
+
+```{r}
+#| label: provenance
+prov <- cmgd_provenance(rel)
+names(prov$cmgd)
+str(prov$cmgd$databases)
+prov$cmgd$pipeline_runs
+prov$cmgd$citation
+```
+
+## Whole tables with SQL and dplyr
+
+`cmgd_connect()` takes a release and returns a DBI connection to an
+in-memory DuckDB database with the release's DuckLake catalog attached
+read-only (needs the DBI and duckdb packages). Every table in
+`cmgd_tables()` is available by name. Nothing is downloaded up front: DuckDB
+fetches only the parts of the remote Parquet files a query needs.
+
+```{r}
+#| label: connect
+con <- cmgd_connect(rel)
+DBI::dbGetQuery(con, "
+  SELECT study_name, count(*) AS n_samples,
+         avg(reads_decontaminated) AS mean_reads
+  FROM qc_metrics
+  GROUP BY study_name
+  ORDER BY n_samples DESC")
+```
+
+The same connection works with dplyr (and dbplyr). Here are the five most
+abundant species in `ZellerG_2014`, averaged over its samples. A species
+missing from a sample has no row, so divide by the study's sample count rather
+than taking a mean.
+
+```{r}
+#| label: dplyr
+#| message: false
+library(dplyr)
+n <- tbl(con, "qc_metrics") |>
+    filter(study_name == "ZellerG_2014") |>
+    count() |>
+    pull(n)
+tbl(con, "taxonomic_profile_metaphlan") |>
+    filter(study_name == "ZellerG_2014", rank == "species",
+           data_type == "full_data", is.na(humann_bundle)) |>
+    group_by(clade_name) |>
+    summarise(mean_percent = sum(relative_abundance, na.rm = TRUE) / n) |>
+    arrange(desc(mean_percent)) |>
+    head(5) |>
+    collect() |>
+    mutate(species = sub(".*\\|s__", "", clade_name), .keep = "unused")
+DBI::dbDisconnect(con, shutdown = TRUE)
+```
+
+Before computing across tables:
+
+1. Abundances from different methods are not on the same scale. MetaPhlAn
+   `relative_abundance` is a percent; Bracken `fraction_total_reads` is a 0–1
+   fraction.
+2. Pick one `data_type`, either `full_data` (all reads) or `rarefied_data` (a
+   1M-read subsample). Most analyses want `full_data`.
+3. Pick one MetaPhlAn pass. In HUMAnN datasets the bundle's own MetaPhlAn
+   pass (`humann_bundle` set) sits next to the main pass
+   (`humann_bundle IS NULL`).
+
+Each release's `README.md` and `tables/<table>/schema.json` document every
+column.
+
+## HUMAnN gene families
+
+HUMAnN datasets (`cmgd_humann3.9-2.3.0`, `cmgd_humann4a1-2.3.0`) also publish
+per-sample HUMAnN gene-family tables. These are too large for the release
+tables, so each is its own download from
+`https://cmgd-raw.cancerdatasci.org`, listed in the release's gene-family
+index. `cmgd_genefamilies()` takes a release and returns
+one row per study with gene families; with `study`, one row per file with its
+`url`, `size`, `sha256` and row count, which `cmgd_download()` fetches and
+verifies. No HUMAnN dataset is on the public site yet, so this code is shown
+but not run.
+
+```{r}
+#| label: genefamilies
+#| eval: false
+gf_rel <- cmgd_release("cmgd_humann3.9-2.3.0")
+cmgd_genefamilies(gf_rel)
+gf <- cmgd_genefamilies(gf_rel, study = "ZellerG_2014")
+path <- cmgd_download(gf_rel, gf$url[1])
+genefamilies <- read.delim(path, check.names = FALSE)
+```
+
+## Session info
+
+```{r}
+#| label: session-info
+sessionInfo()
+```
