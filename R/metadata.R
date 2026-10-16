@@ -92,3 +92,36 @@ read_table <- function(rel, table, cache) {
   files <- cmgd_files(rel, table)
   do.call(rbind, lapply(files$path, function(p) read_parquet(cmgd_download(rel, p, cache = cache))))
 }
+
+#' Find samples by run accession
+#'
+#' Looks up SRA/ENA run accessions (`SRR...`, `ERR...`, `DRR...`) in the
+#' release's `samples` table, where a sample's runs are `;`-joined in
+#' `run_accessions`.
+#'
+#' @inheritParams cmgd_read_study
+#' @param run Run accessions.
+#' @return A data.frame with one row per `run`, in order: `run`, then the
+#'   matching `samples` row (`study_name`, `sample_key`, ...); all `NA` for a
+#'   run not in the release. Errors with class `cmgdr_no_metadata` if the
+#'   release has no `samples` table.
+#' @export
+#' @examples
+#' \dontrun{
+#' rel <- cmgd_release("cmgd_mpa4.2-2.3.0")
+#' cmgd_find_runs(rel, c("ERR478962", "ERR1474586"))
+#' }
+cmgd_find_runs <- function(rel, run, cache = cmgd_cache_dir()) {
+  if (!"samples" %in% rel$manifest$tables$name) {
+    stop(structure(class = c("cmgdr_no_metadata", "error", "condition"), list(
+      message = paste0(rel$dataset, "/", rel$release, " has no samples table"),
+      call = NULL)))
+  }
+  samples <- read_table(rel, "samples", cache)
+  runs <- strsplit(samples$run_accessions, ";", fixed = TRUE)
+  row <- rep(seq_len(nrow(samples)), lengths(runs))
+  hit <- row[match(run, trimws(unlist(runs)))]
+  out <- cbind(run = run, samples[hit, , drop = FALSE])
+  rownames(out) <- NULL
+  out
+}

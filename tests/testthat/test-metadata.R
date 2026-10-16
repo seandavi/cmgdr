@@ -111,3 +111,15 @@ test_that("live: cmgd_mpa4.2-2.3.0 2026-10-16", {
   expect_equal(nrow(suppressMessages(
     cmgd_sample_metadata(rel, study = "BaiX_2021", wide = TRUE, cache = cache))), 24)
 })
+
+test_that("cmgd_find_runs splits run_accessions and keeps input order", {
+  rel <- mpa_release()
+  x <- cmgd_find_runs(rel, c("ERR480459", "ERR1474586", "SRR0000000", "ERR478962"),
+                      cache = tempfile())
+  expect_equal(x$run, c("ERR480459", "ERR1474586", "SRR0000000", "ERR478962"))
+  expect_equal(x$study_name, c("ZellerG_2014", "LassalleF_2017", NA, "ZellerG_2014"))
+  expect_equal(x$sample_key[1], x$sample_key[4])  # two runs of one sample
+  expect_true(all(is.na(x[3, -1])))
+  expect_error(cmgd_find_runs(open_release(), "ERR1", cache = tempfile()),
+               class = "cmgdr_no_metadata")
+})
