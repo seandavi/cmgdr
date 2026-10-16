@@ -1,0 +1,145 @@
+# Reproduces the r-universe build of this package for the Bioconductor devel
+# universe (bioc.r-universe.dev): a green run here should mean a green
+# r-universe build. The source/linux/bioconductor jobs are taken from
+# r-universe-org/workflows' reusable build.yml at
+# 2025515d8de93f38f70bb8ff6384e06821a3b5bd, with the same action pins as
+# seandavi/bioc-build's copy of it. Divergences from upstream are marked
+# "divergence:" below.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+name: r-universe build
+
+permissions: read-all
+
+# divergence: upstream derives these from workflow_call inputs; here they are
+# the values r-universe uses for a Bioconductor devel package (universe: bioc,
+# organization: bioconductor).
+env:
+  UNIVERSE_NAME: bioc
+  MY_UNIVERSE: https://bioc.r-universe.dev
+  NO_ADDITIONAL_REPOSITORIES: true
+
+jobs:
+  source:
+    name: Source pkg and vignettes
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    outputs:
+      sourcepkg: ${{ steps.build.outputs.SOURCEPKG }}
+      package: ${{ steps.build.outputs.PACKAGE }}
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - name: Free disk space on runner
+        run: rm -Rf /usr/share/dotnet /opt/ghc "/usr/local/share/boost" "$AGENT_TOOLSDIRECTORY" || true
+      # build-source clones `url` at `ref` itself; no checkout needed.
+      - id: build
+        timeout-minutes: 60
+        name: Build source package and vignettes
+        uses: r-universe-org/build-source@1ee4788f93b7a9f2da882e757ceeff34759a7ab5 # master
+        env:
+          GITHUB_PAT: ${{secrets.GITHUB_TOKEN}}
+        with:
+          url: ${{ github.server_url }}/${{ github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          branch: ${{ github.head_ref || github.ref_name }}
+      - name: "Store source package"
+        uses: r-universe-org/actions/store-package@e859fe2adc2553a5c8b0b2ec6044215d60d3d9c7 # v12
+        if: ${{ !cancelled() && steps.build.outputs.PACKAGE }}
+        with:
+          name: package-source
+          JOB_STATUS: ${{ job.status }}
+          DISTRO: ${{ steps.build.outputs.DISTRO }}
+          FILE: ${{ steps.build.outputs.SOURCEPKG }}
+          TARGET: ${{ steps.build.outputs.SOURCEPKG && 'source' || 'failure' }}
+      - id: matrix
+        if: always()
+        uses: r-universe-org/actions/build-matrix@e859fe2adc2553a5c8b0b2ec6044215d60d3d9c7 # v12
+        with:
+          compiled: ${{ steps.build.outputs.NEEDS_COMPILATION }}
+          universe: bioc
+
+  linux:
+    needs: [source]
+    if: ${{ !cancelled() && needs.source.outputs.sourcepkg }}
+    runs-on: ubuntu-24.04${{matrix.arch=='arm64' && '-arm' || ''}}
+    timeout-minutes: 150
+    name: R-${{ matrix.r }} for Linux
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.source.outputs.matrix).linux}}
+    container:
+      image: ghcr.io/r-universe-org/base-image:${{ matrix.r }}
+      volumes:
+        - /usr:/host/usr
+    steps:
+      - name: "Prepare Linux system"
+        timeout-minutes: 10
+        uses: r-universe-org/actions/linux-prep@e859fe2adc2553a5c8b0b2ec6044215d60d3d9c7 # v12
+      - name: "Get dependences"
+        id: deps
+        uses: r-universe-org/actions/linux-deps@e859fe2adc2553a5c8b0b2ec6044215d60d3d9c7 # v12
+        timeout-minutes: 60
+        env:
+          GITHUB_PAT: ${{secrets.GITHUB_TOKEN}}
+        with:
+          sourcepkg: ${{ needs.source.outputs.sourcepkg }}
+      - name: Build package "${{needs.source.outputs.package}}"
+        uses: r-universe-org/actions/linux-build@e859fe2adc2553a5c8b0b2ec6044215d60d3d9c7 # v12
+        timeout-minutes: 60
+        env:
+          GITHUB_PAT: ${{secrets.GITHUB_TOKEN}}
+        with:
+          sourcepkg: ${{ needs.source.outputs.sourcepkg }}
+      - name: "R CMD check"
+        uses: r-universe-org/actions/linux-check@e859fe2adc2553a5c8b0b2ec6044215d60d3d9c7 # v12
+        id: check
+        timeout-minutes: 60
+        env:
+          GITHUB_PAT: ${{secrets.GITHUB_TOKEN}}
+        with:
+          sourcepkg: ${{ needs.source.outputs.sourcepkg }}
+      # divergence: linux-check only fails on ERROR; r-universe shows a
+      # WARNING as a yellow check. Fail on it here as the old job did.
+      - name: Fail on R CMD check WARNING
+        if: steps.check.outputs.checkstatus == 'WARNING'
+        run: exit 1
+
+  bioconductor:
+    needs: [source]
+    if: ${{ !cancelled() && needs.source.outputs.sourcepkg }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 100
+    name: Bioconductor Checks
+    container:
+      image: ghcr.io/r-universe-org/base-image:release
+    steps:
+      - name: "Prepare Linux system"
+        timeout-minutes: 10
+        uses: r-universe-org/actions/linux-prep@e859fe2adc2553a5c8b0b2ec6044215d60d3d9c7 # v12
+      - name: "Get dependences"
+        id: deps
+        uses: r-universe-org/actions/linux-deps@e859fe2adc2553a5c8b0b2ec6044215d60d3d9c7 # v12
+        timeout-minutes: 60
+        env:
+          GITHUB_PAT: ${{secrets.GITHUB_TOKEN}}
+        with:
+          sourcepkg: ${{ needs.source.outputs.sourcepkg }}
+      # Fails the job on a BiocCheck ERROR (as quit-with-status = TRUE did).
+      - name: Run BiocCheck for "${{needs.source.outputs.package}}"
+        uses: r-universe-org/actions/bioc-check@e859fe2adc2553a5c8b0b2ec6044215d60d3d9c7 # v12
+        id: check
+        timeout-minutes: 60
+        env:
+          GITHUB_PAT: ${{secrets.GITHUB_TOKEN}}
+        with:
+          sourcepkg: ${{ needs.source.outputs.sourcepkg }}
+      - name: Store ${{needs.source.outputs.package}}.BiocCheck
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: bioc-checks
+          retention-days: 7
+          path: ${{needs.source.outputs.package}}.BiocCheck
