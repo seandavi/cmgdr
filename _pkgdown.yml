@@ -8,6 +8,7 @@ reference:
       - cmgd_datasets
       - cmgd_releases
       - cmgd_release
+      - cmgd_provenance
   - title: Tables and files
     contents:
       - cmgd_tables
@@ -24,6 +25,7 @@ reference:
   - title: Sample metadata
     contents:
       - cmgd_sample_metadata
+      - cmgd_find_runs
   - title: Gene families
     contents:
       - cmgd_genefamilies

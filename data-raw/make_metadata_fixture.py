@@ -4,7 +4,7 @@
 
 Copies, for STUDIES only, the `samples` table and the sample-metadata tables
 (all of `metadata_sources`) with their schema.json and README.md, rewrites each
-files.json for the sliced Parquet, and writes a manifest with just these tables
+files.json for the sliced Parquet, copies provenance.json as is, and writes a manifest with just these tables
 (row counts updated, licences kept). The DuckLake catalog is left out:
 cmgd_sample_metadata() reads the Parquet files through files.json.
 """
@@ -27,6 +27,7 @@ dst = dst_ds / release
 dst.mkdir(parents=True)
 for f in ("latest.json", "releases.json"):
     shutil.copy(src_ds / f, dst_ds / f)
+shutil.copy(src / "provenance.json", dst / "provenance.json")
 
 manifest = json.loads((src / "manifest.json").read_text())
 manifest["tables"] = [t for t in manifest["tables"] if t["name"] in TABLES]

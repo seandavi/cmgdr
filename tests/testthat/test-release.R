@@ -66,3 +66,12 @@ test_that("cmgd_tables and cmgd_files list tables and their files", {
   expect_match(qc$sha256, "^[0-9a-f]{64}$")
   expect_error(cmgd_files(rel, "nope"), "no table nope")
 })
+
+test_that("cmgd_provenance reads provenance.json", {
+  legacy_prov <- cmgd_provenance(open_release())
+  expect_true("lake.cmgd.qc_metrics" %in% legacy_prov$source_asset_versions$ref)
+  prov <- cmgd_provenance(open_release(mpa, release = "2026-10-16"))
+  expect_equal(prov$cmgd$registration$workflow_id, "cmgd_mpa4.2")
+  expect_equal(prov$cmgd$databases$metaphlan, "4.2.6")
+  expect_setequal(prov$cmgd$metadata_sources$source, c("cmd", "olm"))
+})
