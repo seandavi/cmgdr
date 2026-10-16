@@ -1,0 +1,2 @@
+# Fixture files are byte-for-byte checksummed: no CRLF conversion on Windows.
+tests/testthat/fixtures/** -text
