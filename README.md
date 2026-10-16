@@ -105,6 +105,15 @@ pak::local_install_dev_deps()
 testthat::test_local()   # or R CMD check
 ```
 
+Code follows the tidyverse style with 4-space indents and lines of at most
+80 characters (Bioconductor's style). A [pre-commit](https://pre-commit.com)
+hook runs styler on staged R files; enable it once per clone with
+
+```sh
+pip install pre-commit
+pre-commit install
+```
+
 ## Conformance
 
 The tests run against a small fixture release in `tests/testthat/fixtures/site`

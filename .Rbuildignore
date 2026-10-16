@@ -9,3 +9,4 @@
 ^vignettes/\.gitignore$
 ^vignettes/\.quarto$
 ^vignettes/.*_files$
+^\.pre-commit-config\.yaml$

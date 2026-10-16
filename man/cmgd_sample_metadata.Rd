@@ -30,8 +30,8 @@ distinct value for a field gets them \verb{;}-joined).}
 \value{
 A data.frame with attributes \code{license} (the table's licence from the
 manifest) and \code{sources} (the pinned rows of \code{metadata_sources} the table
-draws on: source, release, DOI, licence). Errors with class \code{cmgdr_no_metadata} if the
-release has no sample-metadata tables.
+draws on: source, release, DOI, licence). Errors with class
+\code{cmgdr_no_metadata} if the release has no sample-metadata tables.
 }
 \description{
 Reads one of the release's published sample-metadata tables (releases since

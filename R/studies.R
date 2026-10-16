@@ -10,7 +10,7 @@
 #' cmgd_studies(cmgd_release("cmgd_nextflow-2.2.1"))
 #' }
 cmgd_studies <- function(rel) {
-  cmgd_index(rel, "studies/index.json")$studies[c("study_name", "n_samples")]
+    cmgd_index(rel, "studies/index.json")$studies[c("study_name", "n_samples")]
 }
 
 #' Per-study download files
@@ -25,32 +25,58 @@ cmgd_studies <- function(rel) {
 #' cmgd_study_files(cmgd_release("cmgd_nextflow-2.2.1"), "ZellerG_2014")
 #' }
 cmgd_study_files <- function(rel, study) {
-  files <- study_index_files(rel)
-  files <- files[files$study_name == study, names(files) != "study_name"]
-  if (!nrow(files)) {
-    stop("no study ", study, " in ", rel$dataset, "/", rel$release,
-         " (see cmgd_studies())", call. = FALSE)
-  }
-  rownames(files) <- NULL
-  files
+    files <- study_index_files(rel)
+    files <- files[files$study_name == study, names(files) != "study_name"]
+    if (!nrow(files)) {
+        stop(
+            "no study ",
+            study,
+            " in ",
+            rel$dataset,
+            "/",
+            rel$release,
+            " (see cmgd_studies())",
+            call. = FALSE
+        )
+    }
+    rownames(files) <- NULL
+    files
 }
 
 # Every per-study file of the release, one row each, with `study_name`.
 study_index_files <- function(rel) {
-  index <- cmgd_index(rel, "studies/index.json")
-  files <- do.call(rbind, Map(function(study, f) cbind(study_name = study, f),
-                              index$studies$study_name, index$studies$files))
-  files$url <- paste0(rel$url, "/", files$path)
-  descriptions <- unlist(index$file_descriptions)
-  files$description <- unname(descriptions[files$name])
-  rownames(files) <- NULL
-  files[c("study_name", "name", "path", "url", "size", "sha256", "description")]
+    index <- cmgd_index(rel, "studies/index.json")
+    files <- do.call(
+        rbind,
+        Map(
+            function(study, f) cbind(study_name = study, f),
+            index$studies$study_name,
+            index$studies$files
+        )
+    )
+    files$url <- paste0(rel$url, "/", files$path)
+    descriptions <- unlist(index$file_descriptions)
+    files$description <- unname(descriptions[files$name])
+    rownames(files) <- NULL
+    files[c(
+        "study_name",
+        "name",
+        "path",
+        "url",
+        "size",
+        "sha256",
+        "description"
+    )]
 }
 
 study_file_names <- c(
-  metaphlan_species = "metaphlan_species.tsv.gz", metaphlan = "metaphlan.parquet",
-  bracken = "bracken.parquet", resistome = "resistome.parquet",
-  pathways = "pathways.parquet", qc = "qc.tsv")
+    metaphlan_species = "metaphlan_species.tsv.gz",
+    metaphlan = "metaphlan.parquet",
+    bracken = "bracken.parquet",
+    resistome = "resistome.parquet",
+    pathways = "pathways.parquet",
+    qc = "qc.tsv"
+)
 
 #' Read a per-study file
 #'
@@ -76,30 +102,48 @@ study_file_names <- c(
 #' rel <- cmgd_release("cmgd_nextflow-2.2.1")
 #' qc <- cmgd_read_study(rel, "ZellerG_2014", "qc")
 #' }
-cmgd_read_study <- function(rel, study, what = names(study_file_names),
-                            cache = cmgd_cache_dir()) {
-  what <- match.arg(what)
-  name <- study_file_names[[what]]
-  files <- cmgd_study_files(rel, study)
-  if (!name %in% files$name) {
-    stop(rel$dataset, " has no ", name, " for ", study, " (files: ",
-         paste(files$name, collapse = ", "), ")", call. = FALSE)
-  }
-  local <- cmgd_download(rel, files$path[files$name == name], cache = cache)
-  if (endsWith(name, ".parquet")) return(read_parquet(local))
-  utils::read.delim(local, check.names = FALSE, na.strings = "")
+cmgd_read_study <- function(
+  rel,
+  study,
+  what = names(study_file_names),
+  cache = cmgd_cache_dir()
+) {
+    what <- match.arg(what)
+    name <- study_file_names[[what]]
+    files <- cmgd_study_files(rel, study)
+    if (!name %in% files$name) {
+        stop(
+            rel$dataset,
+            " has no ",
+            name,
+            " for ",
+            study,
+            " (files: ",
+            paste(files$name, collapse = ", "),
+            ")",
+            call. = FALSE
+        )
+    }
+    local <- cmgd_download(rel, files$path[files$name == name], cache = cache)
+    if (endsWith(name, ".parquet")) {
+        return(read_parquet(local))
+    }
+    utils::read.delim(local, check.names = FALSE, na.strings = "")
 }
 
 read_parquet <- function(file) {
-  need(c("DBI", "duckdb"), "read Parquet files")
-  # Reading local Parquet needs no extensions: silence newer duckdb's note on
-  # where it would store them.
-  drv <- withCallingHandlers(duckdb::duckdb(), duckdb_storage_location = function(m) {
-    invokeRestart("muffleMessage")
-  })
-  con <- DBI::dbConnect(drv)
-  on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
-  DBI::dbGetQuery(con, "SELECT * FROM read_parquet(?)", params = list(file))
+    need(c("DBI", "duckdb"), "read Parquet files")
+    # Reading local Parquet needs no extensions: silence newer duckdb's note on
+    # where it would store them.
+    drv <- withCallingHandlers(
+        duckdb::duckdb(),
+        duckdb_storage_location = function(m) {
+            invokeRestart("muffleMessage")
+        }
+    )
+    con <- DBI::dbConnect(drv)
+    on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
+    DBI::dbGetQuery(con, "SELECT * FROM read_parquet(?)", params = list(file))
 }
 
 #' A study's species profile as a TreeSummarizedExperiment
@@ -121,23 +165,45 @@ read_parquet <- function(file) {
 #' tse <- cmgd_species_tse(rel, "ZellerG_2014")
 #' }
 cmgd_species_tse <- function(rel, study, cache = cmgd_cache_dir()) {
-  need(c("TreeSummarizedExperiment", "Matrix", "S4Vectors"), "build a TreeSummarizedExperiment")
-  species <- cmgd_read_study(rel, study, "metaphlan_species", cache = cache)
-  qc <- cmgd_read_study(rel, study, "qc", cache = cache)
-  abundance <- matrix(0, nrow(species), nrow(qc),
-                      dimnames = list(species$clade_name, qc$sample_key))
-  measured <- intersect(names(species)[-1], qc$sample_key)
-  abundance[, measured] <- as.matrix(species[measured])
-  TreeSummarizedExperiment::TreeSummarizedExperiment(
-    assays = list(relative_abundance = Matrix::Matrix(abundance, sparse = TRUE)),
-    colData = S4Vectors::DataFrame(qc, row.names = qc$sample_key, check.names = FALSE))
+    need(
+        c("TreeSummarizedExperiment", "Matrix", "S4Vectors"),
+        "build a TreeSummarizedExperiment"
+    )
+    species <- cmgd_read_study(rel, study, "metaphlan_species", cache = cache)
+    qc <- cmgd_read_study(rel, study, "qc", cache = cache)
+    abundance <- matrix(
+        0,
+        nrow(species),
+        nrow(qc),
+        dimnames = list(species$clade_name, qc$sample_key)
+    )
+    measured <- intersect(names(species)[-1], qc$sample_key)
+    abundance[, measured] <- as.matrix(species[measured])
+    TreeSummarizedExperiment::TreeSummarizedExperiment(
+        assays = list(
+            relative_abundance = Matrix::Matrix(abundance, sparse = TRUE)
+        ),
+        colData = S4Vectors::DataFrame(
+            qc,
+            row.names = qc$sample_key,
+            check.names = FALSE
+        )
+    )
 }
 
 need <- function(pkgs, why) {
-  missing <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
-  if (length(missing)) {
-    stop("cmgdr needs ", paste(missing, collapse = ", "), " to ", why, ". Install with:\n",
-         "  install.packages(\"BiocManager\"); BiocManager::install(c(",
-         paste0("\"", missing, "\"", collapse = ", "), "))", call. = FALSE)
-  }
+    missing <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
+    if (length(missing)) {
+        stop(
+            "cmgdr needs ",
+            paste(missing, collapse = ", "),
+            " to ",
+            why,
+            ". Install with:\n",
+            "  install.packages(\"BiocManager\"); BiocManager::install(c(",
+            paste0("\"", missing, "\"", collapse = ", "),
+            "))",
+            call. = FALSE
+        )
+    }
 }

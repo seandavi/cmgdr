@@ -9,7 +9,7 @@
 #' @examples
 #' cmgd_cache_dir()
 cmgd_cache_dir <- function() {
-  tools::R_user_dir("cmgdr", "cache")
+    tools::R_user_dir("cmgdr", "cache")
 }
 
 #' Download a release file, verified and cached
@@ -35,74 +35,115 @@ cmgd_cache_dir <- function() {
 #' cmgd_download(rel, "studies/ZellerG_2014/qc.tsv")
 #' }
 cmgd_download <- function(rel, path_or_url, cache = cmgd_cache_dir()) {
-  stopifnot(length(path_or_url) == 1L)
-  url <- if (grepl("^[a-z]+://", path_or_url)) path_or_url else paste0(rel$url, "/", path_or_url)
-  expected <- expected_file(rel, url)
-  dest <- file.path(cache, gsub(":", "_", sub("^[a-z]+://", "", url)))
-  if (file.exists(dest) && is.null(verify_file(dest, expected))) return(dest)
+    stopifnot(length(path_or_url) == 1L)
+    url <- if (grepl("^[a-z]+://", path_or_url)) {
+        path_or_url
+    } else {
+        paste0(rel$url, "/", path_or_url)
+    }
+    expected <- expected_file(rel, url)
+    dest <- file.path(cache, gsub(":", "_", sub("^[a-z]+://", "", url)))
+    if (file.exists(dest) && is.null(verify_file(dest, expected))) {
+        return(dest)
+    }
 
-  dir.create(dirname(dest), recursive = TRUE, showWarnings = FALSE)
-  tmp <- paste0(dest, ".part")
-  on.exit(unlink(tmp), add = TRUE)
-  res <- curl::curl_fetch_disk(url, tmp)
-  check_status(res$status_code, url)
-  problem <- verify_file(tmp, expected)
-  if (!is.null(problem)) stop(problem, " for ", url, "; download discarded", call. = FALSE)
-  file.rename(tmp, dest)
-  dest
+    dir.create(dirname(dest), recursive = TRUE, showWarnings = FALSE)
+    tmp <- paste0(dest, ".part")
+    on.exit(unlink(tmp), add = TRUE)
+    res <- curl::curl_fetch_disk(url, tmp)
+    check_status(res$status_code, url)
+    problem <- verify_file(tmp, expected)
+    if (!is.null(problem)) {
+        stop(problem, " for ", url, "; download discarded", call. = FALSE)
+    }
+    file.rename(tmp, dest)
+    dest
 }
 
 # Expected size and sha256 of `url` from the release indexes; NULL if unlisted.
 expected_file <- function(rel, url) {
-  prefix <- paste0(rel$url, "/")
-  if (!startsWith(url, prefix)) {
-    # A URL doesn't name its study: look in the study indexes this handle has
-    # fetched (cmgd_genefamilies()); a URL from elsewhere downloads unverified.
-    gf <- do.call(rbind, lapply(names(rel$memo), function(path) {
-      if (startsWith(path, "genefamilies/") && path != "genefamilies/index.json") {
-        genefamily_study_files(rel, path)
-      }
-    }))
-    hit <- gf[!is.na(gf$url) & gf$url == url, ]
-    return(if (!is.null(hit) && nrow(hit)) list(size = hit$size[1], sha256 = hit$sha256[1]))
-  }
-  path <- substring(url, nchar(prefix) + 1L)
-  ducklake <- rel$manifest$artifacts$ducklake
-  if (identical(path, ducklake$location)) {
-    return(list(size = ducklake$size, sha256 = ducklake$sha256))
-  }
-  files <- if (startsWith(path, "tables/")) {
-    cmgd_files(rel, strsplit(path, "/", fixed = TRUE)[[1]][2])
-  } else if (startsWith(path, "studies/")) {
-    study_index_files(rel)
-  } else if (startsWith(path, "genefamilies/")) {
-    index <- genefamily_index(rel)
-    rbind(index$studies[c("path", "size", "sha256")], index$artifacts[c("path", "size", "sha256")])
-  }
-  hit <- files[files$path == path, ]
-  if (!is.null(hit) && nrow(hit)) list(size = hit$size[1], sha256 = hit$sha256[1])
+    prefix <- paste0(rel$url, "/")
+    if (!startsWith(url, prefix)) {
+        # A URL doesn't name its study: look in the study indexes this handle
+        # has fetched (cmgd_genefamilies()); a URL from elsewhere downloads
+        # unverified.
+        gf <- do.call(
+            rbind,
+            lapply(names(rel$memo), function(path) {
+                if (
+                    startsWith(path, "genefamilies/") &&
+                        path != "genefamilies/index.json"
+                ) {
+                    genefamily_study_files(rel, path)
+                }
+            })
+        )
+        hit <- gf[!is.na(gf$url) & gf$url == url, ]
+        return(
+            if (!is.null(hit) && nrow(hit)) {
+                list(size = hit$size[1], sha256 = hit$sha256[1])
+            }
+        )
+    }
+    path <- substring(url, nchar(prefix) + 1L)
+    ducklake <- rel$manifest$artifacts$ducklake
+    if (identical(path, ducklake$location)) {
+        return(list(size = ducklake$size, sha256 = ducklake$sha256))
+    }
+    files <- if (startsWith(path, "tables/")) {
+        cmgd_files(rel, strsplit(path, "/", fixed = TRUE)[[1]][2])
+    } else if (startsWith(path, "studies/")) {
+        study_index_files(rel)
+    } else if (startsWith(path, "genefamilies/")) {
+        index <- genefamily_index(rel)
+        rbind(
+            index$studies[c("path", "size", "sha256")],
+            index$artifacts[c("path", "size", "sha256")]
+        )
+    }
+    hit <- files[files$path == path, ]
+    if (!is.null(hit) && nrow(hit)) {
+        list(size = hit$size[1], sha256 = hit$sha256[1])
+    }
 }
 
 # NULL if `file` matches `expected`, else a description of the mismatch.
 verify_file <- function(file, expected) {
-  verify(file.size(file), function() digest::digest(file = file, algo = "sha256"), expected)
+    verify(
+        file.size(file),
+        function() digest::digest(file = file, algo = "sha256"),
+        expected
+    )
 }
 
 verify_bytes <- function(bytes, expected) {
-  verify(length(bytes), function() digest::digest(bytes, algo = "sha256", serialize = FALSE),
-         expected)
+    verify(
+        length(bytes),
+        function() digest::digest(bytes, algo = "sha256", serialize = FALSE),
+        expected
+    )
 }
 
 verify <- function(size, sha256, expected) {
-  if (is.null(expected)) return(NULL)
-  if (!is.null(expected$size) && size != expected$size) {
-    return(sprintf("size mismatch (expected %.0f bytes, got %.0f)", expected$size, size))
-  }
-  if (!is.null(expected$sha256)) {
-    got <- sha256()
-    if (got != expected$sha256) {
-      return(sprintf("sha256 mismatch (expected %s, got %s)", expected$sha256, got))
+    if (is.null(expected)) {
+        return(NULL)
     }
-  }
-  NULL
+    if (!is.null(expected$size) && size != expected$size) {
+        return(sprintf(
+            "size mismatch (expected %.0f bytes, got %.0f)",
+            expected$size,
+            size
+        ))
+    }
+    if (!is.null(expected$sha256)) {
+        got <- sha256()
+        if (got != expected$sha256) {
+            return(sprintf(
+                "sha256 mismatch (expected %s, got %s)",
+                expected$sha256,
+                got
+            ))
+        }
+    }
+    NULL
 }

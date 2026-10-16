@@ -7,8 +7,12 @@ supported_spec_major <- 2L
 supported_index_major <- 1L
 
 # Fallback for a site without a root index.json: dataset ids published so far.
-known_datasets <- c("cmgd_nextflow-2.2.1", "cmgd_mpa4.2-2.3.0",
-                    "cmgd_humann3.9-2.3.0", "cmgd_humann4a1-2.3.0")
+known_datasets <- c(
+    "cmgd_nextflow-2.2.1",
+    "cmgd_mpa4.2-2.3.0",
+    "cmgd_humann3.9-2.3.0",
+    "cmgd_humann4a1-2.3.0"
+)
 
 #' Published cMD datasets
 #'
@@ -27,23 +31,45 @@ known_datasets <- c("cmgd_nextflow-2.2.1", "cmgd_mpa4.2-2.3.0",
 #' cmgd_datasets()
 #' }
 cmgd_datasets <- function(base = cmgd_public_base) {
-  url <- paste0(sub("/+$", "", base), "/index.json")
-  index <- tryCatch(fetch_json(url), cmgd_not_found = function(e) NULL)
-  if (!is.null(index)) {
-    check_spec(index$spec_version, supported_index_major, "cmgd index spec", url)
-    ds <- index$datasets
-    return(data.frame(dataset = ds$id, workflow_id = ds$workflow_id,
-                      version = ds$version, latest = ds$latest_release))
-  }
-  message("no index.json at ", base, "; checking cmgdr's built-in dataset list")
-  latest <- vapply(known_datasets, function(d) {
-    tryCatch(fetch_json(dataset_url(base, d, "latest.json"))$release,
-             cmgd_not_found = function(e) NA_character_)
-  }, character(1), USE.NAMES = FALSE)
-  data.frame(dataset = known_datasets,
-             workflow_id = sub("-[^-]*$", "", known_datasets),
-             version = sub("^.*-", "", known_datasets),
-             latest = latest)
+    url <- paste0(sub("/+$", "", base), "/index.json")
+    index <- tryCatch(fetch_json(url), cmgd_not_found = function(e) NULL)
+    if (!is.null(index)) {
+        check_spec(
+            index$spec_version,
+            supported_index_major,
+            "cmgd index spec",
+            url
+        )
+        ds <- index$datasets
+        return(data.frame(
+            dataset = ds$id,
+            workflow_id = ds$workflow_id,
+            version = ds$version,
+            latest = ds$latest_release
+        ))
+    }
+    message(
+        "no index.json at ",
+        base,
+        "; checking cmgdr's built-in dataset list"
+    )
+    latest <- vapply(
+        known_datasets,
+        function(d) {
+            tryCatch(
+                fetch_json(dataset_url(base, d, "latest.json"))$release,
+                cmgd_not_found = function(e) NA_character_
+            )
+        },
+        character(1),
+        USE.NAMES = FALSE
+    )
+    data.frame(
+        dataset = known_datasets,
+        workflow_id = sub("-[^-]*$", "", known_datasets),
+        version = sub("^.*-", "", known_datasets),
+        latest = latest
+    )
 }
 
 #' Releases of a dataset
@@ -62,7 +88,7 @@ cmgd_datasets <- function(base = cmgd_public_base) {
 #' cmgd_releases("cmgd_nextflow-2.2.1")
 #' }
 cmgd_releases <- function(dataset, base = cmgd_public_base) {
-  fetch_json(dataset_url(base, dataset, "releases.json"))$releases
+    fetch_json(dataset_url(base, dataset, "releases.json"))$releases
 }
 
 #' Open a release
@@ -83,26 +109,48 @@ cmgd_releases <- function(dataset, base = cmgd_public_base) {
 #' rel <- cmgd_release("cmgd_nextflow-2.2.1")
 #' rel
 #' }
-cmgd_release <- function(dataset, release = "latest", base = cmgd_public_base,
-                         raw_base = NULL) {
-  if (identical(release, "latest")) {
-    release <- fetch_json(dataset_url(base, dataset, "latest.json"))$release
-  }
-  url <- dataset_url(base, dataset, release)
-  manifest <- fetch_json(paste0(url, "/manifest.json"))
-  check_spec(manifest$spec_version, supported_spec_major, "publication spec",
-             paste0(dataset, "/", release))
-  structure(list(dataset = dataset, release = release, url = url, base = base,
-                 raw_base = raw_base, manifest = manifest, memo = new.env()),
-            class = "cmgd_release")
+cmgd_release <- function(
+  dataset,
+  release = "latest",
+  base = cmgd_public_base,
+  raw_base = NULL
+) {
+    if (identical(release, "latest")) {
+        release <- fetch_json(dataset_url(base, dataset, "latest.json"))$release
+    }
+    url <- dataset_url(base, dataset, release)
+    manifest <- fetch_json(paste0(url, "/manifest.json"))
+    check_spec(
+        manifest$spec_version,
+        supported_spec_major,
+        "publication spec",
+        paste0(dataset, "/", release)
+    )
+    structure(
+        list(
+            dataset = dataset,
+            release = release,
+            url = url,
+            base = base,
+            raw_base = raw_base,
+            manifest = manifest,
+            memo = new.env()
+        ),
+        class = "cmgd_release"
+    )
 }
 
 #' @export
 print.cmgd_release <- function(x, ...) {
-  cat("<cmgd_release> ", x$dataset, " ", x$release, "\n", sep = "")
-  cat("  url:    ", x$url, "\n", sep = "")
-  cat("  tables: ", paste(x$manifest$tables$name, collapse = ", "), "\n", sep = "")
-  invisible(x)
+    cat("<cmgd_release> ", x$dataset, " ", x$release, "\n", sep = "")
+    cat("  url:    ", x$url, "\n", sep = "")
+    cat(
+        "  tables: ",
+        paste(x$manifest$tables$name, collapse = ", "),
+        "\n",
+        sep = ""
+    )
+    invisible(x)
 }
 
 #' Tables in a release
@@ -116,7 +164,13 @@ print.cmgd_release <- function(x, ...) {
 #' cmgd_tables(cmgd_release("cmgd_nextflow-2.2.1"))
 #' }
 cmgd_tables <- function(rel) {
-  rel$manifest$tables[c("name", "description", "grain", "row_count", "license")]
+    rel$manifest$tables[c(
+        "name",
+        "description",
+        "grain",
+        "row_count",
+        "license"
+    )]
 }
 
 #' Data files of release tables
@@ -134,82 +188,128 @@ cmgd_tables <- function(rel) {
 #' cmgd_files(rel, "qc_metrics")
 #' }
 cmgd_files <- function(rel, table = NULL) {
-  tables <- rel$manifest$tables
-  if (is.null(table)) table <- tables$name
-  unknown <- setdiff(table, tables$name)
-  if (length(unknown)) {
-    stop("no table ", paste(unknown, collapse = ", "), " in ", rel$dataset, "/",
-         rel$release, " (tables: ", paste(tables$name, collapse = ", "), ")",
-         call. = FALSE)
-  }
-  out <- lapply(table, function(t) {
-    files_json <- tables$files[tables$name == t]  # tables/<t>/files.json
-    f <- memo_json(rel, files_json)$files
-    # file uris are relative to the table directory
-    path <- paste0(dirname(files_json), "/", f$uri)
-    data.frame(table = t, path = path, url = paste0(rel$url, "/", path),
-               size = f$size, sha256 = f$sha256, rows = f$rows)
-  })
-  do.call(rbind, out)
+    tables <- rel$manifest$tables
+    if (is.null(table)) {
+        table <- tables$name
+    }
+    unknown <- setdiff(table, tables$name)
+    if (length(unknown)) {
+        stop(
+            "no table ",
+            paste(unknown, collapse = ", "),
+            " in ",
+            rel$dataset,
+            "/",
+            rel$release,
+            " (tables: ",
+            paste(tables$name, collapse = ", "),
+            ")",
+            call. = FALSE
+        )
+    }
+    out <- lapply(table, function(t) {
+        files_json <- tables$files[tables$name == t] # tables/<t>/files.json
+        f <- memo_json(rel, files_json)$files
+        # file uris are relative to the table directory
+        path <- paste0(dirname(files_json), "/", f$uri)
+        data.frame(
+            table = t,
+            path = path,
+            url = paste0(rel$url, "/", path),
+            size = f$size,
+            sha256 = f$sha256,
+            rows = f$rows
+        )
+    })
+    do.call(rbind, out)
 }
 
 dataset_url <- function(base, dataset, ...) {
-  paste(sub("/+$", "", base), dataset, ..., sep = "/")
+    paste(sub("/+$", "", base), dataset, ..., sep = "/")
 }
 
 # JSON at `path` (relative to the release URL), fetched once per release handle.
 memo_json <- function(rel, path) {
-  if (is.null(rel$memo[[path]])) {
-    rel$memo[[path]] <- fetch_json(paste0(rel$url, "/", path))
-  }
-  rel$memo[[path]]
+    if (is.null(rel$memo[[path]])) {
+        rel$memo[[path]] <- fetch_json(paste0(rel$url, "/", path))
+    }
+    rel$memo[[path]]
 }
 
 # A cmgd index at `path` in the release, fetched once per release handle,
 # verified against `expected` (`size`, `sha256`) when given, spec-checked.
 cmgd_index <- function(rel, path, expected = NULL) {
-  if (is.null(rel$memo[[path]])) {
-    url <- paste0(rel$url, "/", path)
-    bytes <- http_get(url)
-    problem <- verify_bytes(bytes, expected)
-    if (!is.null(problem)) stop(problem, " for ", url, call. = FALSE)
-    index <- jsonlite::fromJSON(rawToChar(bytes))
-    check_spec(index$spec_version, supported_index_major, "cmgd index spec", url)
-    rel$memo[[path]] <- index
-  }
-  rel$memo[[path]]
+    if (is.null(rel$memo[[path]])) {
+        url <- paste0(rel$url, "/", path)
+        bytes <- http_get(url)
+        problem <- verify_bytes(bytes, expected)
+        if (!is.null(problem)) {
+            stop(problem, " for ", url, call. = FALSE)
+        }
+        index <- jsonlite::fromJSON(rawToChar(bytes))
+        check_spec(
+            index$spec_version,
+            supported_index_major,
+            "cmgd index spec",
+            url
+        )
+        rel$memo[[path]] <- index
+    }
+    rel$memo[[path]]
 }
 
 check_spec <- function(spec_version, supported, spec, where) {
-  major <- suppressWarnings(as.integer(sub("\\..*$", "", spec_version %||% NA)))
-  if (is.na(major) || major != supported) {
-    stop(sprintf(paste0(
-      "%s uses %s version %s; this cmgdr reads major version %d.\n",
-      "Update cmgdr: remotes::install_github(\"seandavi/cmgdr\")"),
-      where, spec, spec_version %||% "(none)", supported), call. = FALSE)
-  }
+    major <- suppressWarnings(as.integer(sub(
+        "\\..*$",
+        "",
+        spec_version %||% NA
+    )))
+    if (is.na(major) || major != supported) {
+        stop(
+            sprintf(
+                paste0(
+                    "%s uses %s version %s; ",
+                    "this cmgdr reads major version %d.\n",
+                    "Update cmgdr: remotes::install_github(\"seandavi/cmgdr\")"
+                ),
+                where,
+                spec,
+                spec_version %||% "(none)",
+                supported
+            ),
+            call. = FALSE
+        )
+    }
 }
 
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
 fetch_json <- function(url) {
-  jsonlite::fromJSON(rawToChar(http_get(url)))
+    jsonlite::fromJSON(rawToChar(http_get(url)))
 }
 
 http_get <- function(url) {
-  res <- curl::curl_fetch_memory(url)
-  check_status(res$status_code, url)
-  res$content
+    res <- curl::curl_fetch_memory(url)
+    check_status(res$status_code, url)
+    res$content
 }
 
 check_status <- function(status, url) {
-  if (status == 404L) {
-    stop(structure(class = c("cmgd_not_found", "error", "condition"), list(
-      message = paste0("not found: ", url,
-                       "\n(is the dataset or release id right? has it been published yet?)"),
-      call = NULL)))
-  }
-  if (status >= 400L) stop("HTTP ", status, " from ", url, call. = FALSE)
+    if (status == 404L) {
+        stop(structure(
+            class = c("cmgd_not_found", "error", "condition"),
+            list(
+                message = paste0(
+                    "not found: ",
+                    url,
+                    "\n(is the dataset or release id right? ",
+                    "has it been published yet?)"
+                ),
+                call = NULL
+            )
+        ))
+    }
+    if (status >= 400L) stop("HTTP ", status, " from ", url, call. = FALSE)
 }
 
 #' Provenance of a release
@@ -229,5 +329,5 @@ check_status <- function(status, url) {
 #' prov$cmgd$databases
 #' }
 cmgd_provenance <- function(rel) {
-  memo_json(rel, rel$manifest$provenance %||% "provenance.json")
+    memo_json(rel, rel$manifest$provenance %||% "provenance.json")
 }
