@@ -1,7 +1,7 @@
 # cmgdr 0.99.0
 
 * Prepared for Bioconductor submission: `biocViews`, version 0.99.0, a Quarto
-  vignette that runs against the live site when it is reachable.
+  vignette that runs against the live site.
 * Find datasets and releases from the site's JSON indexes (`cmgd_datasets()`,
   `cmgd_releases()`, `cmgd_release()`).
 * List tables, files and studies; download files into a SHA-256-verified cache

@@ -46,7 +46,7 @@ the rest of this vignette relies on:
 The site cannot be listed like a directory: everything is found through JSON
 indexes, which is what cmgdr reads.
 
-cmgdr is deliberately a **low-level client**. It knows the published layout
+cmgdr is deliberately a low-level client. It knows the published layout
 and returns plain data frames, lists, local file paths, a DuckDB connection,
 and (for convenience) a species `TreeSummarizedExperiment`. It does not
 reshape, join or model the data; higher-level packages are expected to build
@@ -84,7 +84,7 @@ cmgd_cache_dir()
 ## Finding datasets and releases
 
 `cmgd_datasets()` takes no required arguments (only `base`, the site URL) and
-returns a data frame with **one row per published dataset**: its id
+returns a data frame with one row per published dataset: its id
 (`dataset`), the pipeline registration it comes from (`workflow_id`,
 `version`), and the id of its newest release (`latest`).
 
@@ -94,7 +94,7 @@ datasets <- cmgd_datasets()
 datasets
 ```
 
-`cmgd_releases()` takes a dataset id and returns **one row per release** of
+`cmgd_releases()` takes a dataset id and returns one row per release of
 that dataset, oldest first: the release id, its build date, when it was
 published, and whether it is `pinned` (kept as a long-term reference).
 
@@ -120,7 +120,7 @@ names(rel$manifest)
 
 ## Tables and files
 
-`cmgd_tables()` takes a release and returns **one row per table**: its `name`,
+`cmgd_tables()` takes a release and returns one row per table: its `name`,
 a `description`, its `grain` (what one row of the table means), its
 `row_count`, and its `license`. Most tables are CC0-1.0; tables that include
 values derived from the Olm lab Microbiome Repo are CC-BY-4.0 (see
@@ -133,7 +133,7 @@ tables[, c("name", "grain", "row_count", "license")]
 ```
 
 A table is stored as one or more Parquet files. `cmgd_files()` takes a release
-and, optionally, table names, and returns **one row per file**: the `table`, the
+and, optionally, table names, and returns one row per file: the `table`, the
 file's `path` relative to the release, its full `url`, its `size` in bytes,
 its `sha256`, and the number of `rows` it holds.
 
@@ -145,7 +145,7 @@ str(files)
 
 `cmgd_download()` takes a release and one path (as in the `path` column) or
 full URL, downloads the file into the cache, verifies its size and SHA-256,
-and returns the **local file path**. Calling it again returns the cached copy
+and returns the local file path. Calling it again returns the cached copy
 without downloading, as long as the copy still verifies.
 
 ```{r}
@@ -158,7 +158,7 @@ file.size(local) == files$size[1]
 ## Studies
 
 Besides whole tables, each release has ready-made files for each study.
-`cmgd_studies()` takes a release and returns **one row per study**: its
+`cmgd_studies()` takes a release and returns one row per study: its
 `study_name` and `n_samples`.
 
 ```{r}
@@ -167,8 +167,8 @@ studies <- cmgd_studies(rel)
 studies
 ```
 
-`cmgd_study_files()` takes a release and a study name and returns **one row
-per file** published for that study: its `name`, `path`, `url`, `size`,
+`cmgd_study_files()` takes a release and a study name and returns one row
+per file published for that study: its `name`, `path`, `url`, `size`,
 `sha256` and a `description` of what it holds. There is a species × samples
 matrix (`metaphlan_species.tsv.gz`), the study's rows of the main tables as
 Parquet, and a QC table (`qc.tsv`).
@@ -181,7 +181,7 @@ study_files[, c("name", "size")]
 
 `cmgd_read_study()` takes a release, a study and the file's `name` without
 extension (`"qc"`, `"metaphlan"`, `"bracken"`, `"metaphlan_species"`, ...),
-downloads it through the verified cache and reads it into a **data frame**.
+downloads it through the verified cache and reads it into a data frame.
 Parquet files are read with the duckdb package. The QC table has one row per
 sample: its keys (`sample_key`, `readset_id`, `run_ids`), read and base counts
 before and after decontamination, and the pipeline version and commit that
@@ -218,7 +218,7 @@ as.matrix(abundance[top, ])
 
 Releases since `cmgd_mpa4.2-2.3.0` / `2026-10-16` publish sample metadata as
 tables. `cmgd_sample_metadata()` takes a release, a `source`, optional
-`study` names and `wide`, and returns a **data frame**. The sources are:
+`study` names and `wide`, and returns a data frame. The sources are:
 
 - `harmonized` (the default): one value per sample and harmonized field,
   taken from the cMD curation where it has one and from the Olm lab
@@ -228,7 +228,7 @@ tables. `cmgd_sample_metadata()` takes a release, a `source`, optional
   CC-BY-4.0.
 
 With `wide = FALSE` (the default) the table comes back long, as published:
-**one row per sample and field**, with the `value`, the `source` it came
+one row per sample and field, with the `value`, the `source` it came
 from, the source's `release`, and for Olm values the `route` and
 `confidence`.
 
@@ -253,7 +253,7 @@ If you use the `harmonized` or `olm` tables, cite the Microbiome Repo DOI
 above as well as curatedMetagenomicData; the
 [provenance](#provenance) lists the full citation text.
 
-With `wide = TRUE` the result has **one row per sample**: the sample's
+With `wide = TRUE` the result has one row per sample: the sample's
 `study_name`, `sample_key`, `biosample`, `bioproject` and `run_accessions`,
 then one character column per field, `NA` where a sample has no value.
 
@@ -272,8 +272,8 @@ A release without metadata tables raises an error of class
 
 `cmgd_find_runs()` takes a release and a vector of SRA/ENA run accessions
 (`SRR...`, `ERR...`, `DRR...`) and looks them up in the release's `samples`
-table, where a sample's runs are `;`-joined. It returns a **data frame with one
-row per accession, in the order given**: the `run`, then the matching
+table, where a sample's runs are `;`-joined. It returns a data frame with one
+row per accession, in the order given: the `run`, then the matching
 `samples` row (study, `sample_key`, BioSample, BioProject, pipeline version,
 ...). A run the release does not have gets a row of `NA`s, so the result
 always lines up with the input.
@@ -287,7 +287,7 @@ runs[, c("run", "study_name", "sample_key", "biosample", "bioproject")]
 ## Provenance {#provenance}
 
 `cmgd_provenance()` takes a release and returns its `provenance.json` as a
-**list**: the lake snapshots the release was built from
+list: the lake snapshots the release was built from
 (`source_asset_versions`) and, for releases since `2026-10-16`, a `cmgd`
 section with the pipeline registration (repository, revision, parameters),
 the pipeline runs, the reference database versions, the pinned metadata
@@ -304,7 +304,7 @@ prov$cmgd$citation
 
 ## Whole tables with SQL and dplyr
 
-`cmgd_connect()` takes a release and returns a **DBI connection** to an
+`cmgd_connect()` takes a release and returns a DBI connection to an
 in-memory DuckDB database with the release's DuckLake catalog attached
 read-only (needs the DBI and duckdb packages). Every table in
 `cmgd_tables()` is available by name. Nothing is downloaded up front: DuckDB
@@ -348,12 +348,12 @@ DBI::dbDisconnect(con, shutdown = TRUE)
 
 Before computing across tables:
 
-1. **Abundances are not comparable across methods.** MetaPhlAn
+1. Abundances from different methods are not on the same scale. MetaPhlAn
    `relative_abundance` is a percent; Bracken `fraction_total_reads` is a 0–1
    fraction.
-2. **Pick one `data_type`**: `full_data` (all reads) or `rarefied_data` (a
+2. Pick one `data_type`, either `full_data` (all reads) or `rarefied_data` (a
    1M-read subsample). Most analyses want `full_data`.
-3. **Pick one MetaPhlAn pass.** In HUMAnN datasets the bundle's own MetaPhlAn
+3. Pick one MetaPhlAn pass. In HUMAnN datasets the bundle's own MetaPhlAn
    pass (`humann_bundle` set) sits next to the main pass
    (`humann_bundle IS NULL`).
 
@@ -363,9 +363,10 @@ column.
 ## HUMAnN gene families
 
 HUMAnN datasets (`cmgd_humann3.9-2.3.0`, `cmgd_humann4a1-2.3.0`) also publish
-per-sample HUMAnN gene-family tables, too large to go in the tables. Each is
-its own download from `https://cmgd-raw.cancerdatasci.org`, listed in the
-release's gene-family index. `cmgd_genefamilies()` takes a release and returns
+per-sample HUMAnN gene-family tables. These are too large for the release
+tables, so each is its own download from
+`https://cmgd-raw.cancerdatasci.org`, listed in the release's gene-family
+index. `cmgd_genefamilies()` takes a release and returns
 one row per study with gene families; with `study`, one row per file with its
 `url`, `size`, `sha256` and row count, which `cmgd_download()` fetches and
 verifies. No HUMAnN dataset is on the public site yet, so this code is shown
