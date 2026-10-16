@@ -83,6 +83,27 @@ tse
 SummarizedExperiment::colData(tse)$reads_decontaminated
 ```
 
+## Sample metadata
+
+Releases since `cmgd_mpa4.2-2.3.0` / `2026-10-16` publish sample-metadata
+tables. `cmgd_sample_metadata()` reads one as a plain data frame: `harmonized`
+(one value per sample and harmonized field, the default), `cmd` (the
+curatedMetagenomicData curation) or `olm` (the Olm lab Microbiome Repo). The
+long table is returned as published; `wide = TRUE` gives one row per sample
+with one character column per field, `NA` where a sample has no value.
+
+```{r}
+meta_rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+meta <- cmgd_sample_metadata(meta_rel)
+wide <- cmgd_sample_metadata(meta_rel, study = "BaiX_2021", wide = TRUE)
+attr(wide, "license")
+attr(wide, "sources")
+```
+
+`harmonized` and `olm` are CC-BY-4.0 and print the source DOI to cite;
+`cmd` is CC0-1.0. Releases without these tables raise an error of class
+`cmgdr_no_metadata`.
+
 ## Whole tables with SQL and dplyr
 
 `cmgd_connect()` attaches the release's read-only DuckLake catalog in DuckDB.

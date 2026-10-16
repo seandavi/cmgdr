@@ -92,7 +92,12 @@ cmgd_read_study <- function(rel, study, what = names(study_file_names),
 
 read_parquet <- function(file) {
   need(c("DBI", "duckdb"), "read Parquet files")
-  con <- DBI::dbConnect(duckdb::duckdb())
+  # Reading local Parquet needs no extensions: silence newer duckdb's note on
+  # where it would store them.
+  drv <- withCallingHandlers(duckdb::duckdb(), duckdb_storage_location = function(m) {
+    invokeRestart("muffleMessage")
+  })
+  con <- DBI::dbConnect(drv)
   on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
   DBI::dbGetQuery(con, "SELECT * FROM read_parquet(?)", params = list(file))
 }

@@ -1,0 +1,154 @@
+{
+  "name": "sample_metadata_cmd",
+  "description": "Sample metadata curated by curatedMetagenomicData (curation repo, pinned commit), one row per field. `field`/`value` are harmonized where the field map covers the field.",
+  "grain": "one row per sample, field and cMD sample record",
+  "primary_key": [
+    "sample_key",
+    "field",
+    "source_sample"
+  ],
+  "sort_by": [
+    "study_name",
+    "sample_key",
+    "field"
+  ],
+  "partition_by": [],
+  "temporal_model": "upsert_latest_snapshot",
+  "owner": "curatedMetagenomicData",
+  "license": "CC0-1.0",
+  "examples": [],
+  "columns": [
+    {
+      "name": "study_name",
+      "arrow_type": "string",
+      "description": "curatedMetagenomicData study name.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "sample_key",
+      "arrow_type": "string",
+      "description": "The id the registration published the sample under: a readset id (RS.\u2026) for new registrations, the md5 sample_id for cmgd_nextflow 2.2.1.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "field",
+      "arrow_type": "string",
+      "description": "Metadata field: the harmonized name (age_years, sex, country, bmi, antibiotics_current_use, health_condition) where mapped, else the source's own.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "value",
+      "arrow_type": "string",
+      "description": "Marker abundance as reported by MetaPhlAn.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "source_field",
+      "arrow_type": "string",
+      "description": "The field name as the source spells it.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "value_raw",
+      "arrow_type": "string",
+      "description": "The value exactly as the source gives it.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "value_unit",
+      "arrow_type": "string",
+      "description": "The source's unit for value_raw, when it gives one.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "value_ontology",
+      "arrow_type": "string",
+      "description": "Ontology term ids the source attaches to the value.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "curator",
+      "arrow_type": "string",
+      "description": "cMD curator of the record.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "source",
+      "arrow_type": "string",
+      "description": "Metadata source: cmd (curatedMetagenomicData curation) or olm (Microbiome Repo).",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "release",
+      "arrow_type": "string",
+      "description": "Source release: cMD curation commit, or Olm release id.",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    },
+    {
+      "name": "source_sample",
+      "arrow_type": "string",
+      "description": "The source's own sample id (cMD sample_id, Olm sample_key).",
+      "nullable": true,
+      "identifier_namespace": null,
+      "units": null,
+      "coordinate_system": null,
+      "null_meaning": null,
+      "enum": []
+    }
+  ]
+}

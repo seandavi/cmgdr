@@ -1,0 +1,12 @@
+{
+  "spec_version": "2.0",
+  "dataset": "cmgd_mpa4.2-2.3.0",
+  "releases": [
+    {
+      "release": "2026-10-16",
+      "release_date": "2026-10-16",
+      "published_at": "2026-10-16T03:40:40.277445+00:00",
+      "pinned": false
+    }
+  ]
+}

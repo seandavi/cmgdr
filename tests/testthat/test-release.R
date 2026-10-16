@@ -15,7 +15,8 @@ test_that("cmgd_datasets falls back to the built-in list without a root index", 
   expect_setequal(ds$dataset, c("cmgd_nextflow-2.2.1", "cmgd_mpa4.2-2.3.0",
                                 "cmgd_humann3.9-2.3.0", "cmgd_humann4a1-2.3.0"))
   expect_equal(ds$latest[ds$dataset == legacy], "2026-10-08")
-  expect_true(is.na(ds$latest[ds$dataset == "cmgd_mpa4.2-2.3.0"]))
+  expect_equal(ds$latest[ds$dataset == "cmgd_mpa4.2-2.3.0"], "2026-10-16")
+  expect_true(is.na(ds$latest[ds$dataset == "cmgd_humann4a1-2.3.0"]))
 })
 
 test_that("cmgd_datasets refuses an unsupported index spec major version", {

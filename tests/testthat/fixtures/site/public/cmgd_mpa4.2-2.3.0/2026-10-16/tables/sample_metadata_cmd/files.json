@@ -1,0 +1,14 @@
+{
+  "spec_version": "2.0",
+  "table": "sample_metadata_cmd",
+  "release": "2026-10-16",
+  "files": [
+    {
+      "uri": "data/part-00000.parquet",
+      "size": 7544,
+      "sha256": "6b876f87c3df72aa2545ecd58d2b325b41d41a8f391013364ed18a5a6317af5b",
+      "rows": 509,
+      "content_type": "application/vnd.apache.parquet"
+    }
+  ]
+}
