@@ -91,7 +91,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/seandavi/cmgdr" class="external-link">cmgdr</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_USER_CACHE_DIR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"cmgdr-cache"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/cmgd_cache_dir.html">cmgd_cache_dir</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpHYSqHV/cmgdr-cache1bf81f28004d/R/cmgdr"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp1VcO7a/cmgdr-cache1c2165aeebf3/R/cmgdr"</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="finding-datasets-and-releases">Finding datasets and releases<a class="anchor" aria-label="anchor" href="#finding-datasets-and-releases"></a>
 </h2>
@@ -179,7 +179,7 @@
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">local</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cmgd_download.html">cmgd_download</a></span><span class="op">(</span><span class="va">rel</span>, <span class="va">files</span><span class="op">$</span><span class="va">path</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">local</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpHYSqHV/cmgdr-cache1bf81f28004d/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp1VcO7a/cmgdr-cache1c2165aeebf3/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="va">local</span><span class="op">)</span> <span class="op">==</span> <span class="va">files</span><span class="op">$</span><span class="va">size</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 </div>

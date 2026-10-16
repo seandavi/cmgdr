@@ -71,7 +71,7 @@ temporary directory so building it leaves nothing behind.
 library(cmgdr)
 Sys.setenv(R_USER_CACHE_DIR = tempfile("cmgdr-cache"))
 cmgd_cache_dir()
-#> [1] "/tmp/RtmpHYSqHV/cmgdr-cache1bf81f28004d/R/cmgdr"
+#> [1] "/tmp/Rtmp1VcO7a/cmgdr-cache1c2165aeebf3/R/cmgdr"
 ```
 
 ## Finding datasets and releases
@@ -198,7 +198,7 @@ without downloading, as long as the copy still verifies.
 
 local <- cmgd_download(rel, files$path[1])
 local
-#> [1] "/tmp/RtmpHYSqHV/cmgdr-cache1bf81f28004d/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"
+#> [1] "/tmp/Rtmp1VcO7a/cmgdr-cache1c2165aeebf3/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"
 file.size(local) == files$size[1]
 #> [1] TRUE
 ```
