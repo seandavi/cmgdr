@@ -123,6 +123,9 @@ https://cmgd-public.cancerdatasci.org/&lt;dataset&gt;/
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/local_install_dev_deps.html" class="external-link">local_install_dev_deps</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_package.html" class="external-link">test_local</a></span><span class="op">(</span><span class="op">)</span>   <span class="co"># or R CMD check</span></span></code></pre></div>
+<p>Code follows the tidyverse style with 4-space indents and lines of at most 80 characters (Bioconductor’s style). A <a href="https://pre-commit.com" class="external-link">pre-commit</a> hook runs styler on staged R files; enable it once per clone with</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">pip</span> install pre-commit</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="ex">pre-commit</span> install</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="conformance">Conformance<a class="anchor" aria-label="anchor" href="#conformance"></a>

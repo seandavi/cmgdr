@@ -40,10 +40,12 @@ DBI::dbGetQuery(con, "
 
 library(dplyr)
 tbl(con, "taxonomic_profile_metaphlan") |>
-  filter(study_name == "ZellerG_2014", rank == "species",
-         data_type == "full_data", is.na(humann_bundle)) |>
-  count(clade_name, sort = TRUE) |>
-  collect()
+    filter(
+        study_name == "ZellerG_2014", rank == "species",
+        data_type == "full_data", is.na(humann_bundle)
+    ) |>
+    count(clade_name, sort = TRUE) |>
+    collect()
 DBI::dbDisconnect(con, shutdown = TRUE)
 } # }
 ```

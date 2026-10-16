@@ -71,7 +71,7 @@ temporary directory so building it leaves nothing behind.
 library(cmgdr)
 Sys.setenv(R_USER_CACHE_DIR = tempfile("cmgdr-cache"))
 cmgd_cache_dir()
-#> [1] "/tmp/RtmpyhZhDw/cmgdr-cache1bbe1e81e6a7/R/cmgdr"
+#> [1] "/tmp/RtmpPGFcq6/cmgdr-cache1baa889d297/R/cmgdr"
 ```
 
 ## Finding datasets and releases
@@ -198,7 +198,7 @@ without downloading, as long as the copy still verifies.
 
 local <- cmgd_download(rel, files$path[1])
 local
-#> [1] "/tmp/RtmpyhZhDw/cmgdr-cache1bbe1e81e6a7/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"
+#> [1] "/tmp/RtmpPGFcq6/cmgdr-cache1baa889d297/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"
 file.size(local) == files$size[1]
 #> [1] TRUE
 ```
@@ -512,7 +512,7 @@ only the parts of the remote Parquet files a query needs.
 
 con <- cmgd_connect(rel)
 #> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpyhZhDw/duckdb
+#> ℹ /tmp/RtmpPGFcq6/duckdb
 #> This is removed when the R session ends.
 #> • Extensions are re-downloaded each session.
 #> • Secrets are lost.
@@ -526,8 +526,8 @@ DBI::dbGetQuery(con, "
   GROUP BY study_name
   ORDER BY n_samples DESC")
 #>       study_name n_samples mean_reads
-#> 1  AsnicarF_2017        24   18436539
-#> 2    ZhangM_2023        24   41242176
+#> 1    ZhangM_2023        24   41242176
+#> 2  AsnicarF_2017        24   18436539
 #> 3      BaiX_2021        24   81421066
 #> 4 LassalleF_2017        23   29695992
 #> 5  WibowoMC_2021        22   63099853
