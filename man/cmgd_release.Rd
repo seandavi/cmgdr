@@ -32,8 +32,6 @@ cmgdr function takes. Errors if the manifest uses a publication spec major
 version this version of cmgdr does not understand.
 }
 \examples{
-\dontrun{
-rel <- cmgd_release("cmgd_nextflow-2.2.1")
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
 rel
-}
 }

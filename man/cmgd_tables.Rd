@@ -17,7 +17,6 @@ A data.frame with one row per table: \code{name}, \code{description},
 Tables in a release
 }
 \examples{
-\dontrun{
-cmgd_tables(cmgd_release("cmgd_nextflow-2.2.1"))
-}
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+cmgd_tables(rel)
 }

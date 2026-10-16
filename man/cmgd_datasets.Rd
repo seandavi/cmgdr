@@ -21,7 +21,5 @@ its latest release. If the site has no root index, a built-in list of
 dataset ids is checked instead, with a message.
 }
 \examples{
-\dontrun{
 cmgd_datasets()
-}
 }

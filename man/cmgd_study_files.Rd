@@ -19,7 +19,6 @@ URL), \code{url}, \code{size} (bytes), \code{sha256} and \code{description}.
 Per-study download files
 }
 \examples{
-\dontrun{
-cmgd_study_files(cmgd_release("cmgd_nextflow-2.2.1"), "ZellerG_2014")
-}
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+cmgd_study_files(rel, "ZellerG_2014")
 }

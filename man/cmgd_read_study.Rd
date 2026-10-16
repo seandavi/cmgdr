@@ -40,8 +40,8 @@ Parquet and need the duckdb package.
 }
 }
 \examples{
-\dontrun{
-rel <- cmgd_release("cmgd_nextflow-2.2.1")
-qc <- cmgd_read_study(rel, "ZellerG_2014", "qc")
-}
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+# Downloads go to the cache; tempdir() keeps them out of yours.
+qc <- cmgd_read_study(rel, "ZellerG_2014", "qc", cache = tempdir())
+head(qc)
 }

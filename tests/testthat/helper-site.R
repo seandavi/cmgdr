@@ -1,10 +1,14 @@
-# The fixture site (data-raw/make_fixture.sh) copied to a temp dir, catalogs
-# gunzipped, served over local HTTP with HEAD and single-range GETs (what
-# DuckDB's httpfs needs). /public is cmgd-public, /raw stands in for cmgd-raw.
+# The fixture site (data-raw/make_fixture.sh) unpacked into tempdir() from
+# one archive (its paths are too long to ship as files), catalogs gunzipped,
+# served over local HTTP with HEAD and single-range GETs (what DuckDB's httpfs
+# needs). /public is cmgd-public, /raw stands in for cmgd-raw.
 fixture_site <- function() {
     root <- tempfile("site")
-    dir.create(root)
-    file.copy(test_path("fixtures", "site"), root, recursive = TRUE)
+    utils::untar(
+        test_path("fixtures", "site.tar.gz"),
+        exdir = root,
+        tar = "internal"
+    )
     root <- file.path(root, "site")
     for (gz in list.files(
         root,

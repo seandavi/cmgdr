@@ -28,8 +28,9 @@ deleted and an error raised. A cached file that still verifies is not
 downloaded again.
 }
 \examples{
-\dontrun{
-rel <- cmgd_release("cmgd_nextflow-2.2.1")
-cmgd_download(rel, "studies/ZellerG_2014/qc.tsv")
-}
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+path <- cmgd_download(rel, "studies/ZellerG_2014/qc.tsv",
+    cache = tempdir()
+)
+path
 }
