@@ -31,19 +31,13 @@ cmgd_species_tse(rel, study, cache = cmgd_cache_dir())
 
 A `TreeSummarizedExperiment`.
 
-## Details
-
-Needs the Bioconductor package TreeSummarizedExperiment and Matrix.
-
 ## Examples
 
 ``` r
-if (requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
-    rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
-    tse <- cmgd_species_tse(rel, "ZellerG_2014", cache = tempdir())
-    tse
-}
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+tse <- cmgd_species_tse(rel, "ZellerG_2014", cache = tempdir())
 #> Warning: replacing previous import ‘S4Arrays::makeNindexFromArrayViewport’ by ‘DelayedArray::makeNindexFromArrayViewport’ when loading ‘SummarizedExperiment’
+tse
 #> class: TreeSummarizedExperiment 
 #> dim: 643 3 
 #> metadata(0):

@@ -63,15 +63,7 @@
 <p>Once it is on Bioconductor:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="st">"cmgdr"</span><span class="op">)</span></span></code></pre></div>
-<p>Imports are only <code>curl</code>, <code>digest</code> and <code>jsonlite</code>. Optional:</p>
-<ul>
-<li>
-<code>duckdb</code> and <code>DBI</code> for <code><a href="reference/cmgd_connect.html">cmgd_connect()</a></code> and reading Parquet files (<code>install.packages("duckdb")</code>, duckdb 1.5.4.1 or newer);</li>
-<li>
-<code>TreeSummarizedExperiment</code> and <code>Matrix</code> for <code><a href="reference/cmgd_species_tse.html">cmgd_species_tse()</a></code> (<code>BiocManager::install("TreeSummarizedExperiment")</code>);</li>
-<li>
-<code>dplyr</code> and <code>dbplyr</code> to query attached tables with dplyr.</li>
-</ul>
+<p>This installs duckdb (1.5.4.1 or newer) and DBI for <code><a href="reference/cmgd_connect.html">cmgd_connect()</a></code> and reading Parquet files, and TreeSummarizedExperiment for <code><a href="reference/cmgd_species_tse.html">cmgd_species_tse()</a></code>. Install <code>dplyr</code> and <code>dbplyr</code> too to query attached tables with dplyr.</p>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
@@ -119,7 +111,7 @@ https://cmgd-public.cancerdatasci.org/&lt;dataset&gt;/
 <div class="section level2">
 <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
 </h2>
-<p>Install the package’s dependencies, including the Suggests the tests and vignette need (<code>webfakes</code>, <code>duckdb</code>, <code>TreeSummarizedExperiment</code>, …), then run the tests. No credentials or network are needed: the tests serve a local fixture site.</p>
+<p>Install the package’s dependencies, including the Suggests the tests and vignette need (<code>webfakes</code>, <code>dbplyr</code>, <code>quarto</code>, …), then run the tests. No credentials or network are needed: the tests serve a local fixture site.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/local_install_dev_deps.html" class="external-link">local_install_dev_deps</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_package.html" class="external-link">test_local</a></span><span class="op">(</span><span class="op">)</span>   <span class="co"># or R CMD check</span></span></code></pre></div>

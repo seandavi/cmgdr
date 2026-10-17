@@ -47,5 +47,5 @@ path <- cmgd_download(rel, "studies/ZellerG_2014/qc.tsv",
     cache = tempdir()
 )
 path
-#> [1] "/tmp/Rtmpk1L3WC/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/studies/ZellerG_2014/qc.tsv"
+#> [1] "/tmp/RtmpBcKpbA/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/studies/ZellerG_2014/qc.tsv"
 ```

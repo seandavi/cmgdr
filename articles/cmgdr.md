@@ -71,7 +71,7 @@ temporary directory so building it leaves nothing behind.
 library(cmgdr)
 Sys.setenv(R_USER_CACHE_DIR = tempfile("cmgdr-cache"))
 cmgd_cache_dir()
-#> [1] "/tmp/RtmphpqSLq/cmgdr-cache1bf725ab4053/R/cmgdr"
+#> [1] "/tmp/RtmpLgoyQu/cmgdr-cache1bfe39926219/R/cmgdr"
 ```
 
 ## Finding datasets and releases
@@ -198,7 +198,7 @@ without downloading, as long as the copy still verifies.
 
 local <- cmgd_download(rel, files$path[1])
 local
-#> [1] "/tmp/RtmphpqSLq/cmgdr-cache1bf725ab4053/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"
+#> [1] "/tmp/RtmpLgoyQu/cmgdr-cache1bfe39926219/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"
 file.size(local) == files$size[1]
 #> [1] TRUE
 ```
@@ -282,9 +282,8 @@ str(qc)
 ## A species TreeSummarizedExperiment
 
 [`cmgd_species_tse()`](https://seandavi.github.io/cmgdr/reference/cmgd_species_tse.md)
-takes a release and a study and builds a `TreeSummarizedExperiment`
-(needs the TreeSummarizedExperiment and Matrix packages) from the
-study’s species matrix. Rows are MetaPhlAn species clades (full
+takes a release and a study and builds a `TreeSummarizedExperiment` from
+the study’s species matrix. Rows are MetaPhlAn species clades (full
 `k__...|s__...` names), columns are samples (`sample_key`), and the one
 assay, `relative_abundance`, is a sparse matrix of percentages from the
 main MetaPhlAn pass on all reads. The QC table above is its `colData`.
@@ -504,8 +503,8 @@ prov$cmgd$citation
 
 [`cmgd_connect()`](https://seandavi.github.io/cmgdr/reference/cmgd_connect.md)
 takes a release and returns a DBI connection to an in-memory DuckDB
-database with the release’s DuckLake catalog attached read-only (needs
-the DBI and duckdb packages). Every table in
+database with the release’s DuckLake catalog attached read-only. Every
+table in
 [`cmgd_tables()`](https://seandavi.github.io/cmgdr/reference/cmgd_tables.md)
 is available by name. Nothing is downloaded up front: DuckDB fetches
 only the parts of the remote Parquet files a query needs.
@@ -520,9 +519,9 @@ DBI::dbGetQuery(con, "
     GROUP BY study_name
     ORDER BY n_samples DESC")
 #>       study_name n_samples mean_reads
-#> 1  AsnicarF_2017        24   18436539
-#> 2    ZhangM_2023        24   41242176
-#> 3      BaiX_2021        24   81421066
+#> 1    ZhangM_2023        24   41242176
+#> 2      BaiX_2021        24   81421066
+#> 3  AsnicarF_2017        24   18436539
 #> 4 LassalleF_2017        23   29695992
 #> 5  WibowoMC_2021        22   63099853
 #> 6       HMP_2012         4   42665646

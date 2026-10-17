@@ -91,7 +91,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/seandavi/cmgdr" class="external-link">cmgdr</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_USER_CACHE_DIR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"cmgdr-cache"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/cmgd_cache_dir.html">cmgd_cache_dir</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmphpqSLq/cmgdr-cache1bf725ab4053/R/cmgdr"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "/tmp/RtmpLgoyQu/cmgdr-cache1bfe39926219/R/cmgdr"</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="finding-datasets-and-releases">Finding datasets and releases<a class="anchor" aria-label="anchor" href="#finding-datasets-and-releases"></a>
 </h2>
@@ -179,7 +179,7 @@
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">local</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cmgd_download.html">cmgd_download</a></span><span class="op">(</span><span class="va">rel</span>, <span class="va">files</span><span class="op">$</span><span class="va">path</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">local</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmphpqSLq/cmgdr-cache1bf725ab4053/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpLgoyQu/cmgdr-cache1bfe39926219/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="va">local</span><span class="op">)</span> <span class="op">==</span> <span class="va">files</span><span class="op">$</span><span class="va">size</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 </div>
@@ -240,7 +240,7 @@
 </div>
 </section><section class="level2"><h2 id="a-species-treesummarizedexperiment">A species TreeSummarizedExperiment<a class="anchor" aria-label="anchor" href="#a-species-treesummarizedexperiment"></a>
 </h2>
-<p><code><a href="../reference/cmgd_species_tse.html">cmgd_species_tse()</a></code> takes a release and a study and builds a <code>TreeSummarizedExperiment</code> (needs the TreeSummarizedExperiment and Matrix packages) from the study’s species matrix. Rows are MetaPhlAn species clades (full <code>k__...|s__...</code> names), columns are samples (<code>sample_key</code>), and the one assay, <code>relative_abundance</code>, is a sparse matrix of percentages from the main MetaPhlAn pass on all reads. The QC table above is its <code>colData</code>.</p>
+<p><code><a href="../reference/cmgd_species_tse.html">cmgd_species_tse()</a></code> takes a release and a study and builds a <code>TreeSummarizedExperiment</code> from the study’s species matrix. Rows are MetaPhlAn species clades (full <code>k__...|s__...</code> names), columns are samples (<code>sample_key</code>), and the one assay, <code>relative_abundance</code>, is a sparse matrix of percentages from the main MetaPhlAn pass on all reads. The QC table above is its <code>colData</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cmgd_species_tse.html">cmgd_species_tse</a></span><span class="op">(</span><span class="va">rel</span>, <span class="st">"ZellerG_2014"</span><span class="op">)</span></span>
@@ -411,7 +411,7 @@
 </div>
 </section><section class="level2"><h2 id="whole-tables-with-sql-and-dplyr">Whole tables with SQL and dplyr<a class="anchor" aria-label="anchor" href="#whole-tables-with-sql-and-dplyr"></a>
 </h2>
-<p><code><a href="../reference/cmgd_connect.html">cmgd_connect()</a></code> takes a release and returns a DBI connection to an in-memory DuckDB database with the release’s DuckLake catalog attached read-only (needs the DBI and duckdb packages). Every table in <code><a href="../reference/cmgd_tables.html">cmgd_tables()</a></code> is available by name. Nothing is downloaded up front: DuckDB fetches only the parts of the remote Parquet files a query needs.</p>
+<p><code><a href="../reference/cmgd_connect.html">cmgd_connect()</a></code> takes a release and returns a DBI connection to an in-memory DuckDB database with the release’s DuckLake catalog attached read-only. Every table in <code><a href="../reference/cmgd_tables.html">cmgd_tables()</a></code> is available by name. Nothing is downloaded up front: DuckDB fetches only the parts of the remote Parquet files a query needs.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cmgd_connect.html">cmgd_connect</a></span><span class="op">(</span><span class="va">rel</span><span class="op">)</span></span>
@@ -422,9 +422,9 @@
 <span><span class="st">    GROUP BY study_name</span></span>
 <span><span class="st">    ORDER BY n_samples DESC"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       study_name n_samples mean_reads</span></span>
-<span><span class="co">#&gt; 1  AsnicarF_2017        24   18436539</span></span>
-<span><span class="co">#&gt; 2    ZhangM_2023        24   41242176</span></span>
-<span><span class="co">#&gt; 3      BaiX_2021        24   81421066</span></span>
+<span><span class="co">#&gt; 1    ZhangM_2023        24   41242176</span></span>
+<span><span class="co">#&gt; 2      BaiX_2021        24   81421066</span></span>
+<span><span class="co">#&gt; 3  AsnicarF_2017        24   18436539</span></span>
 <span><span class="co">#&gt; 4 LassalleF_2017        23   29695992</span></span>
 <span><span class="co">#&gt; 5  WibowoMC_2021        22   63099853</span></span>
 <span><span class="co">#&gt; 6       HMP_2012         4   42665646</span></span>

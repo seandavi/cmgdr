@@ -44,7 +44,7 @@ A data.frame.
 
 - `metaphlan`, `bracken`, `resistome`, `pathways` (HUMAnN datasets
   only): the study's rows of the corresponding release table, in long
-  form. These are Parquet and need the duckdb package.
+  form. These are Parquet, read with duckdb.
 
 - `qc`: one row per sample with read counts and `run_ids`.
 

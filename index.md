@@ -29,16 +29,11 @@ Once it is on Bioconductor:
 BiocManager::install("cmgdr")
 ```
 
-Imports are only `curl`, `digest` and `jsonlite`. Optional:
-
-- `duckdb` and `DBI` for
-  [`cmgd_connect()`](https://seandavi.github.io/cmgdr/reference/cmgd_connect.md)
-  and reading Parquet files (`install.packages("duckdb")`, duckdb
-  1.5.4.1 or newer);
-- `TreeSummarizedExperiment` and `Matrix` for
-  [`cmgd_species_tse()`](https://seandavi.github.io/cmgdr/reference/cmgd_species_tse.md)
-  (`BiocManager::install("TreeSummarizedExperiment")`);
-- `dplyr` and `dbplyr` to query attached tables with dplyr.
+This installs duckdb (1.5.4.1 or newer) and DBI for
+[`cmgd_connect()`](https://seandavi.github.io/cmgdr/reference/cmgd_connect.md)
+and reading Parquet files, and TreeSummarizedExperiment for
+[`cmgd_species_tse()`](https://seandavi.github.io/cmgdr/reference/cmgd_species_tse.md).
+Install `dplyr` and `dbplyr` too to query attached tables with dplyr.
 
 ## Quick start
 
@@ -106,9 +101,9 @@ against `studies/index.json`.
 ## Development
 
 Install the package’s dependencies, including the Suggests the tests and
-vignette need (`webfakes`, `duckdb`, `TreeSummarizedExperiment`, …),
-then run the tests. No credentials or network are needed: the tests
-serve a local fixture site.
+vignette need (`webfakes`, `dbplyr`, `quarto`, …), then run the tests.
+No credentials or network are needed: the tests serve a local fixture
+site.
 
 ``` r
 

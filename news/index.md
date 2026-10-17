@@ -10,6 +10,13 @@
 - Every example now runs against the live site (small calls on
   `cmgd_mpa4.2-2.3.0`, downloads under
   [`tempdir()`](https://rdrr.io/r/base/tempfile.html)).
+- duckdb (\>= 1.5.4.1), DBI, TreeSummarizedExperiment, S4Vectors and
+  Matrix move from Suggests to Imports:
+  [`cmgd_connect()`](https://seandavi.github.io/cmgdr/reference/cmgd_connect.md),
+  Parquet reads and
+  [`cmgd_species_tse()`](https://seandavi.github.io/cmgdr/reference/cmgd_species_tse.md)
+  no longer need extra installs
+  ([\#5](https://github.com/seandavi/cmgdr/issues/5)).
 - Prepared for Bioconductor submission: `biocViews`, version 0.99.0, a
   Quarto vignette that runs against the live site.
 - Find datasets and releases from the site’s JSON indexes
