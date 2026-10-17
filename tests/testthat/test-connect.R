@@ -2,7 +2,6 @@
 skip_if_not_installed("webfakes")
 
 test_that("cmgd_connect attaches the release catalog over HTTP", {
-    skip_if_not_installed("duckdb")
     skip_on_cran() # installs DuckDB extensions from the internet
     rel <- open_release()
     con <- cmgd_connect(rel)
@@ -22,7 +21,6 @@ test_that("cmgd_connect attaches the release catalog over HTTP", {
 })
 
 test_that("cmgd_connect works with dplyr", {
-    skip_if_not_installed("duckdb")
     skip_if_not_installed("dbplyr")
     skip_on_cran()
     con <- cmgd_connect(open_release())

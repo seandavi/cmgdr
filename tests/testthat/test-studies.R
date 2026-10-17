@@ -62,7 +62,6 @@ test_that("cmgd_read_study reads TSV files", {
 })
 
 test_that("cmgd_read_study reads Parquet files with duckdb", {
-    skip_if_not_installed("duckdb")
     rel <- open_release(humann)
     pw <- cmgd_read_study(rel, "ZellerG_2014", "pathways")
     expect_equal(nrow(pw), 6)
@@ -72,7 +71,6 @@ test_that("cmgd_read_study reads Parquet files with duckdb", {
 })
 
 test_that("cmgd_species_tse builds a sparse species x samples TSE", {
-    skip_if_not_installed("TreeSummarizedExperiment")
     rel <- open_release()
     tse <- cmgd_species_tse(rel, "ArtachoA_2021")
     expect_s4_class(tse, "TreeSummarizedExperiment")

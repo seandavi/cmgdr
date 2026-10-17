@@ -21,21 +21,18 @@ default, so \code{dplyr::tbl(con, "qc_metrics")} works). Attaching is quick:
 DuckDB fetches only the parts of the Parquet files a query touches.
 }
 \details{
-Needs the DBI and duckdb (1.5.4.1 or newer) packages. The first call
-downloads DuckDB's \code{ducklake} and \code{httpfs} extensions into
-\verb{duckdb/} in the cache directory (not \verb{~/.duckdb}), where later
+The first call downloads DuckDB's \code{ducklake} and \code{httpfs} extensions
+into \verb{duckdb/} in the cache directory (not \verb{~/.duckdb}), where later
 sessions reuse them. Close the connection with
 \code{DBI::dbDisconnect(con, shutdown = TRUE)}.
 }
 \examples{
-if (requireNamespace("duckdb", quietly = TRUE)) {
-    rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
-    # DuckDB's extensions are kept under `cache` too.
-    con <- cmgd_connect(rel, cache = tempdir())
-    DBI::dbGetQuery(con, "
-        SELECT study_name, count(*) AS n_samples
-        FROM qc_metrics GROUP BY study_name
-        ORDER BY n_samples DESC LIMIT 5")
-    DBI::dbDisconnect(con, shutdown = TRUE)
-}
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+# DuckDB's extensions are kept under `cache` too.
+con <- cmgd_connect(rel, cache = tempdir())
+DBI::dbGetQuery(con, "
+    SELECT study_name, count(*) AS n_samples
+    FROM qc_metrics GROUP BY study_name
+    ORDER BY n_samples DESC LIMIT 5")
+DBI::dbDisconnect(con, shutdown = TRUE)
 }

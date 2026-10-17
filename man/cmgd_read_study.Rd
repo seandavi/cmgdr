@@ -32,7 +32,7 @@ column per \code{sample_key}; \code{0} means not detected. Every sample in
 column.
 \item \code{metaphlan}, \code{bracken}, \code{resistome}, \code{pathways}
 (HUMAnN datasets only): the study's rows of the corresponding release
-table, in long form. These are Parquet and need the duckdb package.
+table, in long form. These are Parquet, read with duckdb.
 \item \code{qc}: one row per sample with read counts and \code{run_ids}.
 }
 }
