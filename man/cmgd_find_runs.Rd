@@ -15,13 +15,13 @@ cmgd_find_runs(rel, run, cache = cmgd_cache_dir())
 }
 \value{
 A data.frame with one row per \code{run}, in order: \code{run}, then the
-matching \code{samples} row (\code{study_name}, \code{sample_key}, ...); all \code{NA} for a
-run not in the release. Errors with class \code{cmgdr_no_metadata} if the
-release has no \code{samples} table.
+matching \code{samples} row (\code{study_name}, \code{sample_key}, ...); all
+\code{NA} for a run not in the release. Errors with class
+\code{cmgdr_no_metadata} if the release has no \code{samples} table.
 }
 \description{
-Looks up SRA/ENA run accessions (\code{SRR...}, \code{ERR...}, \code{DRR...}) in the
-release's \code{samples} table, where a sample's runs are \verb{;}-joined in
+Looks up SRA/ENA run accessions (\code{SRR...}, \code{ERR...}, \code{DRR...}) in
+the release's \code{samples} table, where a sample's runs are \verb{;}-joined in
 \code{run_accessions}.
 }
 \examples{

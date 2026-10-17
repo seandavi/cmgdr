@@ -6,9 +6,10 @@
 #' DuckDB fetches only the parts of the Parquet files a query touches.
 #'
 #' Needs the DBI and duckdb (1.5.4.1 or newer) packages. The first call
-#' downloads DuckDB's `ducklake` and `httpfs` extensions into `duckdb/` in the
-#' cache directory (not `~/.duckdb`), where later sessions reuse them. Close
-#' the connection with `DBI::dbDisconnect(con, shutdown = TRUE)`.
+#' downloads DuckDB's `ducklake` and `httpfs` extensions into
+#' `duckdb/` in the cache directory (not `~/.duckdb`), where later
+#' sessions reuse them. Close the connection with
+#' `DBI::dbDisconnect(con, shutdown = TRUE)`.
 #'
 #' @inheritParams cmgd_tables
 #' @inheritParams cmgd_download
@@ -60,18 +61,20 @@ cmgd_connect <- function(rel, cache = cmgd_cache_dir()) {
 #' Gene families are too large for the release tables, so each sample's HUMAnN
 #' gene-family table is a separate download from cmgd-raw (HUMAnN datasets
 #' only). The release's `genefamilies/index.json` lists the studies; each
-#' study's files are in their own index, fetched only when asked for. Values
-#' are HUMAnN's unnormalized output in the bundle's units. Pass a `url` to
-#' [cmgd_download()] to fetch a file, verified by size and SHA-256.
+#' study's files are in their own index, fetched only when asked for. Values are
+#' HUMAnN's unnormalized output in the bundle's units. Pass a `url` to
+#' [cmgd_download()] to fetch a file, verified by size
+#' and SHA-256.
 #'
 #' @inheritParams cmgd_tables
 #' @param study `study_name` values. `NULL` returns the list of studies.
 #' @param sample Optional `sample_key` values to keep (needs `study`).
 #' @return Without `study`: a data.frame of studies with `study_name`,
-#'   `n_samples`, `n_files`, `path`, `size` and `sha256` (of the study's
-#'   index). With `study`: one row per file with `study_name`, `sample_key`,
-#'   `readset_id`, `humann_bundle`, `branch`, `key` (the object key in
-#'   cmgd-raw), `url`, `size` (bytes), `sha256` and `rows`.
+#'   `n_samples`, `n_files`, `path`, `size` and `sha256` (of
+#'   the study's index). With `study`: one row per file with `study_name`,
+#'   `sample_key`, `readset_id`, `humann_bundle`, `branch`,
+#'   `key` (the object key in cmgd-raw), `url`, `size` (bytes),
+#'   `sha256` and `rows`.
 #' @export
 #' @examples
 #' # Runs once a HUMAnN dataset is published; none is on the site yet.

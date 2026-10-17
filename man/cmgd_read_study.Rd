@@ -4,12 +4,8 @@
 \alias{cmgd_read_study}
 \title{Read a per-study file}
 \usage{
-cmgd_read_study(
-  rel,
-  study,
-  what = names(study_file_names),
-  cache = cmgd_cache_dir()
-)
+cmgd_read_study(rel, study, what = names(study_file_names),
+    cache = cmgd_cache_dir())
 }
 \arguments{
 \item{rel}{A release from \code{\link[=cmgd_release]{cmgd_release()}}.}
@@ -24,18 +20,19 @@ cmgd_read_study(
 A data.frame.
 }
 \description{
-Downloads (via \code{\link[=cmgd_download]{cmgd_download()}}, so cached and verified) and reads one of a
-study's ready-made files:
+Downloads (via \code{\link[=cmgd_download]{cmgd_download()}}, so cached and
+verified) and reads one of a study's ready-made files:
 }
 \details{
 \itemize{
-\item \code{metaphlan_species}: species x samples relative abundance (percent) from
-the main MetaPhlAn pass on all reads; column \code{clade_name} then one column
-per \code{sample_key}; \code{0} means not detected. Every sample in \code{qc} has a
-column: a sample with no species-level rows is an all-zero column.
-\item \code{metaphlan}, \code{bracken}, \code{resistome}, \code{pathways} (HUMAnN datasets only): the
-study's rows of the corresponding release table, in long form. These are
-Parquet and need the duckdb package.
+\item \code{metaphlan_species}: species x samples relative abundance (percent)
+from the main MetaPhlAn pass on all reads; column \code{clade_name} then one
+column per \code{sample_key}; \code{0} means not detected. Every sample in
+\code{qc} has a column: a sample with no species-level rows is an all-zero
+column.
+\item \code{metaphlan}, \code{bracken}, \code{resistome}, \code{pathways}
+(HUMAnN datasets only): the study's rows of the corresponding release
+table, in long form. These are Parquet and need the duckdb package.
 \item \code{qc}: one row per sample with read counts and \code{run_ids}.
 }
 }

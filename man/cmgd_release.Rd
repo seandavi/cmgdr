@@ -4,12 +4,8 @@
 \alias{cmgd_release}
 \title{Open a release}
 \usage{
-cmgd_release(
-  dataset,
-  release = "latest",
-  base = cmgd_public_base,
-  raw_base = NULL
-)
+cmgd_release(dataset, release = "latest", base = cmgd_public_base,
+    raw_base = NULL)
 }
 \arguments{
 \item{dataset}{Dataset id, for example \code{"cmgd_nextflow-2.2.1"}; see
@@ -23,8 +19,9 @@ cmgd_release(
 the URLs in \code{genefamilies/index.json}. \code{NULL} uses the index's URLs.}
 }
 \value{
-A \code{cmgd_release} object: a list with \code{dataset}, \code{release}, \code{url}
-(the release's base URL), \code{base}, \code{raw_base} and \code{manifest}.
+A \code{cmgd_release} object: a list with \code{dataset}, \code{release},
+\code{url} (the release's base URL), \code{base}, \code{raw_base} and
+\code{manifest}.
 }
 \description{
 Reads the release's \code{manifest.json} and returns a handle that every other

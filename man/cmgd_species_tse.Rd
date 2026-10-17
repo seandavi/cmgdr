@@ -20,8 +20,8 @@ A \code{TreeSummarizedExperiment}.
 Builds a species x samples TreeSummarizedExperiment from the study's
 \code{metaphlan_species.tsv.gz} (relative abundance in percent, main MetaPhlAn
 pass, all reads) with a sparse \code{relative_abundance} assay and the study's
-\code{qc.tsv} as \code{colData}. Every sample in \code{qc.tsv} is a column; a sample with
-no species rows is all zero.
+\code{qc.tsv} as \code{colData}. Every sample in \code{qc.tsv} is a column; a
+sample with no species rows is all zero.
 }
 \details{
 Needs the Bioconductor package TreeSummarizedExperiment and Matrix.

@@ -4,13 +4,8 @@
 \alias{cmgd_sample_metadata}
 \title{Sample metadata tables}
 \usage{
-cmgd_sample_metadata(
-  rel,
-  source = names(metadata_tables),
-  study = NULL,
-  wide = FALSE,
-  cache = cmgd_cache_dir()
-)
+cmgd_sample_metadata(rel, source = names(metadata_tables), study = NULL,
+    wide = FALSE, cache = cmgd_cache_dir())
 }
 \arguments{
 \item{rel}{A release from \code{\link[=cmgd_release]{cmgd_release()}}.}
@@ -19,37 +14,40 @@ cmgd_sample_metadata(
 
 \item{study}{Optional \code{study_name} values to keep.}
 
-\item{wide}{\code{FALSE} for the published long table as is. \code{TRUE} for one row
-per sample in the \code{samples} table: \code{study_name}, \code{sample_key},
-\code{biosample}, \code{bioproject}, \code{run_accessions}, then one character column
-per \code{field} (\code{NA} where a sample has no value; a sample with more than one
-distinct value for a field gets them \verb{;}-joined).}
+\item{wide}{\code{FALSE} for the published long table as is. \code{TRUE} for one
+row per sample in the \code{samples} table: \code{study_name},
+\code{sample_key}, \code{biosample}, \code{bioproject}, \code{run_accessions},
+then one character column per \code{field} (\code{NA} where a sample has no
+value; a sample with more than one distinct value for a field gets them
+\verb{;}-joined).}
 
 \item{cache}{Cache directory.}
 }
 \value{
 A data.frame with attributes \code{license} (the table's licence from the
-manifest) and \code{sources} (the pinned rows of \code{metadata_sources} the table
-draws on: source, release, DOI, licence). Errors with class
+manifest) and \code{sources} (the pinned rows of \code{metadata_sources} the
+table draws on: source, release, DOI, licence). Errors with class
 \code{cmgdr_no_metadata} if the release has no sample-metadata tables.
 }
 \description{
 Reads one of the release's published sample-metadata tables (releases since
-\verb{cmgd_mpa4.2-2.3.0} / \code{2026-10-16}), downloaded via \code{\link[=cmgd_download]{cmgd_download()}} (so
-cached and verified) and read with duckdb:
+\verb{cmgd_mpa4.2-2.3.0} / \code{2026-10-16}), downloaded via
+\code{\link[=cmgd_download]{cmgd_download()}} (so cached and verified) and read
+with duckdb:
 }
 \details{
 \itemize{
-\item \code{harmonized}: one value per sample and harmonized field, with the source
-it came from (CC-BY-4.0: it mixes in Olm-derived values).
+\item \code{harmonized}: one value per sample and harmonized field, with the
+source it came from (CC-BY-4.0: it mixes in Olm-derived values).
 \item \code{cmd}: curatedMetagenomicData curation, one row per field (CC0-1.0).
-\item \code{olm}: the Olm lab Microbiome Repo, one row per field, with Olm's route
-and confidence (CC-BY-4.0).
+\item \code{olm}: the Olm lab Microbiome Repo, one row per field, with Olm's
+route and confidence (CC-BY-4.0).
 }
 
 For a CC-BY table a message gives the licence and the source DOI to cite;
-silence it with \code{\link[=suppressMessages]{suppressMessages()}}. Joining metadata into a
-\code{TreeSummarizedExperiment} is left to higher-level packages.
+silence it with \code{\link[=suppressMessages]{suppressMessages()}}. Joining
+metadata into a \code{TreeSummarizedExperiment} is left to higher-level
+packages.
 }
 \examples{
 if (requireNamespace("duckdb", quietly = TRUE)) {

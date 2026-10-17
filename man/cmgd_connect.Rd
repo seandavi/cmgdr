@@ -22,9 +22,10 @@ DuckDB fetches only the parts of the Parquet files a query touches.
 }
 \details{
 Needs the DBI and duckdb (1.5.4.1 or newer) packages. The first call
-downloads DuckDB's \code{ducklake} and \code{httpfs} extensions into \verb{duckdb/} in the
-cache directory (not \verb{~/.duckdb}), where later sessions reuse them. Close
-the connection with \code{DBI::dbDisconnect(con, shutdown = TRUE)}.
+downloads DuckDB's \code{ducklake} and \code{httpfs} extensions into
+\verb{duckdb/} in the cache directory (not \verb{~/.duckdb}), where later
+sessions reuse them. Close the connection with
+\code{DBI::dbDisconnect(con, shutdown = TRUE)}.
 }
 \examples{
 if (requireNamespace("duckdb", quietly = TRUE)) {
