@@ -15,16 +15,17 @@ cmgd_cache_dir <- function() {
 #' Download a release file, verified and cached
 #'
 #' Downloads a file into the cache (keyed by its URL) and returns the local
-#' path. Files listed in the release's indexes are verified by size and
-#' SHA-256: table files, per-study files, the DuckLake catalog, the gene-family
-#' indexes, and gene-family files from a study already listed with
-#' [cmgd_genefamilies()] on the same release handle. A mismatching download is
-#' deleted and an error raised. A cached file that still verifies is not
-#' downloaded again.
+#' path. Files listed in the release's indexes are verified by size and SHA-256:
+#' table files, per-study files, the DuckLake catalog, the gene-family indexes,
+#' and gene-family files from a study already listed with
+#' [cmgd_genefamilies()] on the same release
+#' handle. A mismatching download is deleted and an error raised. A cached file
+#' that still verifies is not downloaded again.
 #'
 #' @inheritParams cmgd_tables
 #' @param path_or_url A path relative to the release URL (as in the `path`
-#'   column of [cmgd_files()] or [cmgd_study_files()]) or a full URL (as in the
+#'   column of [cmgd_files()] or
+#'   [cmgd_study_files()]) or a full URL (as in the
 #'   `url` column of [cmgd_genefamilies()]).
 #' @param cache Cache directory.
 #' @return The local file path.

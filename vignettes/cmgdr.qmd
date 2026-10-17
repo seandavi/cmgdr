@@ -2,13 +2,13 @@
 title: "Accessing curatedMetagenomicData releases with cmgdr"
 author: "Sean Davis"
 vignette: >
-  %\VignetteIndexEntry{Accessing curatedMetagenomicData releases with cmgdr}
-  %\VignetteEngine{quarto::html}
-  %\VignetteEncoding{UTF-8}
+    %\VignetteIndexEntry{Accessing curatedMetagenomicData releases with cmgdr}
+    %\VignetteEngine{quarto::html}
+    %\VignetteEncoding{UTF-8}
 knitr:
-  opts_chunk:
-    collapse: true
-    comment: "#>"
+    opts_chunk:
+        collapse: true
+        comment: "#>"
 ---
 
 ## Background
@@ -25,23 +25,23 @@ The profiles are now published as open **data releases** at
 <https://cmgd-public.cancerdatasci.org>. The layout has a few concepts that
 the rest of this vignette relies on:
 
-- A **dataset** is one pipeline registration: a pipeline version together with
-  its configuration, named `<workflow_id>-<version>`, for example
-  `cmgd_mpa4.2-2.3.0` (pipeline 2.3.0, MetaPhlAn 4.2, no HUMAnN). Profiles from
-  different datasets were made with different tools or databases and are kept
-  apart.
-- A **release** is an immutable, full snapshot of a dataset, named by its UTC
-  build date (`2026-10-16`). A release never changes once published; new data
-  arrive as a new release. Cite the dataset and the release id.
-- Each release has a **manifest** (`manifest.json`) listing its **tables**
-  (long, tidy tables such as `taxonomic_profile_metaphlan` or `qc_metrics`,
-  stored as Parquet files), ready-made **per-study files**, and a read-only
-  [DuckLake](https://ducklake.select) catalog that lets DuckDB query the
-  whole release in place.
-- Every file is listed with its size and SHA-256 checksum. cmgdr downloads
-  files into a local **cache** and verifies them against those checksums; a
-  file that does not verify is deleted and an error raised. Because releases
-  are immutable, a cached file never goes stale.
+-   A **dataset** is one pipeline registration: a pipeline version together with
+    its configuration, named `<workflow_id>-<version>`, for example
+    `cmgd_mpa4.2-2.3.0` (pipeline 2.3.0, MetaPhlAn 4.2, no HUMAnN). Profiles
+    from different datasets were made with different tools or databases and
+    are kept apart.
+-   A **release** is an immutable, full snapshot of a dataset, named by its UTC
+    build date (`2026-10-16`). A release never changes once published; new data
+    arrive as a new release. Cite the dataset and the release id.
+-   Each release has a **manifest** (`manifest.json`) listing its **tables**
+    (long, tidy tables such as `taxonomic_profile_metaphlan` or `qc_metrics`,
+    stored as Parquet files), ready-made **per-study files**, and a read-only
+    [DuckLake](https://ducklake.select) catalog that lets DuckDB query the
+    whole release in place.
+-   Every file is listed with its size and SHA-256 checksum. cmgdr downloads
+    files into a local **cache** and verifies them against those checksums; a
+    file that does not verify is deleted and an error raised. Because releases
+    are immutable, a cached file never goes stale.
 
 The site cannot be listed like a directory: everything is found through JSON
 indexes, which is what cmgdr reads.
@@ -220,12 +220,12 @@ Releases since `cmgd_mpa4.2-2.3.0` / `2026-10-16` publish sample metadata as
 tables. `cmgd_sample_metadata()` takes a release, a `source`, optional
 `study` names and `wide`, and returns a data frame. The sources are:
 
-- `harmonized` (the default): one value per sample and harmonized field,
-  taken from the cMD curation where it has one and from the Olm lab
-  Microbiome Repo otherwise. CC-BY-4.0.
-- `cmd`: the curatedMetagenomicData curation as published. CC0-1.0.
-- `olm`: the Olm lab Microbiome Repo, with its route and confidence.
-  CC-BY-4.0.
+-   `harmonized` (the default): one value per sample and harmonized field,
+    taken from the cMD curation where it has one and from the Olm lab
+    Microbiome Repo otherwise. CC-BY-4.0.
+-   `cmd`: the curatedMetagenomicData curation as published. CC0-1.0.
+-   `olm`: the Olm lab Microbiome Repo, with its route and confidence.
+    CC-BY-4.0.
 
 With `wide = FALSE` (the default) the table comes back long, as published:
 one row per sample and field, with the `value`, the `source` it came
@@ -259,8 +259,10 @@ then one character column per field, `NA` where a sample has no value.
 
 ```{r}
 #| label: metadata-wide
-wide <- cmgd_sample_metadata(rel, source = "cmd", study = "ZellerG_2014",
-                             wide = TRUE)
+wide <- cmgd_sample_metadata(
+    rel,
+    source = "cmd", study = "ZellerG_2014", wide = TRUE
+)
 dim(wide)
 wide[, c("sample_key", "biosample", "age_years", "sex", "health_condition")]
 ```
@@ -314,11 +316,11 @@ fetches only the parts of the remote Parquet files a query needs.
 #| label: connect
 con <- cmgd_connect(rel)
 DBI::dbGetQuery(con, "
-  SELECT study_name, count(*) AS n_samples,
-         avg(reads_decontaminated) AS mean_reads
-  FROM qc_metrics
-  GROUP BY study_name
-  ORDER BY n_samples DESC")
+    SELECT study_name, count(*) AS n_samples,
+        avg(reads_decontaminated) AS mean_reads
+    FROM qc_metrics
+    GROUP BY study_name
+    ORDER BY n_samples DESC")
 ```
 
 The same connection works with dplyr (and dbplyr). Here are the five most
@@ -335,8 +337,10 @@ n <- tbl(con, "qc_metrics") |>
     count() |>
     pull(n)
 tbl(con, "taxonomic_profile_metaphlan") |>
-    filter(study_name == "ZellerG_2014", rank == "species",
-           data_type == "full_data", is.na(humann_bundle)) |>
+    filter(
+        study_name == "ZellerG_2014", rank == "species",
+        data_type == "full_data", is.na(humann_bundle)
+    ) |>
     group_by(clade_name) |>
     summarise(mean_percent = sum(relative_abundance, na.rm = TRUE) / n) |>
     arrange(desc(mean_percent)) |>
@@ -348,14 +352,14 @@ DBI::dbDisconnect(con, shutdown = TRUE)
 
 Before computing across tables:
 
-1. Abundances from different methods are not on the same scale. MetaPhlAn
-   `relative_abundance` is a percent; Bracken `fraction_total_reads` is a 0–1
-   fraction.
-2. Pick one `data_type`, either `full_data` (all reads) or `rarefied_data` (a
-   1M-read subsample). Most analyses want `full_data`.
-3. Pick one MetaPhlAn pass. In HUMAnN datasets the bundle's own MetaPhlAn
-   pass (`humann_bundle` set) sits next to the main pass
-   (`humann_bundle IS NULL`).
+1.  Abundances from different methods are not on the same scale. MetaPhlAn
+    `relative_abundance` is a percent; Bracken `fraction_total_reads` is a 0–1
+    fraction.
+2.  Pick one `data_type`, either `full_data` (all reads) or `rarefied_data` (a
+    1M-read subsample). Most analyses want `full_data`.
+3.  Pick one MetaPhlAn pass. In HUMAnN datasets the bundle's own MetaPhlAn
+    pass (`humann_bundle` set) sits next to the main pass
+    (`humann_bundle IS NULL`).
 
 Each release's `README.md` and `tables/<table>/schema.json` document every
 column.

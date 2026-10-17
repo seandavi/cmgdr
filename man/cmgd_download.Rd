@@ -10,7 +10,8 @@ cmgd_download(rel, path_or_url, cache = cmgd_cache_dir())
 \item{rel}{A release from \code{\link[=cmgd_release]{cmgd_release()}}.}
 
 \item{path_or_url}{A path relative to the release URL (as in the \code{path}
-column of \code{\link[=cmgd_files]{cmgd_files()}} or \code{\link[=cmgd_study_files]{cmgd_study_files()}}) or a full URL (as in the
+column of \code{\link[=cmgd_files]{cmgd_files()}} or
+\code{\link[=cmgd_study_files]{cmgd_study_files()}}) or a full URL (as in the
 \code{url} column of \code{\link[=cmgd_genefamilies]{cmgd_genefamilies()}}).}
 
 \item{cache}{Cache directory.}
@@ -20,12 +21,12 @@ The local file path.
 }
 \description{
 Downloads a file into the cache (keyed by its URL) and returns the local
-path. Files listed in the release's indexes are verified by size and
-SHA-256: table files, per-study files, the DuckLake catalog, the gene-family
-indexes, and gene-family files from a study already listed with
-\code{\link[=cmgd_genefamilies]{cmgd_genefamilies()}} on the same release handle. A mismatching download is
-deleted and an error raised. A cached file that still verifies is not
-downloaded again.
+path. Files listed in the release's indexes are verified by size and SHA-256:
+table files, per-study files, the DuckLake catalog, the gene-family indexes,
+and gene-family files from a study already listed with
+\code{\link[=cmgd_genefamilies]{cmgd_genefamilies()}} on the same release
+handle. A mismatching download is deleted and an error raised. A cached file
+that still verifies is not downloaded again.
 }
 \examples{
 rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")

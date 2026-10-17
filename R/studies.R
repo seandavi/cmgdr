@@ -78,34 +78,34 @@ study_file_names <- c(
 
 #' Read a per-study file
 #'
-#' Downloads (via [cmgd_download()], so cached and verified) and reads one of a
-#' study's ready-made files:
+#' Downloads (via [cmgd_download()], so cached and
+#' verified) and reads one of a study's ready-made files:
 #'
-#' * `metaphlan_species`: species x samples relative abundance (percent) from
-#'   the main MetaPhlAn pass on all reads; column `clade_name` then one column
-#'   per `sample_key`; `0` means not detected. Every sample in `qc` has a
-#'   column: a sample with no species-level rows is an all-zero column.
-#' * `metaphlan`, `bracken`, `resistome`, `pathways` (HUMAnN datasets only): the
-#'   study's rows of the corresponding release table, in long form. These are
-#'   Parquet and need the duckdb package.
+#' * `metaphlan_species`: species x samples relative abundance (percent)
+#'   from the main MetaPhlAn pass on all reads; column `clade_name` then one
+#'   column per `sample_key`; `0` means not detected. Every sample in
+#'   `qc` has a column: a sample with no species-level rows is an all-zero
+#'   column.
+#' * `metaphlan`, `bracken`, `resistome`, `pathways`
+#'   (HUMAnN datasets only): the study's rows of the corresponding release
+#'   table, in long form. These are Parquet and need the duckdb package.
 #' * `qc`: one row per sample with read counts and `run_ids`.
 #'
 #' @inheritParams cmgd_study_files
 #' @inheritParams cmgd_download
 #' @param what Which file to read.
 #' @return A data.frame.
+#' @usage
+#' cmgd_read_study(rel, study, what = names(study_file_names),
+#'     cache = cmgd_cache_dir())
 #' @export
 #' @examples
 #' rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
 #' # Downloads go to the cache; tempdir() keeps them out of yours.
 #' qc <- cmgd_read_study(rel, "ZellerG_2014", "qc", cache = tempdir())
 #' head(qc)
-cmgd_read_study <- function(
-  rel,
-  study,
-  what = names(study_file_names),
-  cache = cmgd_cache_dir()
-) {
+cmgd_read_study <- function(rel, study, what = names(study_file_names),
+                            cache = cmgd_cache_dir()) {
     what <- match.arg(what)
     name <- study_file_names[[what]]
     files <- cmgd_study_files(rel, study)
@@ -142,8 +142,8 @@ read_parquet <- function(file) {
 #' Builds a species x samples TreeSummarizedExperiment from the study's
 #' `metaphlan_species.tsv.gz` (relative abundance in percent, main MetaPhlAn
 #' pass, all reads) with a sparse `relative_abundance` assay and the study's
-#' `qc.tsv` as `colData`. Every sample in `qc.tsv` is a column; a sample with
-#' no species rows is all zero.
+#' `qc.tsv` as `colData`. Every sample in `qc.tsv` is a column; a
+#' sample with no species rows is all zero.
 #'
 #' Needs the Bioconductor package TreeSummarizedExperiment and Matrix.
 #'

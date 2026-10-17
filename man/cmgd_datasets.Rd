@@ -11,14 +11,15 @@ cmgd_datasets(base = cmgd_public_base)
 }
 \value{
 A data.frame with columns \code{dataset}, \code{workflow_id}, \code{version} and
-\code{latest} (the latest release id, \code{NA} when the dataset has no release yet).
+\code{latest} (the latest release id, \code{NA} when the dataset has no release
+yet).
 }
 \description{
 Each pipeline registration (a pipeline version plus its configuration) is
 published as its own dataset, named \verb{<workflow_id>-<version>}, for example
-\verb{cmgd_nextflow-2.2.1}. The site's root \code{index.json} lists every dataset with
-its latest release. If the site has no root index, a built-in list of
-dataset ids is checked instead, with a message.
+\verb{cmgd_nextflow-2.2.1}. The site's root \code{index.json} lists every
+dataset with its latest release. If the site has no root index, a built-in
+list of dataset ids is checked instead, with a message.
 }
 \examples{
 cmgd_datasets()

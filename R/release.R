@@ -18,13 +18,14 @@ known_datasets <- c(
 #'
 #' Each pipeline registration (a pipeline version plus its configuration) is
 #' published as its own dataset, named `<workflow_id>-<version>`, for example
-#' `cmgd_nextflow-2.2.1`. The site's root `index.json` lists every dataset with
-#' its latest release. If the site has no root index, a built-in list of
-#' dataset ids is checked instead, with a message.
+#' `cmgd_nextflow-2.2.1`. The site's root `index.json` lists every
+#' dataset with its latest release. If the site has no root index, a built-in
+#' list of dataset ids is checked instead, with a message.
 #'
 #' @param base Base URL of the public release site.
 #' @return A data.frame with columns `dataset`, `workflow_id`, `version` and
-#'   `latest` (the latest release id, `NA` when the dataset has no release yet).
+#'   `latest` (the latest release id, `NA` when the dataset has no release
+#'   yet).
 #' @export
 #' @examples
 #' cmgd_datasets()
@@ -79,7 +80,8 @@ cmgd_datasets <- function(base = cmgd_public_base) {
 #'   [cmgd_datasets()].
 #' @inheritParams cmgd_datasets
 #' @return A data.frame from the dataset's `releases.json`, oldest first, with
-#'   columns `release`, `release_date`, `published_at` and `pinned`.
+#'   columns `release`, `release_date`, `published_at` and
+#'   `pinned`.
 #' @export
 #' @examples
 #' cmgd_releases("cmgd_mpa4.2-2.3.0")
@@ -97,18 +99,22 @@ cmgd_releases <- function(dataset, base = cmgd_public_base) {
 #' @param release Release id, or `"latest"` for the newest release.
 #' @param raw_base Base URL to download gene-family files from, overriding
 #'   the URLs in `genefamilies/index.json`. `NULL` uses the index's URLs.
-#' @return A `cmgd_release` object: a list with `dataset`, `release`, `url`
-#'   (the release's base URL), `base`, `raw_base` and `manifest`.
+#' @return A `cmgd_release` object: a list with `dataset`, `release`,
+#'   `url` (the release's base URL), `base`, `raw_base` and
+#'   `manifest`.
+#' @usage
+#' cmgd_release(dataset, release = "latest", base = cmgd_public_base,
+#'     raw_base = NULL)
 #' @export
 #' @examples
 #' rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
 #' rel
+# styler: off
+# (styler indents a wrapped signature by 2 whatever `indent_by` is;
+# Bioconductor style wants multiples of 4.)
 cmgd_release <- function(
-  dataset,
-  release = "latest",
-  base = cmgd_public_base,
-  raw_base = NULL
-) {
+    dataset, release = "latest", base = cmgd_public_base, raw_base = NULL) {
+    # styler: on
     if (identical(release, "latest")) {
         release <- fetch_json(dataset_url(base, dataset, "latest.json"))$release
     }
@@ -250,24 +256,12 @@ cmgd_index <- function(rel, path, expected = NULL) {
 }
 
 check_spec <- function(spec_version, supported, spec, where) {
-    major <- suppressWarnings(as.integer(sub(
-        "\\..*$",
-        "",
-        spec_version %||% NA
-    )))
-    if (is.na(major) || major != supported) {
+    major <- sub("\\..*$", "", spec_version %||% "")
+    if (!identical(major, as.character(supported))) {
         stop(
-            sprintf(
-                paste0(
-                    "%s uses %s version %s; ",
-                    "this cmgdr reads major version %d.\n",
-                    "Update cmgdr: remotes::install_github(\"seandavi/cmgdr\")"
-                ),
-                where,
-                spec,
-                spec_version %||% "(none)",
-                supported
-            ),
+            where, " uses ", spec, " version ", spec_version %||% "(none)",
+            "; this cmgdr reads major version ", supported, ".\n",
+            "Update cmgdr: remotes::install_github(\"seandavi/cmgdr\")",
             call. = FALSE
         )
     }
@@ -287,29 +281,30 @@ http_get <- function(url) {
 
 check_status <- function(status, url) {
     if (status == 404L) {
-        stop(structure(
-            class = c("cmgd_not_found", "error", "condition"),
-            list(
-                message = paste0(
-                    "not found: ",
-                    url,
-                    "\n(is the dataset or release id right? ",
-                    "has it been published yet?)"
-                ),
-                call = NULL
-            )
-        ))
+        cmgdr_abort(
+            "cmgd_not_found",
+            "not found: ", url,
+            "\n(is the dataset or release id right? ",
+            "has it been published yet?)"
+        )
     }
     if (status >= 400L) stop("HTTP ", status, " from ", url, call. = FALSE)
+}
+
+# Signal an error of class `class` (then "error", "condition") without a call,
+# so callers can catch it by class.
+cmgdr_abort <- function(class, ...) {
+    cond <- errorCondition(paste0(...), class = class, call = NULL)
+    stop(cond)
 }
 
 #' Provenance of a release
 #'
 #' The release's `provenance.json`: the lake snapshots it was built from
-#' (`source_asset_versions`) and, for releases since `2026-10-16`, a `cmgd`
-#' section with the pipeline registration and runs (`registration`,
-#' `pipeline_runs`), reference `databases`, pinned `metadata_sources`,
-#' per-table `licenses` and `citation` text.
+#' (`source_asset_versions`) and, for releases since `2026-10-16`, a
+#' `cmgd` section with the pipeline registration and runs
+#' (`registration`, `pipeline_runs`), reference `databases`, pinned
+#' `metadata_sources`, per-table `licenses` and `citation` text.
 #'
 #' @inheritParams cmgd_tables
 #' @return A list, as parsed by [jsonlite::fromJSON()].

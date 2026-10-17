@@ -14,7 +14,8 @@ cmgd_releases(dataset, base = cmgd_public_base)
 }
 \value{
 A data.frame from the dataset's \code{releases.json}, oldest first, with
-columns \code{release}, \code{release_date}, \code{published_at} and \code{pinned}.
+columns \code{release}, \code{release_date}, \code{published_at} and
+\code{pinned}.
 }
 \description{
 A release is an immutable full snapshot of a dataset, named by its UTC build

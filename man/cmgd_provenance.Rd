@@ -14,10 +14,10 @@ A list, as parsed by \code{\link[jsonlite:fromJSON]{jsonlite::fromJSON()}}.
 }
 \description{
 The release's \code{provenance.json}: the lake snapshots it was built from
-(\code{source_asset_versions}) and, for releases since \code{2026-10-16}, a \code{cmgd}
-section with the pipeline registration and runs (\code{registration},
-\code{pipeline_runs}), reference \code{databases}, pinned \code{metadata_sources},
-per-table \code{licenses} and \code{citation} text.
+(\code{source_asset_versions}) and, for releases since \code{2026-10-16}, a
+\code{cmgd} section with the pipeline registration and runs
+(\code{registration}, \code{pipeline_runs}), reference \code{databases}, pinned
+\code{metadata_sources}, per-table \code{licenses} and \code{citation} text.
 }
 \examples{
 rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
