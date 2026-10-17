@@ -71,7 +71,7 @@ temporary directory so building it leaves nothing behind.
 library(cmgdr)
 Sys.setenv(R_USER_CACHE_DIR = tempfile("cmgdr-cache"))
 cmgd_cache_dir()
-#> [1] "/tmp/Rtmp1VcO7a/cmgdr-cache1c2165aeebf3/R/cmgdr"
+#> [1] "/tmp/RtmphpqSLq/cmgdr-cache1bf725ab4053/R/cmgdr"
 ```
 
 ## Finding datasets and releases
@@ -198,7 +198,7 @@ without downloading, as long as the copy still verifies.
 
 local <- cmgd_download(rel, files$path[1])
 local
-#> [1] "/tmp/Rtmp1VcO7a/cmgdr-cache1c2165aeebf3/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"
+#> [1] "/tmp/RtmphpqSLq/cmgdr-cache1bf725ab4053/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"
 file.size(local) == files$size[1]
 #> [1] TRUE
 ```
@@ -423,8 +423,10 @@ sample has no value.
 
 ``` r
 
-wide <- cmgd_sample_metadata(rel, source = "cmd", study = "ZellerG_2014",
-                             wide = TRUE)
+wide <- cmgd_sample_metadata(
+    rel,
+    source = "cmd", study = "ZellerG_2014", wide = TRUE
+)
 dim(wide)
 #> [1]  3 25
 wide[, c("sample_key", "biosample", "age_years", "sex", "health_condition")]
@@ -512,14 +514,14 @@ only the parts of the remote Parquet files a query needs.
 
 con <- cmgd_connect(rel)
 DBI::dbGetQuery(con, "
-  SELECT study_name, count(*) AS n_samples,
-         avg(reads_decontaminated) AS mean_reads
-  FROM qc_metrics
-  GROUP BY study_name
-  ORDER BY n_samples DESC")
+    SELECT study_name, count(*) AS n_samples,
+        avg(reads_decontaminated) AS mean_reads
+    FROM qc_metrics
+    GROUP BY study_name
+    ORDER BY n_samples DESC")
 #>       study_name n_samples mean_reads
-#> 1    ZhangM_2023        24   41242176
-#> 2  AsnicarF_2017        24   18436539
+#> 1  AsnicarF_2017        24   18436539
+#> 2    ZhangM_2023        24   41242176
 #> 3      BaiX_2021        24   81421066
 #> 4 LassalleF_2017        23   29695992
 #> 5  WibowoMC_2021        22   63099853
@@ -541,8 +543,10 @@ n <- tbl(con, "qc_metrics") |>
     count() |>
     pull(n)
 tbl(con, "taxonomic_profile_metaphlan") |>
-    filter(study_name == "ZellerG_2014", rank == "species",
-           data_type == "full_data", is.na(humann_bundle)) |>
+    filter(
+        study_name == "ZellerG_2014", rank == "species",
+        data_type == "full_data", is.na(humann_bundle)
+    ) |>
     group_by(clade_name) |>
     summarise(mean_percent = sum(relative_abundance, na.rm = TRUE) / n) |>
     arrange(desc(mean_percent)) |>
@@ -656,7 +660,7 @@ sessionInfo()
 #> [51] IRanges_2.46.0                  treeio_1.36.1                  
 #> [53] pkgconfig_2.0.3                 TreeSummarizedExperiment_2.20.0
 #> [55] pillar_1.11.1                   glue_1.8.1                     
-#> [57] Rcpp_1.1.2                      xfun_0.61                      
+#> [57] Rcpp_1.1.2                      xfun_0.62                      
 #> [59] tibble_3.3.1                    GenomicRanges_1.64.0           
 #> [61] tidyselect_1.2.1                MatrixGenerics_1.24.0          
 #> [63] knitr_1.52                      htmltools_0.5.9                

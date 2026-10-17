@@ -71,9 +71,10 @@ DuckDB fetches only the parts of the Parquet files a query touches.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Needs the DBI and duckdb (1.5.4.1 or newer) packages. The first call
-downloads DuckDB's <code>ducklake</code> and <code>httpfs</code> extensions into <code>duckdb/</code> in the
-cache directory (not <code>~/.duckdb</code>), where later sessions reuse them. Close
-the connection with <code>DBI::dbDisconnect(con, shutdown = TRUE)</code>.</p>
+downloads DuckDB's <code>ducklake</code> and <code>httpfs</code> extensions into
+<code>duckdb/</code> in the cache directory (not <code>~/.duckdb</code>), where later
+sessions reuse them. Close the connection with
+<code>DBI::dbDisconnect(con, shutdown = TRUE)</code>.</p>
     </div>
 
     <div class="section level2">

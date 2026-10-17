@@ -7,12 +7,8 @@ so cached and verified) and reads one of a study's ready-made files:
 ## Usage
 
 ``` r
-cmgd_read_study(
-  rel,
-  study,
-  what = names(study_file_names),
-  cache = cmgd_cache_dir()
-)
+cmgd_read_study(rel, study, what = names(study_file_names),
+    cache = cmgd_cache_dir())
 ```
 
 ## Arguments

@@ -8,13 +8,8 @@ since `cmgd_mpa4.2-2.3.0` / `2026-10-16`), downloaded via
 ## Usage
 
 ``` r
-cmgd_sample_metadata(
-  rel,
-  source = names(metadata_tables),
-  study = NULL,
-  wide = FALSE,
-  cache = cmgd_cache_dir()
-)
+cmgd_sample_metadata(rel, source = names(metadata_tables), study = NULL,
+    wide = FALSE, cache = cmgd_cache_dir())
 ```
 
 ## Arguments

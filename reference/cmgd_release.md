@@ -7,12 +7,8 @@ spec major version this version of cmgdr does not understand.
 ## Usage
 
 ``` r
-cmgd_release(
-  dataset,
-  release = "latest",
-  base = cmgd_public_base,
-  raw_base = NULL
-)
+cmgd_release(dataset, release = "latest", base = cmgd_public_base,
+    raw_base = NULL)
 ```
 
 ## Arguments

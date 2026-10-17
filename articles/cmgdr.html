@@ -91,7 +91,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/seandavi/cmgdr" class="external-link">cmgdr</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_USER_CACHE_DIR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"cmgdr-cache"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/cmgd_cache_dir.html">cmgd_cache_dir</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1VcO7a/cmgdr-cache1c2165aeebf3/R/cmgdr"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "/tmp/RtmphpqSLq/cmgdr-cache1bf725ab4053/R/cmgdr"</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="finding-datasets-and-releases">Finding datasets and releases<a class="anchor" aria-label="anchor" href="#finding-datasets-and-releases"></a>
 </h2>
@@ -179,7 +179,7 @@
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">local</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cmgd_download.html">cmgd_download</a></span><span class="op">(</span><span class="va">rel</span>, <span class="va">files</span><span class="op">$</span><span class="va">path</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">local</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp1VcO7a/cmgdr-cache1c2165aeebf3/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmphpqSLq/cmgdr-cache1bf725ab4053/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="va">local</span><span class="op">)</span> <span class="op">==</span> <span class="va">files</span><span class="op">$</span><span class="va">size</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 </div>
@@ -353,8 +353,10 @@
 <p>With <code>wide = TRUE</code> the result has one row per sample: the sample’s <code>study_name</code>, <code>sample_key</code>, <code>biosample</code>, <code>bioproject</code> and <code>run_accessions</code>, then one character column per field, <code>NA</code> where a sample has no value.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">wide</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cmgd_sample_metadata.html">cmgd_sample_metadata</a></span><span class="op">(</span><span class="va">rel</span>, source <span class="op">=</span> <span class="st">"cmd"</span>, study <span class="op">=</span> <span class="st">"ZellerG_2014"</span>,</span>
-<span>                             wide <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">wide</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cmgd_sample_metadata.html">cmgd_sample_metadata</a></span><span class="op">(</span></span>
+<span>    <span class="va">rel</span>,</span>
+<span>    source <span class="op">=</span> <span class="st">"cmd"</span>, study <span class="op">=</span> <span class="st">"ZellerG_2014"</span>, wide <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">wide</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]  3 25</span></span>
 <span><span class="va">wide</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sample_key"</span>, <span class="st">"biosample"</span>, <span class="st">"age_years"</span>, <span class="st">"sex"</span>, <span class="st">"health_condition"</span><span class="op">)</span><span class="op">]</span></span>
@@ -414,14 +416,14 @@
 <div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cmgd_connect.html">cmgd_connect</a></span><span class="op">(</span><span class="va">rel</span><span class="op">)</span></span>
 <span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbGetQuery.html" class="external-link">dbGetQuery</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"</span></span>
-<span><span class="st">  SELECT study_name, count(*) AS n_samples,</span></span>
-<span><span class="st">         avg(reads_decontaminated) AS mean_reads</span></span>
-<span><span class="st">  FROM qc_metrics</span></span>
-<span><span class="st">  GROUP BY study_name</span></span>
-<span><span class="st">  ORDER BY n_samples DESC"</span><span class="op">)</span></span>
+<span><span class="st">    SELECT study_name, count(*) AS n_samples,</span></span>
+<span><span class="st">        avg(reads_decontaminated) AS mean_reads</span></span>
+<span><span class="st">    FROM qc_metrics</span></span>
+<span><span class="st">    GROUP BY study_name</span></span>
+<span><span class="st">    ORDER BY n_samples DESC"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       study_name n_samples mean_reads</span></span>
-<span><span class="co">#&gt; 1    ZhangM_2023        24   41242176</span></span>
-<span><span class="co">#&gt; 2  AsnicarF_2017        24   18436539</span></span>
+<span><span class="co">#&gt; 1  AsnicarF_2017        24   18436539</span></span>
+<span><span class="co">#&gt; 2    ZhangM_2023        24   41242176</span></span>
 <span><span class="co">#&gt; 3      BaiX_2021        24   81421066</span></span>
 <span><span class="co">#&gt; 4 LassalleF_2017        23   29695992</span></span>
 <span><span class="co">#&gt; 5  WibowoMC_2021        22   63099853</span></span>
@@ -438,8 +440,10 @@
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"taxonomic_profile_metaphlan"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">study_name</span> <span class="op">==</span> <span class="st">"ZellerG_2014"</span>, <span class="va">rank</span> <span class="op">==</span> <span class="st">"species"</span>,</span>
-<span>           <span class="va">data_type</span> <span class="op">==</span> <span class="st">"full_data"</span>, <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">humann_bundle</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
+<span>        <span class="va">study_name</span> <span class="op">==</span> <span class="st">"ZellerG_2014"</span>, <span class="va">rank</span> <span class="op">==</span> <span class="st">"species"</span>,</span>
+<span>        <span class="va">data_type</span> <span class="op">==</span> <span class="st">"full_data"</span>, <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">humann_bundle</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">clade_name</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">relative_abundance</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">mean_percent</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -531,7 +535,7 @@
 <span><span class="co">#&gt; [51] IRanges_2.46.0                  treeio_1.36.1                  </span></span>
 <span><span class="co">#&gt; [53] pkgconfig_2.0.3                 TreeSummarizedExperiment_2.20.0</span></span>
 <span><span class="co">#&gt; [55] pillar_1.11.1                   glue_1.8.1                     </span></span>
-<span><span class="co">#&gt; [57] Rcpp_1.1.2                      xfun_0.61                      </span></span>
+<span><span class="co">#&gt; [57] Rcpp_1.1.2                      xfun_0.62                      </span></span>
 <span><span class="co">#&gt; [59] tibble_3.3.1                    GenomicRanges_1.64.0           </span></span>
 <span><span class="co">#&gt; [61] tidyselect_1.2.1                MatrixGenerics_1.24.0          </span></span>
 <span><span class="co">#&gt; [63] knitr_1.52                      htmltools_0.5.9                </span></span>
