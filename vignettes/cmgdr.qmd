@@ -196,11 +196,11 @@ str(qc)
 ## A species TreeSummarizedExperiment
 
 `cmgd_species_tse()` takes a release and a study and builds a
-`TreeSummarizedExperiment` (needs the TreeSummarizedExperiment and Matrix
-packages) from the study's species matrix. Rows are MetaPhlAn species clades
-(full `k__...|s__...` names), columns are samples (`sample_key`), and the one
-assay, `relative_abundance`, is a sparse matrix of percentages from the main
-MetaPhlAn pass on all reads. The QC table above is its `colData`.
+`TreeSummarizedExperiment` from the study's species matrix. Rows are MetaPhlAn
+species clades (full `k__...|s__...` names), columns are samples
+(`sample_key`), and the one assay, `relative_abundance`, is a sparse matrix of
+percentages from the main MetaPhlAn pass on all reads. The QC table above is
+its `colData`.
 
 ```{r}
 #| label: species-tse
@@ -308,9 +308,9 @@ prov$cmgd$citation
 
 `cmgd_connect()` takes a release and returns a DBI connection to an
 in-memory DuckDB database with the release's DuckLake catalog attached
-read-only (needs the DBI and duckdb packages). Every table in
-`cmgd_tables()` is available by name. Nothing is downloaded up front: DuckDB
-fetches only the parts of the remote Parquet files a query needs.
+read-only. Every table in `cmgd_tables()` is available by name. Nothing is
+downloaded up front: DuckDB fetches only the parts of the remote Parquet files
+a query needs.
 
 ```{r}
 #| label: connect

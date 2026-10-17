@@ -88,7 +88,7 @@ study_file_names <- c(
 #'   column.
 #' * `metaphlan`, `bracken`, `resistome`, `pathways`
 #'   (HUMAnN datasets only): the study's rows of the corresponding release
-#'   table, in long form. These are Parquet and need the duckdb package.
+#'   table, in long form. These are Parquet, read with duckdb.
 #' * `qc`: one row per sample with read counts and `run_ids`.
 #'
 #' @inheritParams cmgd_study_files
@@ -130,7 +130,6 @@ cmgd_read_study <- function(rel, study, what = names(study_file_names),
 }
 
 read_parquet <- function(file) {
-    need(c("DBI", "duckdb"), "read Parquet files")
     # Reading local Parquet needs no extensions: keep duckdb off ~/.duckdb.
     con <- DBI::dbConnect(duckdb::duckdb(shared_home = FALSE))
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
@@ -145,22 +144,14 @@ read_parquet <- function(file) {
 #' `qc.tsv` as `colData`. Every sample in `qc.tsv` is a column; a
 #' sample with no species rows is all zero.
 #'
-#' Needs the Bioconductor package TreeSummarizedExperiment and Matrix.
-#'
 #' @inheritParams cmgd_read_study
 #' @return A `TreeSummarizedExperiment`.
 #' @export
 #' @examples
-#' if (requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
-#'     rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
-#'     tse <- cmgd_species_tse(rel, "ZellerG_2014", cache = tempdir())
-#'     tse
-#' }
+#' rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+#' tse <- cmgd_species_tse(rel, "ZellerG_2014", cache = tempdir())
+#' tse
 cmgd_species_tse <- function(rel, study, cache = cmgd_cache_dir()) {
-    need(
-        c("TreeSummarizedExperiment", "Matrix", "S4Vectors"),
-        "build a TreeSummarizedExperiment"
-    )
     species <- cmgd_read_study(rel, study, "metaphlan_species", cache = cache)
     qc <- cmgd_read_study(rel, study, "qc", cache = cache)
     abundance <- matrix(
@@ -181,21 +172,4 @@ cmgd_species_tse <- function(rel, study, cache = cmgd_cache_dir()) {
             check.names = FALSE
         )
     )
-}
-
-need <- function(pkgs, why) {
-    missing <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
-    if (length(missing)) {
-        stop(
-            "cmgdr needs ",
-            paste(missing, collapse = ", "),
-            " to ",
-            why,
-            ". Install with:\n",
-            "  install.packages(\"BiocManager\"); BiocManager::install(c(",
-            paste0("\"", missing, "\"", collapse = ", "),
-            "))",
-            call. = FALSE
-        )
-    }
 }

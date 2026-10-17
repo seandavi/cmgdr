@@ -23,13 +23,8 @@ pass, all reads) with a sparse \code{relative_abundance} assay and the study's
 \code{qc.tsv} as \code{colData}. Every sample in \code{qc.tsv} is a column; a
 sample with no species rows is all zero.
 }
-\details{
-Needs the Bioconductor package TreeSummarizedExperiment and Matrix.
-}
 \examples{
-if (requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
-    rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
-    tse <- cmgd_species_tse(rel, "ZellerG_2014", cache = tempdir())
-    tse
-}
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+tse <- cmgd_species_tse(rel, "ZellerG_2014", cache = tempdir())
+tse
 }

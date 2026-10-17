@@ -20,22 +20,22 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Imports:
     curl,
+    DBI,
     digest,
+    duckdb (>= 1.5.4.1),
     jsonlite,
+    Matrix,
+    S4Vectors,
     tools,
+    TreeSummarizedExperiment,
     utils
 Suggests:
-    DBI,
     dbplyr,
     dplyr,
-    duckdb (>= 1.5.4.1),
     knitr,
-    Matrix,
     quarto,
-    S4Vectors,
     SummarizedExperiment,
     testthat (>= 3.0.0),
-    TreeSummarizedExperiment,
     webfakes
 VignetteBuilder: quarto
 SystemRequirements: Quarto command line tool
