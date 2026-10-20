@@ -42,7 +42,7 @@ Install `dplyr` and `dbplyr` too to query attached tables with dplyr.
 library(cmgdr)
 
 cmgd_datasets()                      # published datasets and their latest release
-rel <- cmgd_release("cmgd_nextflow-2.2.1")   # latest release
+rel <- cmgd_release("cmgd_mpa4.2-2.3.0")   # latest release of that dataset
 rel
 
 cmgd_tables(rel)                     # tables, row counts, licence
@@ -58,7 +58,8 @@ DBI::dbGetQuery(con, "SELECT study_name, count(*) AS n FROM qc_metrics GROUP BY 
 dplyr::tbl(con, "taxonomic_profile_metaphlan")
 DBI::dbDisconnect(con, shutdown = TRUE)
 
-# HUMAnN gene families (HUMAnN datasets only), one file per sample
+# HUMAnN gene families (HUMAnN datasets only), one file per sample.
+# No HUMAnN dataset is published yet; the name below is illustrative.
 gf_rel <- cmgd_release("cmgd_humann3.9-2.3.0")
 cmgd_genefamilies(gf_rel)            # studies with gene families
 gf <- cmgd_genefamilies(gf_rel, study = "ZellerG_2014")   # fetches only that study's index
@@ -84,7 +85,7 @@ https://cmgd-public.cancerdatasci.org/<dataset>/
 ```
 
 A dataset is one pipeline registration, named `<workflow_id>-<version>`
-(`cmgd_nextflow-2.2.1`, `cmgd_humann3.9-2.3.0`, …). A release is an
+(`cmgd_mpa4.2-2.3.0`, `cmgd_nextflow-2.2.1`, …). A release is an
 immutable snapshot named by its build date (`2026-10-08`). Neither site
 can be listed; everything is found through the JSON indexes. cmgdr
 refuses a manifest whose publication spec major version (cdsci-lake, 2)
