@@ -71,7 +71,7 @@ temporary directory so building it leaves nothing behind.
 library(cmgdr)
 Sys.setenv(R_USER_CACHE_DIR = tempfile("cmgdr-cache"))
 cmgd_cache_dir()
-#> [1] "/tmp/RtmpKrKMl8/cmgdr-cache1c491f9e0759/R/cmgdr"
+#> [1] "/tmp/RtmpGYszzm/cmgdr-cache1d60133dec89/R/cmgdr"
 ```
 
 ## Finding datasets and releases
@@ -87,7 +87,7 @@ id of its newest release (`latest`).
 datasets <- cmgd_datasets()
 datasets
 #>               dataset   workflow_id version     latest
-#> 1   cmgd_mpa4.2-2.3.0   cmgd_mpa4.2   2.3.0 2026-10-16
+#> 1   cmgd_mpa4.2-2.3.0   cmgd_mpa4.2   2.3.0 2026-10-20
 #> 2 cmgd_nextflow-2.2.1 cmgd_nextflow   2.2.1 2026-10-08
 ```
 
@@ -101,6 +101,7 @@ whether it is `pinned` (kept as a long-term reference).
 cmgd_releases("cmgd_mpa4.2-2.3.0")
 #>      release release_date                     published_at pinned
 #> 1 2026-10-16   2026-10-16 2026-10-16T03:40:40.277445+00:00  FALSE
+#> 2 2026-10-20   2026-10-20 2026-10-20T12:59:46.971411+00:00  FALSE
 ```
 
 [`cmgd_release()`](https://seandavi.github.io/cmgdr/reference/cmgd_release.md)
@@ -198,7 +199,7 @@ without downloading, as long as the copy still verifies.
 
 local <- cmgd_download(rel, files$path[1])
 local
-#> [1] "/tmp/RtmpKrKMl8/cmgdr-cache1c491f9e0759/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"
+#> [1] "/tmp/RtmpGYszzm/cmgdr-cache1d60133dec89/R/cmgdr/cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/2026-10-16/tables/qc_metrics/data/part-00000.parquet"
 file.size(local) == files$size[1]
 #> [1] TRUE
 ```
@@ -443,6 +444,61 @@ A release without metadata tables raises an error of class
 `cmgdr_no_metadata`, which callers can catch with
 [`tryCatch()`](https://rdrr.io/r/base/conditions.html).
 
+## Species profiles for samples picked by metadata
+
+The wide table is a plain data frame with one row per sample, so dplyr
+verbs (or base subsetting) pick samples by their metadata, across
+studies.
+[`cmgd_samples_tse()`](https://seandavi.github.io/cmgdr/reference/cmgd_samples_tse.md)
+takes the result, or a vector of `sample_key`s, and builds one species
+`TreeSummarizedExperiment` for those samples, in that order. Rows are
+the union of the studies’ species, `0` where a species was not seen, and
+`colData` is each sample’s `qc.tsv` row followed by its metadata from
+`source`. The licence and sources travel in `metadata()`.
+
+``` r
+
+library(dplyr)
+picked <- cmgd_sample_metadata(rel, wide = TRUE) |>
+    filter(health_condition == "case", sex == "female")
+count(picked, study_name)
+#>      study_name  n
+#> 1     BaiX_2021  9
+#> 2 WibowoMC_2021  4
+#> 3   ZhangM_2023 11
+cases <- cmgd_samples_tse(rel, picked)
+cases
+#> class: TreeSummarizedExperiment 
+#> dim: 1831 24 
+#> metadata(2): license sources
+#> assays(1): relative_abundance
+#> rownames(1831):
+#>   k__Archaea|p__Methanobacteriota|c__Methanobacteria|o__Methanobacteriales|f__Methanobacteriaceae|g__Methanobrevibacter|s__Methanobrevibacter_smithii
+#>   k__Archaea|p__Methanobacteriota|c__Methanobacteria|o__Methanobacteriales|f__Methanobacteriaceae|g__Methanosphaera|s__Methanosphaera_stadtmanae
+#>   ...
+#>   k__Bacteria|p__Verrucomicrobiota|c__CFGB2164|o__OFGB2164|f__FGB2164|g__GGB6134|s__GGB6134_SGB8782
+#>   k__Eukaryota|p__Ascomycota|c__Saccharomycetes|o__Saccharomycetales|f__Saccharomycetaceae|g__Saccharomyces|s__Saccharomyces_cerevisiae
+#> rowData names(0):
+#> colnames(24): RS.-E1VYCTMlJ9MHjJP5F3va5QjzApu62Ui
+#>   RS.-euTypL8efkqttXicWmqnZp7Rbd5_bbR ...
+#>   RS.nBSzXKC4EBR5uyrbjPoLkbdl3G523GQO
+#>   RS.x4dYjHy-xrkkARWe0_FAZM1O1lRlbT6l
+#> colData names(27): sample_key sample_id ... health_condition sex
+#> reducedDimNames(0):
+#> mainExpName: NULL
+#> altExpNames(0):
+#> rowLinks: NULL
+#> rowTree: NULL
+#> colLinks: NULL
+#> colTree: NULL
+cases$study_name |> table()
+#> 
+#>     BaiX_2021 WibowoMC_2021   ZhangM_2023 
+#>             9             4            11
+S4Vectors::metadata(cases)$license
+#> [1] "CC-BY-4.0"
+```
+
 ## Finding samples by run accession
 
 [`cmgd_find_runs()`](https://seandavi.github.io/cmgdr/reference/cmgd_find_runs.md)
@@ -628,7 +684,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] dplyr_1.2.1  cmgdr_0.99.0
+#> [1] dplyr_1.2.1  cmgdr_0.99.1
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] yulab.utils_0.2.5               utf8_1.2.6                     

@@ -41,6 +41,8 @@
   : Sample metadata tables
 - [`cmgd_find_runs()`](https://seandavi.github.io/cmgdr/reference/cmgd_find_runs.md)
   : Find samples by run accession
+- [`cmgd_samples_tse()`](https://seandavi.github.io/cmgdr/reference/cmgd_samples_tse.md)
+  : Species profiles of any samples as a TreeSummarizedExperiment
 
 ## Gene families
 

@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">cmgdr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,6 +81,10 @@
 <span><span class="co"># Per-study files: downloaded once into a checksum-verified cache</span></span>
 <span><span class="va">qc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmgd_read_study.html">cmgd_read_study</a></span><span class="op">(</span><span class="va">rel</span>, <span class="st">"ZellerG_2014"</span>, <span class="st">"qc"</span><span class="op">)</span></span>
 <span><span class="va">tse</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmgd_species_tse.html">cmgd_species_tse</a></span><span class="op">(</span><span class="va">rel</span>, <span class="st">"ZellerG_2014"</span><span class="op">)</span>   <span class="co"># species x samples, sparse</span></span>
+<span></span>
+<span><span class="co"># Pick samples by metadata, across studies, then one TSE for them</span></span>
+<span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmgd_sample_metadata.html">cmgd_sample_metadata</a></span><span class="op">(</span><span class="va">rel</span>, wide <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>   <span class="co"># one row per sample</span></span>
+<span><span class="va">tse</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmgd_samples_tse.html">cmgd_samples_tse</a></span><span class="op">(</span><span class="va">rel</span>, <span class="va">meta</span><span class="op">[</span><span class="va">meta</span><span class="op">$</span><span class="va">health_condition</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="st">"case"</span>, <span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The whole release in DuckDB, nothing downloaded up front</span></span>
 <span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cmgd_connect.html">cmgd_connect</a></span><span class="op">(</span><span class="va">rel</span><span class="op">)</span></span>

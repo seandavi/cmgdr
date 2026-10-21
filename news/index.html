@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">cmgdr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,12 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.99.1" id="cmgdr-0991">cmgdr 0.99.1<a class="anchor" aria-label="anchor" href="#cmgdr-0991"></a></h2>
+<ul><li>
+<code><a href="../reference/cmgd_samples_tse.html">cmgd_samples_tse()</a></code> builds a species <code>TreeSummarizedExperiment</code> for any samples, across studies, with their sample metadata (from <code>source</code>) after the <code>qc.tsv</code> columns in <code>colData</code>, and the licence and sources in <code>metadata()</code>. Pick samples by filtering <code>cmgd_sample_metadata(rel, wide = TRUE)</code>, for example with <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">dplyr::filter()</a></code> (<a href="https://github.com/seandavi/cmgdr/issues/17" class="external-link">#17</a>).</li>
+<li>The test fixture’s <code>cmgd_mpa4.2-2.3.0</code> slice gains <code>studies/</code> (species profiles and QC for its two studies).</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.99.0" id="cmgdr-0990">cmgdr 0.99.0<a class="anchor" aria-label="anchor" href="#cmgdr-0990"></a></h2>
 <ul><li>
 <code><a href="../reference/cmgd_connect.html">cmgd_connect()</a></code> gains a <code>cache</code> argument and keeps DuckDB’s extensions and secrets in <code>duckdb/</code> under the cache directory (<code>tools::R_user_dir("cmgdr", "cache")</code>) instead of <code>~/.duckdb</code>; Parquet reads never use <code>~/.duckdb</code>. Needs duckdb 1.5.4.1 or newer.</li>
@@ -47,7 +53,8 @@
 <li>Attach a release’s DuckLake catalog in DuckDB (<code><a href="../reference/cmgd_connect.html">cmgd_connect()</a></code>).</li>
 <li>HUMAnN gene-family file indexes (<code><a href="../reference/cmgd_genefamilies.html">cmgd_genefamilies()</a></code>).</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

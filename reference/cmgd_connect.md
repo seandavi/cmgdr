@@ -44,9 +44,9 @@ DBI::dbGetQuery(con, "
     FROM qc_metrics GROUP BY study_name
     ORDER BY n_samples DESC LIMIT 5")
 #>       study_name n_samples
-#> 1    ZhangM_2023        24
-#> 2      BaiX_2021        24
-#> 3  AsnicarF_2017        24
+#> 1      BaiX_2021        24
+#> 2  AsnicarF_2017        24
+#> 3    ZhangM_2023        24
 #> 4 LassalleF_2017        23
 #> 5  WibowoMC_2021        22
 DBI::dbDisconnect(con, shutdown = TRUE)

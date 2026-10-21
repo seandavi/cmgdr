@@ -31,4 +31,5 @@ columns `release`, `release_date`, `published_at` and `pinned`.
 cmgd_releases("cmgd_mpa4.2-2.3.0")
 #>      release release_date                     published_at pinned
 #> 1 2026-10-16   2026-10-16 2026-10-16T03:40:40.277445+00:00  FALSE
+#> 2 2026-10-20   2026-10-20 2026-10-20T12:59:46.971411+00:00  FALSE
 ```

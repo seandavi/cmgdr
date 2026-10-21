@@ -1,5 +1,18 @@
 # Changelog
 
+## cmgdr 0.99.1
+
+- [`cmgd_samples_tse()`](https://seandavi.github.io/cmgdr/reference/cmgd_samples_tse.md)
+  builds a species `TreeSummarizedExperiment` for any samples, across
+  studies, with their sample metadata (from `source`) after the `qc.tsv`
+  columns in `colData`, and the licence and sources in `metadata()`.
+  Pick samples by filtering `cmgd_sample_metadata(rel, wide = TRUE)`,
+  for example with
+  [`dplyr::filter()`](https://dplyr.tidyverse.org/reference/filter.html)
+  ([\#17](https://github.com/seandavi/cmgdr/issues/17)).
+- The test fixture’s `cmgd_mpa4.2-2.3.0` slice gains `studies/` (species
+  profiles and QC for its two studies).
+
 ## cmgdr 0.99.0
 
 - [`cmgd_connect()`](https://seandavi.github.io/cmgdr/reference/cmgd_connect.md)

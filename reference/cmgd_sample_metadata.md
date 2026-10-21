@@ -58,9 +58,13 @@ draws on: source, release, DOI, licence). Errors with class
 
 For a CC-BY table a message gives the licence and the source DOI to
 cite; silence it with
-[`suppressMessages()`](https://rdrr.io/r/base/message.html). Joining
-metadata into a `TreeSummarizedExperiment` is left to higher-level
-packages.
+[`suppressMessages()`](https://rdrr.io/r/base/message.html).
+
+To pick samples, filter the wide table, for example
+`cmgd_sample_metadata(rel, wide = TRUE) |> dplyr::filter(...)`, and pass
+the result to
+[`cmgd_samples_tse()`](https://seandavi.github.io/cmgdr/reference/cmgd_samples_tse.md)
+for their species profiles with this metadata as `colData`.
 
 ## Examples
 
@@ -72,11 +76,10 @@ if (requireNamespace("duckdb", quietly = TRUE)) {
     )
     meta[1:3, 1:6]
     attr(meta, "sources")
+    # Pick samples by their metadata.
+    if (requireNamespace("dplyr", quietly = TRUE)) {
+        dplyr::filter(meta, health_condition == "case")$sample_key
+    }
 }
-#>   source                                  release package_version  doi license
-#> 1    cmd 6828fb9abdfc27a91b02e20568d27332eaf19ca4            <NA> <NA> CC0-1.0
-#>                                                             sha256
-#> 1 51b2be460816ceec68238e144f903feb4e74b20ce27ad3be4d06ae242a7c15bd
-#>                      loaded_at pinned
-#> 1 2026-10-15 21:09:41.84543-06   TRUE
+#> character(0)
 ```
