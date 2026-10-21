@@ -45,9 +45,12 @@ route and confidence (CC-BY-4.0).
 }
 
 For a CC-BY table a message gives the licence and the source DOI to cite;
-silence it with \code{\link[=suppressMessages]{suppressMessages()}}. Joining
-metadata into a \code{TreeSummarizedExperiment} is left to higher-level
-packages.
+silence it with \code{\link[=suppressMessages]{suppressMessages()}}.
+
+To pick samples, filter the wide table, for example
+\code{cmgd_sample_metadata(rel, wide = TRUE) |> dplyr::filter(...)}, and pass
+the result to \code{\link[=cmgd_samples_tse]{cmgd_samples_tse()}} for their species profiles with this
+metadata as \code{colData}.
 }
 \examples{
 if (requireNamespace("duckdb", quietly = TRUE)) {
@@ -57,5 +60,9 @@ if (requireNamespace("duckdb", quietly = TRUE)) {
     )
     meta[1:3, 1:6]
     attr(meta, "sources")
+    # Pick samples by their metadata.
+    if (requireNamespace("dplyr", quietly = TRUE)) {
+        dplyr::filter(meta, health_condition == "case")$sample_key
+    }
 }
 }

@@ -152,6 +152,20 @@ read_parquet <- function(file) {
 #' tse <- cmgd_species_tse(rel, "ZellerG_2014", cache = tempdir())
 #' tse
 cmgd_species_tse <- function(rel, study, cache = cmgd_cache_dir()) {
+    x <- study_species(rel, study, cache)
+    TreeSummarizedExperiment::TreeSummarizedExperiment(
+        assays = list(relative_abundance = x$abundance),
+        colData = S4Vectors::DataFrame(
+            x$qc,
+            row.names = x$qc$sample_key,
+            check.names = FALSE
+        )
+    )
+}
+
+# One study's sparse species x samples relative abundance (columns are every
+# qc.tsv sample, all zero if it has no species rows) and its qc.tsv.
+study_species <- function(rel, study, cache) {
     species <- cmgd_read_study(rel, study, "metaphlan_species", cache = cache)
     qc <- cmgd_read_study(rel, study, "qc", cache = cache)
     abundance <- matrix(
@@ -162,14 +176,5 @@ cmgd_species_tse <- function(rel, study, cache = cmgd_cache_dir()) {
     )
     measured <- intersect(names(species)[-1], qc$sample_key)
     abundance[, measured] <- as.matrix(species[measured])
-    TreeSummarizedExperiment::TreeSummarizedExperiment(
-        assays = list(
-            relative_abundance = Matrix::Matrix(abundance, sparse = TRUE)
-        ),
-        colData = S4Vectors::DataFrame(
-            qc,
-            row.names = qc$sample_key,
-            check.names = FALSE
-        )
-    )
+    list(abundance = Matrix::Matrix(abundance, sparse = TRUE), qc = qc)
 }

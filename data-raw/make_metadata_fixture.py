@@ -7,6 +7,10 @@ Copies, for STUDIES only, the `samples` table and the sample-metadata tables
 files.json for the sliced Parquet, copies provenance.json as is, and writes a manifest with just these tables
 (row counts updated, licences kept). The DuckLake catalog is left out:
 cmgd_sample_metadata() reads the Parquet files through files.json.
+
+It also slices studies/: an index.json with just STUDIES, each listing only
+STUDY_FILES, which are copied verbatim (so sizes and sha256 are unchanged), for
+cmgd_species_tse() and cmgd_samples_tse().
 """
 import hashlib
 import json
@@ -19,6 +23,7 @@ import duckdb
 STUDIES = ("ZellerG_2014", "LassalleF_2017")  # LassalleF_2017 has no Olm metadata
 TABLES = ("samples", "sample_metadata_harmonized", "sample_metadata_cmd",
           "sample_metadata_olm", "metadata_sources")
+STUDY_FILES = ("metaphlan_species.tsv.gz", "qc.tsv")
 
 src_ds, release, public = Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3])
 src = src_ds / release
@@ -51,3 +56,13 @@ for t in manifest["tables"]:
     (tdir / "files.json").write_text(json.dumps(files, indent=2))
     t["row_count"] = rows
 (dst / "manifest.json").write_text(json.dumps(manifest, indent=1))
+
+index = json.loads((src / "studies" / "index.json").read_text())
+index["studies"] = [s for s in index["studies"] if s["study_name"] in STUDIES]
+index["artifacts"] = []
+for s in index["studies"]:
+    s["files"] = [f for f in s["files"] if f["name"] in STUDY_FILES]
+    for f in s["files"]:
+        (dst / f["path"]).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(src / f["path"], dst / f["path"])
+(dst / "studies" / "index.json").write_text(json.dumps(index, indent=1))

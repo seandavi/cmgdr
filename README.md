@@ -47,6 +47,10 @@ cmgd_studies(rel)                    # studies and sample counts
 qc <- cmgd_read_study(rel, "ZellerG_2014", "qc")
 tse <- cmgd_species_tse(rel, "ZellerG_2014")   # species x samples, sparse
 
+# Pick samples by metadata, across studies, then one TSE for them
+meta <- cmgd_sample_metadata(rel, wide = TRUE)   # one row per sample
+tse <- cmgd_samples_tse(rel, meta[meta$health_condition %in% "case", ])
+
 # The whole release in DuckDB, nothing downloaded up front
 con <- cmgd_connect(rel)
 DBI::dbGetQuery(con, "SELECT study_name, count(*) AS n FROM qc_metrics GROUP BY 1")

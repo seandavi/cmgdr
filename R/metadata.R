@@ -24,9 +24,12 @@ metadata_table_sources <- list(
 #'   route and confidence (CC-BY-4.0).
 #'
 #' For a CC-BY table a message gives the licence and the source DOI to cite;
-#' silence it with [suppressMessages()]. Joining
-#' metadata into a `TreeSummarizedExperiment` is left to higher-level
-#' packages.
+#' silence it with [suppressMessages()].
+#'
+#' To pick samples, filter the wide table, for example
+#' `cmgd_sample_metadata(rel, wide = TRUE) |> dplyr::filter(...)`, and pass
+#' the result to [cmgd_samples_tse()] for their species profiles with this
+#' metadata as `colData`.
 #'
 #' @inheritParams cmgd_read_study
 #' @param source Which metadata table to read.
@@ -53,6 +56,10 @@ metadata_table_sources <- list(
 #'     )
 #'     meta[1:3, 1:6]
 #'     attr(meta, "sources")
+#'     # Pick samples by their metadata.
+#'     if (requireNamespace("dplyr", quietly = TRUE)) {
+#'         dplyr::filter(meta, health_condition == "case")$sample_key
+#'     }
 #' }
 # styler: off
 # (styler indents a wrapped signature by 2 whatever `indent_by` is;
@@ -97,6 +104,103 @@ cmgd_sample_metadata <- function(
     out <- if (wide) widen(samples, long) else long
     rownames(out) <- NULL
     structure(out, license = license, sources = `rownames<-`(sources, NULL))
+}
+
+#' Species profiles of any samples as a TreeSummarizedExperiment
+#'
+#' Builds a species x samples `TreeSummarizedExperiment` for an arbitrary set
+#' of samples, possibly from several studies, with their sample metadata as
+#' `colData`. Pick the samples by filtering
+#' `cmgd_sample_metadata(rel, wide = TRUE)`, for example with
+#' `dplyr::filter()`.
+#'
+#' Each sample's study comes from the release's `samples` table. The
+#' `relative_abundance` assay (sparse, percent) is built from each study's
+#' `metaphlan_species.tsv.gz` as in [cmgd_species_tse()]: rows are the union
+#' of the studies' species, `0` where a species is absent. `colData` is the
+#' study's `qc.tsv` row followed by the wide metadata columns from `source`
+#' (`NA` where a sample has no value).
+#'
+#' @inheritParams cmgd_sample_metadata
+#' @param samples `sample_key` values, or a data.frame with a `sample_key`
+#'   column such as a filtered `cmgd_sample_metadata(rel, wide = TRUE)`.
+#'   Columns are in this order.
+#' @return A `TreeSummarizedExperiment`. `metadata()` has `license` and
+#'   `sources` of the metadata table, as for [cmgd_sample_metadata()], which
+#'   also gives the attribution message for a CC-BY table. Errors naming any
+#'   `samples` not in the release, and with class `cmgdr_no_metadata` if the
+#'   release has no sample-metadata tables.
+#' @usage
+#' cmgd_samples_tse(rel, samples, source = names(metadata_tables),
+#'     cache = cmgd_cache_dir())
+#' @export
+#' @examples
+#' if (requireNamespace("duckdb", quietly = TRUE)) {
+#'     rel <- cmgd_release("cmgd_mpa4.2-2.3.0", release = "2026-10-16")
+#'     meta <- cmgd_sample_metadata(rel, wide = TRUE, cache = tempdir())
+#'     # Female cases, across studies
+#'     picked <- meta[meta$health_condition %in% "case", ]
+#'     picked <- picked[picked$sex %in% "female", ]
+#'     tse <- cmgd_samples_tse(rel, picked, cache = tempdir())
+#'     tse
+#'     table(tse$study_name)
+#' }
+cmgd_samples_tse <- function(rel, samples, source = names(metadata_tables),
+                             cache = cmgd_cache_dir()) {
+    source <- match.arg(source)
+    if (is.data.frame(samples)) {
+        samples <- samples$sample_key
+    }
+    if (!length(samples)) {
+        stop("no samples given", call. = FALSE)
+    }
+    meta <- cmgd_sample_metadata(rel, source, wide = TRUE, cache = cache)
+    unknown <- setdiff(samples, meta$sample_key)
+    if (length(unknown)) {
+        stop(
+            "no sample ",
+            paste(unknown, collapse = ", "),
+            " in ",
+            rel$dataset,
+            "/",
+            rel$release,
+            call. = FALSE
+        )
+    }
+    info <- list(
+        license = attr(meta, "license"),
+        sources = attr(meta, "sources")
+    )
+    meta <- meta[match(samples, meta$sample_key), ]
+    parts <- lapply(
+        unique(meta$study_name),
+        function(study) study_species(rel, study, cache)
+    )
+    species <- unique(unlist(lapply(parts, function(p) rownames(p$abundance))))
+    # Each study's matrix on the shared species rows, then columns in order.
+    padded <- lapply(parts, function(p) {
+        t <- Matrix::mat2triplet(p$abundance)
+        Matrix::sparseMatrix(
+            i = match(rownames(p$abundance), species)[t$i],
+            j = t$j,
+            x = t$x,
+            dims = c(length(species), ncol(p$abundance)),
+            dimnames = list(species, colnames(p$abundance))
+        )
+    })
+    abundance <- do.call(cbind, padded)[, samples, drop = FALSE]
+    qc <- do.call(rbind, lapply(parts, function(p) p$qc))
+    qc <- qc[match(samples, qc$sample_key), ]
+    col_data <- cbind(qc, meta[setdiff(names(meta), names(qc))])
+    TreeSummarizedExperiment::TreeSummarizedExperiment(
+        assays = list(relative_abundance = abundance),
+        colData = S4Vectors::DataFrame(
+            col_data,
+            row.names = samples,
+            check.names = FALSE
+        ),
+        metadata = info
+    )
 }
 
 # The pinned `metadata_sources` rows that `source` draws on. For a CC-BY
