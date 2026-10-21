@@ -204,3 +204,87 @@ test_that("cmgd_find_runs splits run_accessions and keeps input order", {
         class = "cmgdr_no_metadata"
     )
 })
+
+samples_tse <- function(samples, ...) {
+    suppressMessages(cmgd_samples_tse(
+        mpa_release(),
+        samples,
+        ...,
+        cache = tempfile()
+    ))
+}
+
+test_that("cmgd_samples_tse spans studies in the order given", {
+    rel <- mpa_release()
+    cache <- tempfile()
+    zeller <- cmgd_species_tse(rel, "ZellerG_2014", cache = cache)
+    lassalle <- cmgd_species_tse(rel, "LassalleF_2017", cache = cache)
+    keys <- c(colnames(lassalle)[2], colnames(zeller)[3], colnames(lassalle)[1])
+    tse <- samples_tse(keys)
+    expect_equal(ncol(tse), 3)
+    expect_equal(colnames(tse), keys)
+    expect_setequal(rownames(tse), union(rownames(zeller), rownames(lassalle)))
+    expect_false(anyDuplicated(rownames(tse)) > 0)
+    ra <- SummarizedExperiment::assay(tse, "relative_abundance")
+    expect_s4_class(ra, "sparseMatrix")
+    z <- SummarizedExperiment::assay(zeller, "relative_abundance")
+    expect_equal(ra[rownames(z), keys[2]], z[, keys[2]])
+    expect_true(all(ra[setdiff(rownames(tse), rownames(z)), keys[2]] == 0))
+})
+
+test_that("cmgd_samples_tse takes filtered wide metadata", {
+    w <- meta(wide = TRUE)
+    picked <- w[w$study_name == "ZellerG_2014", ]
+    tse <- samples_tse(picked)
+    expect_equal(colnames(tse), picked$sample_key)
+    skip_if_not_installed("dplyr")
+    picked <- dplyr::filter(w, study_name == "LassalleF_2017")
+    expect_equal(colnames(samples_tse(picked)), picked$sample_key)
+})
+
+test_that("cmgd_samples_tse colData has qc and metadata columns", {
+    w <- meta("olm", wide = TRUE)
+    keys <- c(
+        w$sample_key[w$study_name == "ZellerG_2014"][1],
+        w$sample_key[w$study_name == "LassalleF_2017"][1]
+    )
+    tse <- samples_tse(keys, source = "olm")
+    cd <- SummarizedExperiment::colData(tse)
+    fields <- names(w)[-(1:5)]
+    expect_true(all(c("reads_raw", "run_ids", fields) %in% names(cd)))
+    expect_equal(sum(names(cd) == "sample_key"), 1)
+    expect_equal(sum(names(cd) == "study_name"), 1)
+    expect_equal(cd$sample_key, keys)
+    expect_equal(cd$biosample, w$biosample[match(keys, w$sample_key)])
+    # LassalleF_2017 has no Olm metadata.
+    expect_true(all(is.na(unlist(cd[2, fields]))))
+    expect_false(all(is.na(unlist(cd[1, fields]))))
+})
+
+test_that("cmgd_samples_tse errors on unknown samples and legacy releases", {
+    expect_error(samples_tse(c("RS.nope", "RS.nada")), "RS.nope, RS.nada")
+    expect_error(samples_tse(character()), "no samples")
+    expect_error(
+        cmgd_samples_tse(open_release(), "RS.nope", cache = tempfile()),
+        class = "cmgdr_no_metadata"
+    )
+})
+
+test_that("cmgd_samples_tse keeps licence and sources", {
+    rel <- mpa_release()
+    key <- meta(wide = TRUE)$sample_key[1]
+    expect_message(
+        h <- cmgd_samples_tse(rel, key, cache = tempfile()),
+        "10.5281/zenodo.23087712",
+        fixed = TRUE
+    )
+    expect_no_message(
+        c <- cmgd_samples_tse(rel, key, "cmd", cache = tempfile())
+    )
+    expect_equal(S4Vectors::metadata(h)$license, "CC-BY-4.0")
+    expect_equal(S4Vectors::metadata(c)$license, "CC0-1.0")
+    expect_setequal(S4Vectors::metadata(h)$sources$source, c("cmd", "olm"))
+    expect_equal(S4Vectors::metadata(c)$sources$source, "cmd")
+    o <- samples_tse(key, source = "olm")
+    expect_equal(S4Vectors::metadata(o)$sources$source, "olm")
+})

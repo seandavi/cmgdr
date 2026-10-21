@@ -270,6 +270,29 @@ wide[, c("sample_key", "biosample", "age_years", "sex", "health_condition")]
 A release without metadata tables raises an error of class
 `cmgdr_no_metadata`, which callers can catch with `tryCatch()`.
 
+## Species profiles for samples picked by metadata
+
+The wide table is a plain data frame with one row per sample, so dplyr verbs
+(or base subsetting) pick samples by their metadata, across studies.
+`cmgd_samples_tse()` takes the result, or a vector of `sample_key`s, and
+builds one species `TreeSummarizedExperiment` for those samples, in that
+order. Rows are the union of the studies' species, `0` where a species was
+not seen, and `colData` is each sample's `qc.tsv` row followed by its
+metadata from `source`. The licence and sources travel in `metadata()`.
+
+```{r}
+#| label: samples-tse
+#| message: false
+library(dplyr)
+picked <- cmgd_sample_metadata(rel, wide = TRUE) |>
+    filter(health_condition == "case", sex == "female")
+count(picked, study_name)
+cases <- cmgd_samples_tse(rel, picked)
+cases
+cases$study_name |> table()
+S4Vectors::metadata(cases)$license
+```
+
 ## Finding samples by run accession
 
 `cmgd_find_runs()` takes a release and a vector of SRA/ENA run accessions

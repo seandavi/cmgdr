@@ -26,6 +26,7 @@ reference:
     contents:
       - cmgd_sample_metadata
       - cmgd_find_runs
+      - cmgd_samples_tse
   - title: Gene families
     contents:
       - cmgd_genefamilies

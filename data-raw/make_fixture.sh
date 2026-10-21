@@ -12,6 +12,15 @@
 # publisher's test fixture, so a 2-study slice of the real cmgd_mpa4.2-2.3.0
 # release 2026-10-16 is added by make_metadata_fixture.py.
 #
+# 2026-10-21 (#17): make_metadata_fixture.py also slices studies/ (index.json,
+# metaphlan_species.tsv.gz and qc.tsv for its two studies). The archive was
+# updated by hand, without re-running the publisher step: unpack it, add the
+# new studies/ from a make_metadata_fixture.py run, and repack with the tar
+# flags below. The tables/ kept the old bytes (a newer duckdb re-encodes the
+# Parquet), and latest.json/releases.json kept the 2026-10-16 pointers (the
+# live ones have since moved to 2026-10-20). A full regeneration needs a local
+# copy of those two files as of 2026-10-16.
+#
 # Usage: data-raw/make_fixture.sh <nextflow_telemetry checkout> <published cmgd_mpa4.2-2.3.0 dir>
 # (a local copy of https://cmgd-public.cancerdatasci.org/cmgd_mpa4.2-2.3.0/
 # with latest.json, releases.json and 2026-10-16/)
